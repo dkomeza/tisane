@@ -34,12 +34,13 @@ export default function RootLayout({
         style={{
           backgroundColor: '#000000',
           backgroundImage: `
-                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px),
-                radial-gradient(circle 35vmax at 15% 15%, rgba(20, 184, 166, 0.4) 0%, transparent 60%),
-                radial-gradient(circle 30vmax at 75% 30%, rgba(236, 72, 153, 0.45) 0%, transparent 65%),
-                radial-gradient(circle 40vmax at 40% 85%, rgba(60, 90, 255, 0.35) 0%, transparent 70%)`,
-          backgroundSize: "40px 40px, 40px 40px, cover, cover, cover"
+                linear-gradient(135deg,rgba(8, 8, 8, 0.5) 0%, rgba(46,46,46, 0.5) 100%),
+                linear-gradient(to right, rgba(255,255,255,0.15) 2px, transparent 2px),
+                linear-gradient(to bottom, rgba(255,255,255,0.15) 2px, transparent 2px),
+                radial-gradient(circle 55vmax at 15% 15%, rgba(20, 184, 166, 0.4) 0%, transparent 60%),
+                radial-gradient(circle 40vmax at 75% 30%, rgba(236, 72, 153, 0.45) 0%, transparent 65%),
+                radial-gradient(circle 60vmax at 40% 85%, rgba(60, 90, 255, 0.35) 0%, transparent 70%)`,
+          backgroundSize: "40px 40px, 40px 40px, 40px 40px, cover, cover, cover"
         }}
 
       >

@@ -50,12 +50,8 @@ body::before {
   pointer-events: none;
 
   background-image: url("/nnnoise.svg");
-  opacity: 0.6;
+  opacity: 0.8;
   background-size: 100px;
-  /* background-repeat: no-repeat; */
-  /* ↑ 1×1 pixel noise converted from Perlin */
-
-  /* opacity: 0.06; */
   mix-blend-mode: overlay;
 }
 
