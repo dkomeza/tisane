@@ -73,19 +73,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
 
 const HeroSection = () => {
   return (
-    <section
-      className="hero relative w-full min-h-screen flex items-center justify-center mb-8 overflow-hidden"
-      style={
-        {
-          // backgroundImage: `
-          //         linear-gradient(to bottom, transparent calc(100% - 15vh), #000000 100%),
-          //         linear-gradient(135deg,rgba(8, 8, 8, 0.5) 0%, rgba(46,46,46, 0.5) 100%),
-          //         linear-gradient(to right, rgba(255,255,255,0.15) 2px, transparent 2px),
-          //         linear-gradient(to bottom, rgba(255,255,255,0.15) 2px, transparent 2px)`,
-          // backgroundSize: "cover, 40px 40px, 40px 40px, 40px 40px",
-        }
-      }
-    >
+    <section className="hero relative w-full min-h-screen flex items-center justify-center mb-8 overflow-hidden">
       <div className="-z-10 absolute top-0 right-0 w-[500px] h-[500px] bg-brand-softPink/20 dark:bg-brand-violet/20 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/4 pointer-events-none" />
       <div className="-z-10 absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-cream/40 dark:bg-brand-purple/20 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/4 pointer-events-none" />
 
@@ -113,7 +101,14 @@ const HeroSection = () => {
               <span className="text-foreground">IT is </span>
               <span className="text-brand-violet dark:text-brand-pink">
                 <TypewriterEffect
-                  phrases={["Future", "You", "Knowledge", "Innovation", "Now"]}
+                  phrases={[
+                    "Future",
+                    "Technology",
+                    "You",
+                    "Us",
+                    "Knowledge",
+                    "Now",
+                  ]}
                 />
               </span>
             </div>
@@ -126,7 +121,6 @@ const HeroSection = () => {
             obierają właściwy kierunek.
           </p>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button
               size="lg"
