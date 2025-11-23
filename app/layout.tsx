@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/app/components/ThemeProvider";
 
-import BackgroundGrid from "@/app/components/BackgroundGrid";
-
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,26 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased relative`}
-        style={{
-          backgroundColor: '#000000',
-          backgroundImage: `
-                linear-gradient(135deg,rgba(8, 8, 8, 0.5) 0%, rgba(46,46,46, 0.5) 100%),
-                linear-gradient(to right, rgba(255,255,255,0.15) 2px, transparent 2px),
-                linear-gradient(to bottom, rgba(255,255,255,0.15) 2px, transparent 2px),
-                radial-gradient(circle 55vmax at 15% 15%, rgba(20, 184, 166, 0.4) 0%, transparent 60%),
-                radial-gradient(circle 40vmax at 75% 30%, rgba(236, 72, 153, 0.45) 0%, transparent 65%),
-                radial-gradient(circle 60vmax at 40% 85%, rgba(60, 90, 255, 0.35) 0%, transparent 70%)`,
-          backgroundSize: "40px 40px, 40px 40px, 40px 40px, cover, cover, cover"
-        }}
-
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative bg-background`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="z-10 relative">
-            {children}
-          </div>
+          <div className="z-10 relative">{children}</div>
         </ThemeProvider>
       </body>
-    </html >
+    </html>
   );
 }

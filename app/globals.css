@@ -43,6 +43,17 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@theme {
+  --color-brand-red: #f04b4e;
+  --color-brand-pink: #ff2b97;
+  --color-brand-softPink: #e486a7;
+  --color-brand-purple: #372773;
+  --color-brand-violet: #6a29f6;
+  --color-brand-dark: #21211e;
+  --color-brand-light: #f8f8f8;
+  --color-brand-cream: #eae6e0;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -79,7 +90,7 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
