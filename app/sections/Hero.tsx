@@ -9,7 +9,7 @@ import TextPlugin from "gsap/TextPlugin";
 import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(TextPlugin);
 
-import "./hero.css";
+import "@/styles/hero.css";
 
 const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
   const container = useRef<HTMLSpanElement>(null);
