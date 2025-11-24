@@ -95,7 +95,7 @@ export function Navbar() {
                       "h-9 px-4 rounded-md"
                     )}
                   >
-                    <Link href={link.href} passHref>
+                    <Link href={link.href}>
                       {link.name}
                     </Link>
                   </NavigationMenuLink>
