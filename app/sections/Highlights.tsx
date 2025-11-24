@@ -59,7 +59,7 @@ export default function Highlights() {
         return (
           <Card
             key={highlight.title}
-            className="transition-all hover:scale-105"
+            className="transition-all hover:scale-[102%] duration-300"
           >
             <CardHeader>
               <CardTitle className="flex flex-col gap-4 items-start">
