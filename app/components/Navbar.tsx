@@ -90,7 +90,7 @@ export function Navbar() {
                     asChild
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "bg-transparent hover:bg-transparent focus:bg-transparent data-active:bg-transparent data-[state=open]:bg-transparent",
+                      "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
                       "text-sm font-sans text-muted-foreground hover:text-brand-red focus:text-brand-red transition-colors",
                       "h-9 px-4 rounded-md"
                     )}
