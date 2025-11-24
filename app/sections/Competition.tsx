@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, ArrowRight } from "lucide-react";
 
+/**
+ * Render the "IT is ME" contest section containing headline, description, call-to-action buttons, and a details card.
+ *
+ * @returns The JSX element for the contest section, including a badge, multi-line title, descriptive paragraph, primary and outline buttons, and a styled card with final event details and evaluation note.
+ */
 export default function Competition() {
   return (
     <section id="contest" className="py-24 relative overflow-hidden">

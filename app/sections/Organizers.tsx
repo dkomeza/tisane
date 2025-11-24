@@ -1,6 +1,14 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
+/**
+ * Renders the "Organizatorzy" section displaying a responsive grid of organizers.
+ *
+ * Each organizer is shown as a square placeholder logo (first letter of the name),
+ * a bold name, and a short description.
+ *
+ * @returns A JSX element representing the organizers section with a responsive grid of items.
+ */
 export default function Organizers() {
   const organizers = [
     { name: "Wydział Informatyki AGH", desc: "Liderzy technologii" },

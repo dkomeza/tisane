@@ -1,6 +1,14 @@
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
 
+/**
+ * Renders a centered, responsive "Why participate?" section with a heading and benefit items.
+ *
+ * The section displays a list of benefit cards (each containing an icon and descriptive text)
+ * arranged in a column on small screens and a row on larger screens.
+ *
+ * @returns The React element representing the "Dlaczego warto?" section with benefit items.
+ */
 export default function WhyParticipate() {
   const benefits = [
     "Możliwość prezentacji przed ekspertami z branży",

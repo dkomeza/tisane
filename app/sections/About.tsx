@@ -1,6 +1,15 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 
+/**
+ * Render the "About" section presenting the event overview and organizing partners.
+ *
+ * The section includes a decorative background, a labeled badge, a headline with
+ * highlighted gradient text, an explanatory paragraph about IT trends, and a
+ * styled informational block describing "AGH IT Future Day" and its partners.
+ *
+ * @returns A JSX element representing the About section of the page
+ */
 export default function About() {
   return (
     <section

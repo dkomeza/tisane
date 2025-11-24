@@ -3,6 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cpu, Server, Lightbulb } from "lucide-react";
 
+/**
+ * Renders the "Tematy, którymi żyje branża IT" section with three topic cards.
+ *
+ * Each card shows an icon, a title, and a list of subtopics arranged in a responsive 3-column grid.
+ *
+ * @returns A JSX element containing the section with three topic cards, each including a header (icon + title) and a list of items.
+ */
 export default function Topics() {
   const topics = [
     {

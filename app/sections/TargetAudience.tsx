@@ -2,6 +2,15 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Building2, Microscope } from "lucide-react";
 
+/**
+ * Render the target audience section containing three informational cards.
+ *
+ * The section includes a centered heading and a responsive three-column grid
+ * of cards for "Studenci", "Firmy", and "Naukowcy", each with an icon, title,
+ * and short description.
+ *
+ * @returns A JSX element containing the complete target audience section with three cards.
+ */
 export default function TargetAudience() {
   const audiences = [
     {
