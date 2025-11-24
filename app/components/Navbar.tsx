@@ -149,22 +149,26 @@ export function Navbar() {
                   </SheetTitle>
                 </SheetHeader>
 
-                <div className="flex flex-col gap-2">
-                  {navLinks.map((link, i) => (
-                    <SheetClose asChild key={link.name}>
-                      <Link
-                        href={link.href}
-                        className="text-xl font-medium text-muted-foreground hover:text-foreground hover:pl-2 transition-all duration-300 py-3 border-b border-border/30 last:border-0 flex items-center justify-between group"
-                        style={{ transitionDelay: `${i * 50}ms` }}
-                      >
-                        {link.name}
-                        <span className="text-brand-red opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                          →
-                        </span>
-                      </Link>
-                    </SheetClose>
-                  ))}
-                </div>
+                <nav className="flex flex-col gap-2">
+                  <ul>
+                    {navLinks.map((link, i) => (
+                      <SheetClose asChild key={link.name}>
+                        <li className="text-xl font-medium text-muted-foreground hover:text-foreground hover:pl-2 transition-all duration-300 py-3 border-b border-border/30 last:border-0 group">
+                          <Link
+                            href={link.href}
+                            className="flex items-center justify-between group"
+                            style={{ transitionDelay: `${i * 50}ms` }}
+                          >
+                            {link.name}
+                            <span className="text-brand-red opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                              →
+                            </span>
+                          </Link>
+                        </li>
+                      </SheetClose>
+                    ))}
+                  </ul>
+                </nav>
 
                 <div className="mt-auto pt-8">
                   <Button
