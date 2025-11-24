@@ -4,9 +4,6 @@ section.hero {
     transparent calc(100% - 15vh),
     var(--background) 100%
   );
-}
-
-section.hero {
   &:is(.dark *) {
     background-image: linear-gradient(
         to bottom,
