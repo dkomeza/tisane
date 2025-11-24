@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/app/components/ThemeProvider";
 
 import "@/styles/globals.css";
+import { Navbar } from "./components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative bg-background`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Navbar />
           <div className="z-10 relative">{children}</div>
         </ThemeProvider>
       </body>
