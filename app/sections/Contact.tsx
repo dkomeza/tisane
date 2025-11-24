@@ -2,6 +2,11 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Linkedin, Facebook, Instagram, Youtube } from "lucide-react";
 
+/**
+ * Renders the Contact section containing team contact entries, social action buttons, and a footer notice.
+ *
+ * @returns A JSX element with contact details (names, roles and mailto links), social icon buttons, and a copyright footer.
+ */
 export default function Contact() {
   return (
     <section className="py-24 bg-secondary/30 border-t border-border">
