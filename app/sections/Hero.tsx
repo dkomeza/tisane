@@ -142,9 +142,9 @@ const HeroSection = () => {
 
         <div className="hidden lg:flex items-center justify-center relative">
           <div className="relative w-full max-w-md aspect-square">
-            <div className="absolute top-0 -left-4 w-72 h-72 bg-brand-violet mix-blend-multiply filter blur-xl opacity-20 animate-blob dark:mix-blend-screen dark:opacity-30"></div>
-            <div className="absolute top-0 -right-4 w-72 h-72 bg-brand-pink mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000 dark:mix-blend-screen dark:opacity-30"></div>
-            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-brand-red mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000 dark:mix-blend-screen dark:opacity-30"></div>
+            <div className="absolute top-0 -left-4 w-72 h-72 bg-brand-violet mix-blend-multiply filter blur-2xl opacity-20 animate-blob dark:mix-blend-screen dark:opacity-30"></div>
+            <div className="absolute top-0 -right-4 w-72 h-72 bg-brand-pink mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-2000 dark:mix-blend-screen dark:opacity-30"></div>
+            <div className="absolute -bottom-8 left-20 w-72 h-72 bg-brand-red mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-4000 dark:mix-blend-screen dark:opacity-30"></div>
 
             <Card className="relative z-10 h-full w-full py-0 shadow-none overflow-hidden">
               <div className="h-10 border-b border-black/5 dark:border-white/10 flex items-center px-4 gap-2 bg-black/5 dark:bg-white/5">
