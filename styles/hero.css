@@ -1,11 +1,23 @@
 section.hero {
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 15vh),
+    var(--background) 100%
+  );
+}
+
+section.hero {
   &:is(.dark *) {
     background-image: linear-gradient(
-        to bottom,
-        transparent calc(100% - 15vh),
-        #000000 100%
-      ),
-      linear-gradient(135deg, rgba(8, 8, 8, 0.5) 0%, rgba(46, 46, 46, 0.5) 100%),
+          to bottom,
+          transparent calc(100% - 15vh),
+          var(--background) 100%
+        )
+        linear-gradient(
+          135deg,
+          rgba(8, 8, 8, 0.5) 0%,
+          rgba(46, 46, 46, 0.5) 100%
+        ),
       linear-gradient(to right, rgba(255, 255, 255, 0.15) 2px, transparent 2px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 2px, transparent 2px);
     background-size: cover, 36px 36px, 36px 36px, 36px 36px;
