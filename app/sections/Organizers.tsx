@@ -43,7 +43,7 @@ export default function Organizers() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {organizers.map((org, idx) => (
           <div key={idx} className="group text-center">
-            <div className=" aspect-square border-2 border-brand-softPink/10 bg-white overflow-hidden rounded-2xl mb-4 flex items-center justify-center text-2xl font-bold text-muted-foreground">
+            <div className=" aspect-square border-2 p-6 border-brand-softPink/10 bg-white overflow-hidden rounded-2xl mb-4 flex items-center justify-center text-2xl font-bold text-muted-foreground">
               <Image src={org.img} width={250} height={250} alt={org.name} />
             </div>
             <h3 className="font-bold text-sm md:text-base">{org.name}</h3>
