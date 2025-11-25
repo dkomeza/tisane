@@ -30,21 +30,21 @@ const highlights: Highlight[] = [
   },
   {
     icon: Laptop,
-    brand_color: "#ff2b97",
+    brand_color: "#f04b4e",
     title: "Konkurs Innowacji Studenckich IT is ME",
     description:
       "Innowacje studenckie. Arena dla Twojego projektu. Zaprezentuj swój pomysł i zyskaj finansowanie oraz mentoring od najlepszych.",
   },
   {
     icon: Brain,
-    brand_color: "#ff2b97",
+    brand_color: "#e486a7",
     title: "Warsztaty i spotkania",
     description:
       "Praktyczna wiedza od ekspertów. Sesje hands-on skupione na narzędziach i technologiach, których używa się w topowych firmach.",
   },
   {
     icon: Handshake,
-    brand_color: "#ff2b97",
+    brand_color: "#6a29f6",
     title: "Networking",
     description:
       "Spotkania z biznesem i nauką. Nawiąż kontakty, które odmienią Twoją karierę. Idealne miejsce, by znaleźć pracodawcę lub partnera.",
@@ -59,7 +59,8 @@ export default function Highlights() {
         return (
           <Card
             key={highlight.title}
-            className="transition-all hover:scale-[102%] duration-300"
+            style={{ "--brand": highlight.brand_color } as React.CSSProperties}
+            className="cursor-pointer transition-all hover:scale-[102%] duration-300 [box-shadow:0_0_5px_var(--brand)] hover:[box-shadow:0_0_20px_var(--brand)]"
           >
             <CardHeader>
               <CardTitle className="flex flex-col gap-4 items-start">
