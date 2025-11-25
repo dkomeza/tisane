@@ -15,25 +15,25 @@ export default function TargetAudience() {
   const audiences = [
     {
       icon: <GraduationCap className="w-10 h-10 text-brand-red" />,
-      title: "Studenci",
-      desc: "Zdobądź wiedzę, poznaj ekspertów, zaprezentuj swój potencjał",
+      title: "Studentów",
+      desc: "Zdobądź wiedzę, poznaj ekspertów, zaprezentuj swój potencjał.",
     },
     {
       icon: <Building2 className="w-10 h-10 text-brand-violet" />,
       title: "Firmy",
-      desc: "Spotkaj talenty, zaprezentuj technologie, znajdź inspiracje",
+      desc: "Spotkaj talenty, zaprezentuj technologie, znajdź inspiracje.",
     },
     {
       icon: <Microscope className="w-10 h-10 text-brand-pink" />,
-      title: "Naukowcy",
-      desc: "Podziel się wiedzą i nawiąż współpracę z biznesem",
+      title: "Naukowców",
+      desc: "Podziel się wiedzą i nawiąż współpracę z biznesem.",
     },
   ];
 
   return (
     <section id="target" className="py-24 bg-secondary/20">
-      <div className="container mx-auto px-6 lg:px-12">
-        <h2 className="text-3xl font-bold mb-12 text-center">
+      <div className="container mx-auto px-6 lg:px-10">
+        <h2 className="text-3xl font-bold mb-12 text-center ">
           Na wydarzenie szczególnie zapraszamy
         </h2>
 
@@ -47,7 +47,7 @@ export default function TargetAudience() {
                 <div className="mx-auto bg-secondary p-4 rounded-full mb-4 w-fit">
                   {item.icon}
                 </div>
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle className="text-xl font-bold uppercase">
                   {item.title}
                 </CardTitle>
               </CardHeader>
