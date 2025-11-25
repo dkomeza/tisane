@@ -11,8 +11,7 @@ import { Trophy, ArrowRight } from "lucide-react";
 export default function Competition() {
   return (
     <section id="contest" className="py-24 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-brand-violet/5 to-transparent -z-10" />
+      <div className="absolute inset-0 bg-linear-to-b from-brand-violet/5 to-transparent -z-10" />
 
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -27,10 +26,14 @@ export default function Competition() {
             </h2>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Konkurs <strong>IT is ME</strong> to przestrzeń do zaprezentowania
-              innowacji studenckich. Zapraszamy min. 2-osobowe zespoły z całej
-              Polski. Pokażcie, że kreatywność nie zna granic - od medycyny po
-              technologie kosmiczne.
+              Konkurs <strong>IT is ME</strong> to jeden z najważniejszych
+              elementów AGH IT Future Day - przestrzeń do zaprezentowania
+              innowacji studenckich, wykorzystujących metody IT. Do udziału
+              zapraszamy min. 2-osobowe zespoły z uczelni publicznych i
+              niepublicznych z całej Polski. W jury zasiądą naukowcy, dydaktycy,
+              innowatorzy i przedstawiciele firm partnerskich, którzy ocenią
+              projekty, podzielą się doświadczeniem i pomogą autorom rozwijać
+              ich pomysły.
             </p>
 
             <div className="flex flex-wrap gap-4">
