@@ -79,7 +79,7 @@ export default function Competition() {
                 </div>
               </div>
 
-              <div className="mt-8 p-4 bg-brand-violet/10 rounded-lg border border-brand-violet/20">
+              <div className="mt-12 p-4 bg-brand-violet/10 rounded-lg border border-brand-violet/20">
                 <p className="text-sm text-center font-medium">
                   Oceniamy innowacyjność, użyteczność społeczną i poziom
                   technologiczny.
