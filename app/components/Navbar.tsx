@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ModeToggle } from "@/app/components/ModeToggle";
+import Signet from "./Signet";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -72,13 +73,14 @@ export function Navbar() {
       <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group relative z-50">
           <div className="flex flex-col leading-none">
-            <span className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-brand-red transition-colors duration-300">
+            <span className="text-xl font-extrabold tracking-tight text-foreground group-hover:text-brand-red transition-colors duration-300 whitespace-nowrap">
               AGH IT
             </span>
-            <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground group-hover:text-brand-pink transition-colors duration-300 uppercase">
+            <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground group-hover:text-brand-pink transition-colors duration-300 uppercase whitespace-nowrap">
               Future Day
             </span>
           </div>
+          <Signet className="text-foreground group-hover:text-brand-red size-8 transition-colors duration-300" />
         </Link>
 
         <div className="hidden lg:block">
@@ -90,14 +92,12 @@ export function Navbar() {
                     asChild
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      "bg-transparent hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent data-[state=open]:bg-transparent",
+                      "bg-transparent hover:bg-transparent focus:bg-transparent data-[active=true]:bg-transparent data-[state=open]:bg-transparent",
                       "text-sm font-sans text-muted-foreground hover:text-brand-red focus:text-brand-red transition-colors",
                       "h-9 px-4 rounded-md"
                     )}
                   >
-                    <Link href={link.href}>
-                      {link.name}
-                    </Link>
+                    <Link href={link.href}>{link.name}</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
