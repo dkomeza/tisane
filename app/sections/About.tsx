@@ -16,8 +16,8 @@ export default function About() {
       id="about"
       className="py-24 container mx-auto px-6 lg:px-12 relative overflow-hidden"
     >
-      {/* Background decoration */}
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-brand-violet/5 blur-[100px] rounded-full -z-10 pointer-events-none" />
+      <div className="absolute top-1/2 right-50 -translate-y-1/2 w-[300px] h-[300px] bg-brand-violet/15 blur-[100px] rounded-full -z-10 pointer-events-none" />
+      <div className="absolute top-1/2 left-30 -translate-y-1/2 w-[300px] h-[300px] bg-brand-pink/15 blur-[100px] rounded-full -z-10 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto text-center space-y-8">
         <Badge
