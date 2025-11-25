@@ -61,10 +61,7 @@ const highlights: Highlight[] = [
 export default function Highlights() {
   const handleCardClick = (navId: string) => {
     const el = document.getElementById(navId);
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.pageYOffset ;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
