@@ -39,14 +39,14 @@ export default function Topics() {
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Tematy, którymi żyje branża IT
         </h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-brand-red to-brand-pink mx-auto rounded-full" />
+        <div className="w-100 h-1 bg-linear-to-r from-brand-red to-brand-pink mx-auto rounded-full" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
         {topics.map((topic, idx) => (
           <Card
             key={idx}
-            className="bg-background/50 backdrop-blur-sm border-border/50 hover:border-brand-violet/30 transition-colors"
+            className="bg-background/50 backdrop-blur-sm border-border/50 hover:border-brand-violet/30 transition-colors duration-300"
           >
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               <div className="p-2 bg-secondary rounded-lg">{topic.icon}</div>
