@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
 /**
@@ -11,27 +12,44 @@ import { Card, CardContent } from "@/components/ui/card";
  */
 export default function Organizers() {
   const organizers = [
-    { name: "Wydział Informatyki AGH", desc: "Liderzy technologii" },
-    { name: "Fundacja Try IT", desc: "Rozwój kompetencji" },
-    { name: "WRSS WI AGH", desc: "Samorząd studencki" },
-    { name: "Centrum Spraw Studenckich", desc: "Wsparcie studentów" },
+    {
+      name: "Wydział Informatyki AGH",
+      desc: "Kształci przyszłych liderów technologii w obszarach takich jak programowanie, AI, Data Science, cyberbezpieczeństwo, IoT czy uczenie maszynowe.",
+      img: "/Logo_WI_AGH.png",
+    },
+    {
+      name: "Fundacja Try IT",
+      desc: "Wspiera rozwój kompetencji cyfrowych i równe szanse w dostępie do edukacji technologicznej.",
+      img: "/Logo_TryIt.png",
+    },
+    {
+      name: "WRSS WI AGH",
+      desc: "Wspiera rozwój naukowy i integrację środowiska studenckiego.",
+      img: "/Logo_WRSS_WI.png",
+    },
+    {
+      name: "Centrum Spraw Studenckich AGH",
+      desc: "Zapewnia wsparcie, stypendia, świadczenia i pomoc psychologiczną dla studentów.",
+      img: "/Logo_CSS.png",
+    },
   ];
 
   return (
     <section id="organizers" className="py-24 container mx-auto px-6 lg:px-12">
-      <h2 className="text-3xl font-bold mb-12 text-center text-muted-foreground uppercase tracking-widest text-sm">
+      <h2 className="text-3xl font-bold mb-12 text-center uppercase tracking-widest">
         Organizatorzy
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {organizers.map((org, idx) => (
           <div key={idx} className="group text-center">
-            <div className="aspect-square bg-secondary rounded-2xl mb-4 flex items-center justify-center text-2xl font-bold text-muted-foreground group-hover:bg-brand-red/5 group-hover:text-brand-red transition-colors duration-300">
-              {/* Placeholder for Logo */}
-              {org.name.charAt(0)}
+            <div className=" aspect-square border-2 p-6 border-brand-softPink/10 bg-white overflow-hidden rounded-2xl mb-4 flex items-center justify-center text-2xl font-bold text-muted-foreground">
+              <Image src={org.img} width={250} height={250} alt={org.name} />
             </div>
             <h3 className="font-bold text-sm md:text-base">{org.name}</h3>
-            <p className="text-xs text-muted-foreground mt-1">{org.desc}</p>
+            <p className="text-xs text-muted-foreground mt-1 text-left">
+              {org.desc}
+            </p>
           </div>
         ))}
       </div>

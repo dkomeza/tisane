@@ -16,8 +16,8 @@ export default function Contact() {
           <div className="space-y-8">
             <h2 className="text-3xl font-bold">Skontaktuj się z nami</h2>
             <p className="text-lg text-muted-foreground">
-              Zostań partnerem wydarzenia! Poznaj ofertę dopasowaną do potrzeb
-              Twojej firmy.
+              Zostań partnerem wydarzenia! Skontaktuj się z nami i poznaj ofertę
+              dopasowaną do potrzeb Twojej firmy.
             </p>
 
             <div className="space-y-6">
