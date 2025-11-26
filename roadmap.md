@@ -6,13 +6,13 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Establish the base infrastructure for a secure and scalable CMS.
 
-- [ ] **Database & ORM Setup**
+- [ ] **Database & ORM Setup** ([#16](https://github.com/dkomeza/tisane/issues/16))
   - [ ] Initialize PostgreSQL (Supabase/Neon) with Drizzle ORM.
   - [ ] Design Core Schemas:
     - [ ] `Users` (Admin, Editor, Viewer roles).
     - [ ] `Sites` (Optional: for multi-tenancy support).
     - [ ] `Settings` (Global key-value store for site config).
-- [ ] **Authentication System**
+- [ ] **Authentication System** ([#17](https://github.com/dkomeza/tisane/issues/17))
   - [ ] Implement secure Admin Login (NextAuth/Better Auth).
   - [ ] Role-Based Access Control (RBAC) middleware.
 
@@ -20,11 +20,11 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Enable dynamic creation of pages and navigation structures.
 
-- [ ] **Dynamic Page Management**
+- [ ] **Dynamic Page Management** ([#18](https://github.com/dkomeza/tisane/issues/18))
   - [ ] Create `Pages` schema (title, slug, content_json, status, seo_metadata).
   - [ ] Implement Admin CRUD for Pages.
-  - [ ] **Dynamic Routing**: Implement `app/[...slug]/page.tsx` to render pages based on DB lookup.
-- [ ] **Navigation System**
+  - [ ] **Dynamic Routing** ([#19](https://github.com/dkomeza/tisane/issues/19))
+- [ ] **Navigation System** ([#20](https://github.com/dkomeza/tisane/issues/20))
   - [ ] Create `Menus` and `MenuItems` schemas.
   - [ ] Build a Menu Builder UI (drag-and-drop nesting).
 
@@ -32,14 +32,14 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Create a visual editing experience for constructing page layouts.
 
-- [ ] **Block System Architecture**
+- [ ] **Block System Architecture** ([#21](https://github.com/dkomeza/tisane/issues/21))
   - [ ] Define a JSON structure for storing page content (e.g., list of blocks).
   - [ ] Create a **Component Registry**: Map JSON block types (e.g., `hero`, `text`, `gallery`) to React components.
-- [ ] **Editor UI**
+- [ ] **Editor UI** ([#22](https://github.com/dkomeza/tisane/issues/22))
   - [ ] Implement a visual block picker.
   - [ ] Build property editors for blocks (e.g., changing text color, alignment, background).
   - [ ] _Stretch Goal:_ Live preview in the editor.
-- [ ] **Media Library**
+- [ ] **Media Library** ([#23](https://github.com/dkomeza/tisane/issues/23))
   - [ ] `Media` schema for tracking uploads.
   - [ ] UI for uploading, searching, and selecting images/files.
 
@@ -47,10 +47,10 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Allow users to control the look and feel without code changes.
 
-- [ ] **Global Site Settings**
+- [ ] **Global Site Settings** ([#24](https://github.com/dkomeza/tisane/issues/24))
   - [ ] UI to manage Site Title, Favicon, Logo.
   - [ ] SEO Defaults (OG Images, Twitter Cards).
-- [ ] **Theme System**
+- [ ] **Theme System** ([#25](https://github.com/dkomeza/tisane/issues/25))
   - [ ] Configurable Design Tokens (Colors, Fonts, Radius) stored in DB.
   - [ ] Dynamic CSS variable generation based on settings.
 
@@ -58,11 +58,11 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Production readiness and developer experience.
 
-- [ ] **Publishing Workflow**
+- [ ] **Publishing Workflow** ([#26](https://github.com/dkomeza/tisane/issues/26))
   - [ ] Draft vs. Published states.
   - [ ] Preview mode for drafts.
-- [ ] **Performance**
+- [ ] **Performance** ([#27](https://github.com/dkomeza/tisane/issues/27))
   - [ ] ISR (Incremental Static Regeneration) for high performance.
   - [ ] On-demand revalidation hooks.
-- [ ] **Plugin/Module API (Future)**
+- [ ] **Plugin/Module API (Future)** ([#28](https://github.com/dkomeza/tisane/issues/28))
   - [ ] Structure for adding custom content types (e.g., "Portfolio Projects", "Products") without altering core code.
