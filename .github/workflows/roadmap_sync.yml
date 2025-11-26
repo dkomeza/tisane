@@ -1,0 +1,51 @@
+name: Roadmap Sync
+
+on:
+  push:
+    paths:
+      - "roadmap.md"
+  issues:
+    types: [closed, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install PyGithub
+        run: pip install PyGithub
+
+      - name: Run Roadmap Manager
+        env:
+          GITHUB_TOKEN: ${{ secrets.ROADMAP_API }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python scripts/roadmap_manager.py
+
+      - name: Commit and Push Changes
+        # This checks if the python script modified roadmap.md
+        # If so, it pushes the changes back to the repo
+        run: |
+          git config --global user.name "Roadmap Bot"
+          git config --global user.email "bot@noreply.github.com"
+
+          # Check for changes
+          if [[ -n $(git status -s roadmap.md) ]]; then
+            echo "Changes detected in roadmap.md"
+            git add roadmap.md
+            git commit -m "chore: sync roadmap.md with issues [skip ci]"
+            git push
+          else
+            echo "No changes to roadmap.md"
+          fi
