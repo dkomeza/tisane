@@ -59,13 +59,12 @@ def main():
             end_syntax = match.group(5) # "**"
             existing_link = match.group(6) # " ([#12])" or None
 
-            # Collect subtasks (indented lines below this one) for the Body
+            # Collect body (description + subtasks) until next task or phase
             body_lines = []
             for j in range(i + 1, len(lines)):
-                if task_pattern.match(lines[j]) or phase_pattern.match(lines[j]) or lines[j].strip() == "":
+                if task_pattern.match(lines[j]) or phase_pattern.match(lines[j]):
                     break
-                if lines[j].strip().startswith("-"):
-                    body_lines.append(lines[j].strip())
+                body_lines.append(lines[j].strip())
             
             body_content = f"**Phase:** {current_phase}\n\n" + "\n".join(body_lines)
 
