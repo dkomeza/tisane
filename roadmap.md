@@ -15,7 +15,7 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
   - [ ] Design `Sites` schema (for multi-tenancy support).
   - [ ] Design `Settings` schema (Global key-value store).
 
-- [ ] **Authentication System**
+- [ ] **Authentication System** ([#42](https://github.com/dkomeza/tisane/issues/42))
       Secure the admin dashboard with a robust authentication system. This involves setting up a secure login flow, managing sessions, and implementing Role-Based Access Control (RBAC) to ensure that only authorized users can access sensitive configuration and content management features.
   - [ ] Install NextAuth.js or Better Auth.
   - [ ] Create Admin Login page.
@@ -26,7 +26,7 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Enable dynamic creation of pages and navigation structures.
 
-- [ ] **Dynamic Page Management**
+- [ ] **Dynamic Page Management** ([#43](https://github.com/dkomeza/tisane/issues/43))
       Develop the core CRUD (Create, Read, Update, Delete) interface for managing website pages. This includes defining the data model for a page, which will store metadata (slug, title, SEO tags) and the actual content structure (JSON blocks). The admin interface should allow for easy creation and editing of these pages.
 
   - [ ] Create `Pages` schema (title, slug, content_json, status, seo_metadata).
@@ -34,7 +34,7 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
   - [ ] Build Admin Edit/Create View for pages.
   - [ ] Implement soft delete/archive functionality.
 
-- [ ] **Dynamic Routing**
+- [ ] **Dynamic Routing** ([#44](https://github.com/dkomeza/tisane/issues/44))
       Implement the frontend routing logic to render pages dynamically based on their slug. This involves using Next.js dynamic routes (`[...slug]`) to catch all incoming requests, look up the corresponding page in the database, and render the appropriate content. This system must also handle 404 errors and generate correct metadata for SEO.
 
   - [ ] Create catch-all route `app/[...slug]/page.tsx`.
@@ -42,7 +42,7 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
   - [ ] Fetch page data from DB based on slug.
   - [ ] Handle 404s for non-existent pages.
 
-- [ ] **Navigation System**
+- [ ] **Navigation System** ([#45](https://github.com/dkomeza/tisane/issues/45))
       Create a flexible system for managing site navigation menus. Admins should be able to create multiple menus (e.g., Main Header, Footer, Sidebar) and manage their structure using a drag-and-drop interface. The system needs to support nested items and linking to internal pages or external URLs.
   - [ ] Create `Menus` and `MenuItems` schemas.
   - [ ] Build a Menu Builder UI (drag-and-drop nesting).
@@ -52,14 +52,14 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Create a visual editing experience for constructing page layouts.
 
-- [ ] **Block System Architecture**
+- [ ] **Block System Architecture** ([#46](https://github.com/dkomeza/tisane/issues/46))
       Design the underlying data structure for the block-based editor. The content of each page will be stored as a JSON array of "blocks". We need to define a standard interface for these blocks and create a registry that maps JSON block types (e.g., "hero", "text", "image") to their corresponding React components for rendering.
 
   - [ ] Define JSON structure for page content (list of blocks).
   - [ ] Create a **Component Registry** to map JSON types to React components.
   - [ ] Implement base "Block" interface/types.
 
-- [ ] **Editor UI**
+- [ ] **Editor UI** ([#47](https://github.com/dkomeza/tisane/issues/47))
       Build the user interface for the page builder. This is the core "CMS" experience where users construct pages. It requires a visual picker to add new blocks, a property editor sidebar to configure block settings (text content, colors, alignment), and drag-and-drop functionality to reorder blocks on the page.
 
   - [ ] Implement a visual Block Picker (sidebar or modal).
@@ -67,7 +67,7 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
   - [ ] Implement drag-and-drop reordering of blocks.
   - [ ] _Stretch Goal:_ Live preview in the editor.
 
-- [ ] **Media Library**
+- [ ] **Media Library** ([#48](https://github.com/dkomeza/tisane/issues/48))
       Develop a centralized media library to manage assets like images, videos, and documents. This system will handle file uploads to an object storage provider (like Supabase Storage or AWS S3), provide a gallery view for browsing and searching assets, and integrate directly with the block editor for easy image selection.
   - [ ] Create `Media` schema for tracking uploads.
   - [ ] Implement file upload API (Supabase Storage / Uploadthing).
@@ -78,14 +78,14 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Allow users to control the look and feel without code changes.
 
-- [ ] **Global Site Settings**
+- [ ] **Global Site Settings** ([#49](https://github.com/dkomeza/tisane/issues/49))
       Implement a settings management system for global site configuration. This includes basic identity settings (Site Title, Description, Logo, Favicon) as well as default SEO settings (Open Graph images, Twitter card types). These settings should be easily accessible via an API for use throughout the frontend.
 
   - [ ] Build Settings UI for Site Title, Favicon, Logo.
   - [ ] Implement SEO Defaults (OG Images, Twitter Cards).
   - [ ] Create API to fetch global settings.
 
-- [ ] **Theme System**
+- [ ] **Theme System** ([#50](https://github.com/dkomeza/tisane/issues/50))
       Create a theming engine that allows admins to customize the visual appearance of the site without writing code. This involves defining a set of "Design Tokens" (primary colors, font families, border radii) that are stored in the database and injected into the frontend as CSS variables or Tailwind configuration.
   - [ ] Create schema for Design Tokens (Colors, Fonts, Radius).
   - [ ] Build Theme Editor UI.
@@ -95,14 +95,14 @@ This roadmap outlines the steps to build a custom Content Management System (CMS
 
 **Goal:** Production readiness and developer experience.
 
-- [ ] **Publishing Workflow**
+- [ ] **Publishing Workflow** ([#51](https://github.com/dkomeza/tisane/issues/51))
       Implement a robust publishing workflow to give content editors control over when changes go live. This includes distinguishing between "Draft" and "Published" states for pages, allowing users to preview changes in a secure environment before they are visible to the public.
 
   - [ ] Implement Draft vs. Published states.
   - [ ] Build "Preview" mode for viewing drafts without publishing.
   - [ ] Add "Scheduled Publishing" (optional).
 
-- [ ] **Performance**
+- [ ] **Performance** ([#52](https://github.com/dkomeza/tisane/issues/52))
       Optimize the CMS and the generated sites for maximum performance. This involves leveraging Next.js features like Incremental Static Regeneration (ISR) to cache pages at the edge, and implementing on-demand revalidation hooks to update the cache immediately when content is changed in the CMS.
 
   - [ ] Implement ISR (Incremental Static Regeneration).
