@@ -1,6 +1,6 @@
 # Roadmap: Custom CMS for AGH IT Future Day
 
-This roadmap outlines the steps to build a custom Content Management System (CMS) for the `tisane` project. The goal is to replace hardcoded content with dynamic data managed via a secure admin dashboard.
+This roadmap outlines the steps to build a custom Content Management System (CMS) for the `tisane` project. The goal is to replace hardcoded content with dynamic data managed via a secure admin dashboard. 
 
 ## Phase 1: Core Foundation & Architecture
 
