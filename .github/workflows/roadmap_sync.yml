@@ -29,9 +29,9 @@ jobs:
 
       - name: Run Roadmap Manager
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ROADMAP_API }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python manage_roadmap.py
+        run: python scripts/roadmap_manager.py
 
       - name: Commit and Push Changes
         # This checks if the python script modified roadmap.md
