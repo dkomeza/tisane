@@ -30,8 +30,8 @@ def main():
     # Regex to find: - [ ] **Title**
     # Group 1: ' ' or 'x' (Status)
     # Group 2: Title content
-    # Group 3: Optional existing link like ([#12])
-    task_pattern = re.compile(r'^(\s*-\s\[)([ x])(\]\s\*\*)(.*?)(\*\*)(\s\(\[#\d+\]\))?')
+    # Group 3: Optional existing link (or any trailing text)
+    task_pattern = re.compile(r'^(\s*-\s\[)([ x])(\]\s\*\*)(.*?)(\*\*)(.*)$')
     
     phase_pattern = re.compile(r'^##\s+(.+)')
 
@@ -108,6 +108,16 @@ def main():
                 # If Markdown is [ ] and Issue is Open -> Ensure Issue matches
                 elif status_char == ' ' and issue.state == 'open':
                     pass # Sync is good
+
+                # 3. Body Sync (Description/Tasks)
+                # Normalize newlines to avoid false positives
+                current_body_norm = issue.body.replace('\r\n', '\n').strip() if issue.body else ""
+                new_body_norm = body_content.strip()
+                
+                if current_body_norm != new_body_norm:
+                    print(f"Updating body for issue #{issue.number}...")
+                    issue.edit(body=body_content)
+                    issues_updated += 1
 
             # Reconstruct the line
             # "  - [" + "x" + "] **" + "Title" + "**" + " ([#12](...))" + "\n"
