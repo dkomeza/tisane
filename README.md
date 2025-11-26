@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tisane
 
-## Getting Started
+Tisane is the official website for the AGH IT Future Day event. It is built with modern web technologies to provide a fast, responsive, and visually appealing experience.
 
-First, run the development server:
+The project is currently in active development, with plans to evolve into a fully custom Content Management System (CMS) to manage event content dynamically.
+
+## 🚀 Tech Stack
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **UI Components:** [Radix UI](https://www.radix-ui.com/), [Lucide React](https://lucide.dev/)
+- **Animations:** [GSAP](https://gsap.com/), [tw-animate-css](https://github.com/ikatyang/tw-animate-css)
+- **Database (Planned):** PostgreSQL with Drizzle ORM
+
+## ✨ Features
+
+- **Modern Landing Page:** A high-performance, responsive landing page for the event.
+- **Component-Based Architecture:** Modular design using React Server Components.
+- **Interactive Animations:** Smooth transitions and effects using GSAP.
+- **Dark/Light Mode:** Built-in theme support.
+
+## 🔮 Future Plans: Custom CMS
+
+We are building a bespoke CMS to manage the site's content. This will allow for:
+
+- **Dynamic Page Building:** A block-based editor for creating custom layouts.
+- **Role-Based Access Control:** Secure admin dashboard for editors and admins.
+- **Media Management:** Centralized library for images and assets.
+- **Theming Engine:** No-code customization of site colors and fonts.
+
+See [roadmap.md](./roadmap.md) for the detailed development plan.
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or later recommended)
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/dkomeza/tisane.git
+   cd tisane
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running Locally
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To create a production build:
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📂 Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/`: Next.js App Router pages and layouts.
+- `app/sections/`: Modular components for the landing page sections.
+- `components/`: Reusable UI components (buttons, inputs, etc.).
+- `scripts/`: Utility scripts, including the `roadmap_manager.py` for syncing the roadmap with GitHub Issues.
+- `public/`: Static assets.
