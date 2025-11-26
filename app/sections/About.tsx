@@ -44,19 +44,11 @@ export default function About() {
           <p className="text-lg leading-relaxed">
             <strong className="text-foreground">AGH IT Future Day</strong> to
             nowe wydarzenie organizowane przez{" "}
-            <span className="font-semibold text-brand-violet">
-              Wydział Informatyki AGH
-            </span>
-            ,{" "}
-            <span className="font-semibold text-brand-pink">
-              Fundację Try IT
-            </span>
-            ,{" "}
-            <span className="font-semibold text-brand-red">
-              Centrum Spraw Studenckich AGH
-            </span>{" "}
+            <span className="font-semibold">Wydział Informatyki AGH</span>,{" "}
+            <span className="font-semibold">Fundację Try IT</span>,{" "}
+            <span className="font-semibold">Centrum Spraw Studenckich AGH</span>{" "}
             i{" "}
-            <span className="font-semibold text-brand-softPink">
+            <span className="font-semibold">
               Wydziałową Radę Samorządu Studentów WI AGH
             </span>
             . Łączymy perspektywy studentów, naukowców i biznesu, tworząc
