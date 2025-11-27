@@ -4,7 +4,20 @@ import { resend } from "@/lib/resend";
 import InviteUserEmail from "@/components/emails/InviteUserEmail";
 import z from "zod";
 
+import { auth } from "@/lib/auth/server";
+import { hasPermission } from "@/lib/permissions";
+
 export async function inviteUser(email: string) {
+  const session = await auth.api.getSession();
+
+  if (
+    !session ||
+    !session.user ||
+    !hasPermission(session.user.role || "", "users.manage")
+  ) {
+    return { success: false, error: "Unauthorized" };
+  }
+
   try {
     const parse = z.email().safeParse(email);
 
