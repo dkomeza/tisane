@@ -6,9 +6,12 @@ import z from "zod";
 
 import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
+import { headers } from "next/headers";
 
 export async function inviteUser(email: string) {
-  const session = await auth.api.getSession();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (
     !session ||
