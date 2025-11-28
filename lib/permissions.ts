@@ -1,3 +1,5 @@
+import { type Session } from "@/lib/auth/server";
+
 // 1. Define your roles
 export type Role = "admin" | "editor";
 
@@ -17,8 +19,18 @@ const PERMISSIONS: Record<Role, Permission[]> = {
   editor: ["content.create", "content.read"],
 };
 
-// 4. The Magic Function
 export function hasPermission(
+  session: Session | null,
+  permission: Permission
+): boolean {
+  if (!session || !session.user) return false;
+
+  const userRole = session.user.role as Role | undefined;
+
+  return roleHasPermissions(userRole, permission);
+}
+
+export function roleHasPermissions(
   userRole: string | undefined,
   permission: Permission
 ): boolean {

@@ -13,11 +13,7 @@ export async function inviteUser(email: string) {
     headers: await headers(),
   });
 
-  if (
-    !session ||
-    !session.user ||
-    !hasPermission(session.user.role || "", "users.manage")
-  ) {
+  if (!hasPermission(session, "users.manage")) {
     return { success: false, error: "Unauthorized" };
   }
 
