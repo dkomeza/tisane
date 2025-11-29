@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar as ShadSidebar,
   SidebarContent,
@@ -7,7 +9,7 @@ import {
 
 function Sidebar() {
   return (
-    <ShadSidebar>
+    <ShadSidebar collapsible="icon">
       <SidebarHeader></SidebarHeader>
       <SidebarContent></SidebarContent>
       <SidebarFooter></SidebarFooter>

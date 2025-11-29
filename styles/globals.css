@@ -7,6 +7,12 @@ html {
   scroll-behavior: smooth;
 }
 
+.no-transition,
+.no-transition * {
+  transition: none !important;
+  animation: none !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

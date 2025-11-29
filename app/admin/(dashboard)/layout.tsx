@@ -9,7 +9,7 @@ export default function AdminDashboardLayout({
   return (
     <SidebarProvider>
       <Sidebar />
-      {children}
+      <main>{children}</main>
     </SidebarProvider>
   );
 }
