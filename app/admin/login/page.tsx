@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
-  CardAction,
+
   CardContent,
   CardDescription,
   CardFooter,
@@ -64,9 +64,9 @@ export default function AdminLoginPage() {
               )}
               <div className="grid gap-2">
                 <Input
-                  id="username"
+                  id="email"
                   type="text"
-                  placeholder="Username"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
