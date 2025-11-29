@@ -53,11 +53,11 @@ const groups: Group[] = [
   {
     label: "Settings",
     items: [
-      { label: "General", href: "/admin/settings/general", icon: Settings2 },
-      { label: "Users", href: "/admin/settings/users", icon: UserCircle2 },
+      { label: "General", href: "/admin/settings", icon: Settings2 },
+      { label: "Users", href: "/admin/users", icon: UserCircle2 },
       {
         label: "Integrations",
-        href: "/admin/settings/integrations",
+        href: "/admin/integrations",
         icon: Blocks,
       },
     ],
