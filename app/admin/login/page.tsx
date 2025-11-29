@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
               <div className="grid gap-2">
                 <Input
                   id="email"
-                  type="text"
+                  type="email"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
