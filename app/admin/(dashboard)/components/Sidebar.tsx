@@ -68,8 +68,8 @@ function Sidebar() {
   return (
     <ShadSidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarHoverTrigger />
-        <SidebarTrigger />
+        <SidebarHoverTrigger className="hidden md:block" />
+        <SidebarTrigger className="hidden md:block" />
       </SidebarHeader>
       <SidebarContent>
         {groups.map((group) => (

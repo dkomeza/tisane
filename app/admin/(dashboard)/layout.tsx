@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import Sidebar from "./components/Sidebar";
 
 export default function AdminDashboardLayout({
@@ -10,6 +10,7 @@ export default function AdminDashboardLayout({
     <SidebarProvider>
       <Sidebar />
       <main>{children}</main>
+      <SidebarTrigger className="md:hidden fixed top-4 left-4" />
     </SidebarProvider>
   );
 }
