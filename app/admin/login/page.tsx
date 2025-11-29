@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       },
       {
         onSuccess: () => {
-          router.push("/admin/page");
+          router.push("/admin");
         },
         onError: (ctx) => {
           setError(ctx.error.message);

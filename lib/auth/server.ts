@@ -12,8 +12,5 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  username: {
-    enabled: true,
-  },
   plugins: [admin(), nextCookies()],
 });
