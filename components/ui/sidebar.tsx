@@ -41,6 +41,9 @@ type SidebarContextProps = {
   isMobile: boolean;
   toggleSidebar: () => void;
   hydrated: boolean;
+  hovered: boolean;
+  setHovered: (hovered: boolean) => void;
+  hoverSidebar: () => void;
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -89,11 +92,37 @@ function SidebarProvider({
     },
     [setOpenProp, open]
   );
+  const [hovered, setHovered] = React.useState(false);
+
+  const handleHoverEnd = (e: MouseEvent) => {
+    const sidebarElement = document.querySelector(
+      '[data-slot="sidebar-container"]'
+    );
+    if (sidebarElement?.contains(e.target as Node)) {
+      return;
+    }
+
+    setHovered(false);
+    document.removeEventListener("click", handleHoverEnd);
+  };
 
   // Helper to toggle the sidebar.
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen, setOpenMobile]);
+
+  const hoverSidebar = React.useCallback(() => {
+    setHovered((hovered) => {
+      if (hovered) {
+        document.removeEventListener("click", handleHoverEnd);
+        return false;
+      }
+
+      document.addEventListener("click", handleHoverEnd);
+      return true;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setHovered]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
@@ -109,6 +138,9 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
       hydrated,
+      hovered,
+      setHovered,
+      hoverSidebar,
     }),
     [
       state,
@@ -119,6 +151,9 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
       hydrated,
+      hovered,
+      setHovered,
+      hoverSidebar,
     ]
   );
 
@@ -157,7 +192,28 @@ function Sidebar({
   side?: "left" | "right";
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
-  const { isMobile, state, openMobile, setOpenMobile, hydrated } = useSidebar();
+  const {
+    isMobile,
+    state,
+    openMobile,
+    setOpenMobile,
+    hydrated,
+    hovered,
+    setHovered,
+  } = useSidebar();
+
+  React.useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    const sidebar = document.querySelector('[data-slot="sidebar-container"]');
+    
+    if (sidebar && sidebar.matches(":hover")) {
+      setHovered(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
 
   if (collapsible === "none") {
     return (
@@ -204,6 +260,7 @@ function Sidebar({
       className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
+      data-hovered={hovered ? "true" : "false"}
       data-side={side}
       data-slot="sidebar"
     >
@@ -215,7 +272,6 @@ function Sidebar({
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
 
-          "max-xl:group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]",
           "xl:group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
         )}
       />
@@ -235,10 +291,19 @@ function Sidebar({
           "xl:group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
 
           "max-xl:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]",
-          "max-xl:hover:w-(--sidebar-width) ",
+          // "max-xl:[@media(hover:hover)]:hover:w-(--sidebar-width)",
+
+          hovered && "max-xl:w-(--sidebar-width)",
+
           className
         )}
         {...props}
+        onMouseEnter={() => {
+          setHovered(true);
+        }}
+        onMouseLeave={() => {
+          setHovered(false);
+        }}
       >
         <div
           data-sidebar="sidebar"
@@ -268,10 +333,34 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("size-7", className)}
+      className={cn("size-7 max-xl:hidden", className)}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
+      }}
+      {...props}
+    >
+      <PanelLeftIcon />
+      <span className="sr-only">Toggle Sidebar</span>
+    </Button>
+  );
+}
+
+function SidebarHoverTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof Button>) {
+  const { hoverSidebar } = useSidebar();
+
+  return (
+    <Button
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      variant="ghost"
+      size="icon"
+      className={cn("size-7 xl:hidden [@media(hover:hover)]:hidden", className)}
+      onClick={() => {
+        hoverSidebar();
       }}
       {...props}
     >
@@ -293,7 +382,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
       onClick={toggleSidebar}
       title="Toggle Sidebar"
       className={cn(
-        "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
+        "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 sm:flex",
         "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
         "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
         "hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full",
@@ -376,7 +465,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto xl:group-data-[collapsible=icon]:overflow-hidden max-xl:group-data-[hovered=false]:overflow-hidden",
         className
       )}
       {...props}
@@ -408,7 +497,8 @@ function SidebarGroupLabel({
       data-sidebar="group-label"
       className={cn(
         "text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
+        "xl:group-data-[collapsible=icon]:-mt-8 xl:group-data-[collapsible=icon]:opacity-0",
+        "max-xl:group-data-[hovered=false]:-mt-8 max-xl:group-data-[hovered=false]:opacity-0",
         className
       )}
       {...props}
@@ -431,7 +521,8 @@ function SidebarGroupAction({
         "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 md:after:hidden",
-        "group-data-[collapsible=icon]:hidden",
+        "xl:group-data-[collapsible=icon]:hidden",
+        "max-xl:group-data-[hovered=false]:hidden",
         className
       )}
       {...props}
@@ -476,7 +567,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground xl:group-data-[collapsible=icon]:size-8! xl:group-data-[collapsible=icon]:p-2! max-xl:group-data-[hovered=false]:size-8! max-xl:group-data-[hovered=false]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -487,7 +578,7 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: "h-8 text-sm",
         sm: "h-7 text-xs",
-        lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
+        lg: "h-12 text-sm xl:group-data-[collapsible=icon]:p-0! max-xl:group-data-[hovered=false]:p-0!",
       },
     },
     defaultVariants: {
@@ -569,7 +660,8 @@ function SidebarMenuAction({
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
         "peer-data-[size=lg]/menu-button:top-2.5",
-        "group-data-[collapsible=icon]:hidden",
+        "xl:group-data-[collapsible=icon]:hidden",
+        "max-xl:group-data-[hovered=false]:hidden",
         showOnHover &&
           "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
         className
@@ -593,7 +685,8 @@ function SidebarMenuBadge({
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
         "peer-data-[size=lg]/menu-button:top-2.5",
-        "group-data-[collapsible=icon]:hidden",
+        "xl:group-data-[collapsible=icon]:hidden",
+        "max-xl:group-data-[hovered=false]:hidden",
         className
       )}
       {...props}
@@ -647,7 +740,8 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-sidebar="menu-sub"
       className={cn(
         "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
-        "group-data-[collapsible=icon]:hidden",
+        "xl:group-data-[collapsible=icon]:hidden",
+        "max-xl:group-data-[hovered=false]:hidden",
         className
       )}
       {...props}
@@ -693,7 +787,8 @@ function SidebarMenuSubButton({
         "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
         size === "sm" && "text-xs",
         size === "md" && "text-sm",
-        "group-data-[collapsible=icon]:hidden",
+        "xl:group-data-[collapsible=icon]:hidden",
+        "max-xl:group-data-[hovered=false]:hidden",
         className
       )}
       {...props}
@@ -725,5 +820,6 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
+  SidebarHoverTrigger,
   useSidebar,
 };
