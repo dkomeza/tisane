@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/table";
 import { AddUserDialog } from "./AddUserDialog";
 import { Checkbox } from "./Checkbox";
+import { DeleteUserDialog } from "./DeleteUserDialog";
 
 export type User = {
   id: string;
@@ -57,6 +58,42 @@ export type User = {
   role?: string;
   createdAt: Date;
   active: boolean;
+};
+
+const UserActions = ({ user }: { user: User }) => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <>
+      <DeleteUserDialog open={open} onOpenChange={setOpen} user={user} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(user.id)}
+          >
+            Copy User ID
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>View details</DropdownMenuItem>
+          <DropdownMenuItem>Edit user</DropdownMenuItem>
+          <DropdownMenuItem
+            className="text-destructive focus:text-destructive"
+            onSelect={() => setOpen(true)}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete user
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
 };
 
 export const columns: ColumnDef<User>[] = [
@@ -183,34 +220,9 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy User ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View details</DropdownMenuItem>
-            <DropdownMenuItem>Edit user</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete user
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    cell: ({ row }) => <UserActions user={row.original} />,
+    meta: {
+      className: "w-[1%]",
     },
   },
 ];

@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { inviteUser } from "@/app/actions/invite-user";
+import { inviteUser } from "@/app/actions/auth/invite-user";
 import { cn } from "@/lib/utils";
 import React from "react";
 import {
