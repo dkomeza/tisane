@@ -2,24 +2,9 @@ import { authorize } from "@/lib/auth/authorize";
 import { redirect } from "next/navigation";
 import { hasPermission } from "@/lib/permissions";
 import { Suspense } from "react";
-import UserTable, { User } from "./components/UserTable";
+import UserTable from "./components/UserTable";
 import { auth } from "@/lib/auth/server";
 import { headers } from "next/headers";
-
-async function tempFetchUsers(amount: number): Promise<User[]> {
-  const response = await fetch(`https://randomuser.me/api/?results=${amount}`);
-  const data = await response.json();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return data.results.map((u: any) => ({
-    id: u.login.uuid,
-    name: `${u.name.first} ${u.name.last}`,
-    email: u.email,
-    createdAt: new Date(u.registered.date),
-    role: Math.random() > 0.7 ? "admin" : "user", // Randomly assigning roles
-    active: Math.random() > 0.2, // Randomly assigning active status
-  }));
-}
 
 async function UsersTable() {
   const res = await auth.api.listUsers({
