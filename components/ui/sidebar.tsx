@@ -111,17 +111,43 @@ function SidebarProvider({
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen, setOpenMobile]);
 
+  const handleHoverEndRef = React.useRef<((e: MouseEvent) => void) | null>(
+    null
+  );
+
+  React.useEffect(() => {
+    handleHoverEndRef.current = (e: MouseEvent) => {
+      const sidebarElement = document.querySelector(
+        '[data-slot="sidebar-container"]'
+      );
+
+      if (sidebarElement?.contains(e.target as Node)) {
+        return;
+      }
+      setHovered(false);
+    };
+
+    return () => {
+      if (handleHoverEndRef.current) {
+        document.removeEventListener("click", handleHoverEndRef.current);
+      }
+    };
+  }, []);
+
   const hoverSidebar = React.useCallback(() => {
     setHovered((hovered) => {
       if (hovered) {
-        document.removeEventListener("click", handleHoverEnd);
+        if (handleHoverEndRef.current) {
+          document.removeEventListener("click", handleHoverEndRef.current);
+        }
         return false;
       }
 
-      document.addEventListener("click", handleHoverEnd);
+      if (handleHoverEndRef.current) {
+        document.addEventListener("click", handleHoverEndRef.current);
+      }
       return true;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setHovered]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
@@ -208,11 +234,11 @@ function Sidebar({
     }
 
     const sidebar = document.querySelector('[data-slot="sidebar-container"]');
-    
+
     if (sidebar && sidebar.matches(":hover")) {
       setHovered(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated]);
 
   if (collapsible === "none") {
