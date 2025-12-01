@@ -11,6 +11,7 @@ import { and, desc, eq, gt } from "drizzle-orm";
 import { resend } from "@/lib/resend";
 import InviteUserEmail from "@/components/emails/InviteUserEmail";
 import { user } from "@/src/db/schema";
+import { extractInviteToken, sendInviteEmail } from "./utils";
 
 export async function inviteUser(email: string) {
   const session = await auth.api.getSession({
@@ -20,6 +21,8 @@ export async function inviteUser(email: string) {
   if (!hasPermission(session, "users.manage")) {
     return { success: false, error: "Unauthorized" };
   }
+
+  let newUserId: string | null = null;
 
   try {
     const parse = z.email().safeParse(email);
@@ -51,41 +54,37 @@ export async function inviteUser(email: string) {
       return { success: false, error: "Failed to create user" };
     }
 
+    newUserId = res.user.id;
+
     await auth.api.requestPasswordReset({
       body: { email: res.user.email, redirectTo: "/admin/signup" },
       headers: await headers(),
     });
 
-    const verification = await db.query.verification.findFirst({
-      where: (verification) => {
-        const id = eq(verification.value, res.user.id);
-        const expiry = gt(verification.expiresAt, new Date());
+    const token = await extractInviteToken(res.user.id);
 
-        return and(id, expiry);
-      },
-      orderBy: (verification) => desc(verification.createdAt),
-    });
+    if (!token) {
+      throw new Error("Failed to generate invite token");
+    }
 
-    const token = verification
-      ? verification.identifier.replaceAll("reset-password:", "")
-      : null;
-
-    const { error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || "Tisane <onboarding@resend.dev>",
-      to: [res.user.email],
-      subject: "You're invited to join Tisane",
-      react: InviteUserEmail({
-        inviteLink: `${process.env.BETTER_AUTH_URL || "http://localhost:3000"}/admin/signup?token=${token}`,
-      }),
-    });
+    const { error } = await sendInviteEmail(res.user.email, token || "");
 
     if (error) {
-      await db.delete(user).where(eq(user.id, res.user.id));
       throw new Error(error.message);
     }
 
     return { success: true };
   } catch (error) {
+    // Rollback: delete the user if created
+    if (newUserId) {
+      await auth.api.removeUser({
+        body: {
+          userId: newUserId,
+        },
+        headers: await headers(),
+      });
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",

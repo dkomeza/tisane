@@ -22,8 +22,6 @@ async function tempFetchUsers(amount: number): Promise<User[]> {
 }
 
 async function UsersTable() {
-  // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate network delay
-
   const res = await auth.api.listUsers({
     query: {},
     headers: await headers(),

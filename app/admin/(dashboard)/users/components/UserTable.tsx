@@ -50,6 +50,8 @@ import {
 import { AddUserDialog } from "./AddUserDialog";
 import { Checkbox } from "./Checkbox";
 import { DeleteUserDialog } from "./DeleteUserDialog";
+import { resendInvite } from "@/app/actions/auth/resend-invite";
+import { toast } from "sonner";
 
 export type User = {
   id: string;
@@ -63,6 +65,16 @@ export type User = {
 const UserActions = ({ user }: { user: User }) => {
   const [open, setOpen] = React.useState(false);
 
+  const handleResendInvite = async () => {
+    const res = await resendInvite(user.id);
+
+    if (res.success) {
+      toast("Invite resent successfully");
+    } else {
+      toast.error(res.error || "Failed to resend invite");
+    }
+  };
+
   return (
     <>
       <DeleteUserDialog open={open} onOpenChange={setOpen} user={user} />
@@ -75,11 +87,18 @@ const UserActions = ({ user }: { user: User }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(user.id)}
-          >
-            Copy User ID
-          </DropdownMenuItem>
+          {user.active ? (
+            <DropdownMenuItem
+              role="button"
+              onClick={() => navigator.clipboard.writeText(user.id)}
+            >
+              Copy User ID
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem role="button" onClick={handleResendInvite}>
+              Resend invite
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem>View details</DropdownMenuItem>
           <DropdownMenuItem>Edit user</DropdownMenuItem>
