@@ -6,11 +6,8 @@ import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
 import { db } from "@/src/db/drizzle";
-import { and, desc, eq, gt } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
-import { resend } from "@/lib/resend";
-import InviteUserEmail from "@/components/emails/InviteUserEmail";
-import { user } from "@/src/db/schema";
 import { extractInviteToken, sendInviteEmail } from "./utils";
 
 export async function inviteUser(email: string) {

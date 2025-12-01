@@ -33,7 +33,6 @@ export function AddUserDialog() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const timeoutRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
     if (!open) {

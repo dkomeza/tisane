@@ -1,5 +1,7 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
-
 export default function AdminDashboard() {
-  return <>asdfjlkasjdfkljasdlkjflkds</>;
+  return (
+    <div>
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+    </div>
+  );
 }
