@@ -90,12 +90,20 @@ const UserActions = ({ user }: { user: User }) => {
           {user.active ? (
             <DropdownMenuItem
               role="button"
-              onClick={() => navigator.clipboard.writeText(user.id)}
+              className="cursor-pointer"
+              onClick={async () => {
+                await navigator.clipboard.writeText(user.id);
+                toast("User ID copied to clipboard");
+              }}
             >
               Copy User ID
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem role="button" onClick={handleResendInvite}>
+            <DropdownMenuItem
+              role="button"
+              className="cursor-pointer"
+              onClick={handleResendInvite}
+            >
               Resend invite
             </DropdownMenuItem>
           )}
@@ -103,10 +111,11 @@ const UserActions = ({ user }: { user: User }) => {
           <DropdownMenuItem>View details</DropdownMenuItem>
           <DropdownMenuItem>Edit user</DropdownMenuItem>
           <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
+            variant="destructive"
+            className="cursor-pointer"
             onSelect={() => setOpen(true)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="h-4 w-4" />
             Delete user
           </DropdownMenuItem>
         </DropdownMenuContent>
