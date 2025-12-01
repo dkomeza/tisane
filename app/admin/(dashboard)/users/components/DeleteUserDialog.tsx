@@ -13,7 +13,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { User } from "./UserTable";
 import { useState } from "react";
-import { deleteUser } from "@/app/actions/auth/delete-user";
+import { deleteUser } from "@/app/actions/admin/users/delete-user";
 import { toast } from "sonner";
 
 interface DeleteUserDialogProps {

@@ -50,7 +50,8 @@ import {
 import { AddUserDialog } from "./AddUserDialog";
 import { Checkbox } from "./Checkbox";
 import { DeleteUserDialog } from "./DeleteUserDialog";
-import { resendInvite } from "@/app/actions/auth/resend-invite";
+import { EditUserDialog } from "./EditUserDialog";
+import { resendInvite } from "@/app/actions/admin/users/resend-invite";
 import { toast } from "sonner";
 
 export type User = {
@@ -63,7 +64,8 @@ export type User = {
 };
 
 const UserActions = ({ user }: { user: User }) => {
-  const [open, setOpen] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
 
   const handleResendInvite = async () => {
     const res = await resendInvite(user.id);
@@ -77,7 +79,12 @@ const UserActions = ({ user }: { user: User }) => {
 
   return (
     <>
-      <DeleteUserDialog open={open} onOpenChange={setOpen} user={user} />
+      <DeleteUserDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        user={user}
+      />
+      <EditUserDialog open={editOpen} onOpenChange={setEditOpen} user={user} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -109,11 +116,16 @@ const UserActions = ({ user }: { user: User }) => {
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem>View details</DropdownMenuItem>
-          <DropdownMenuItem>Edit user</DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onSelect={() => setEditOpen(true)}
+          >
+            Edit user
+          </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
             className="cursor-pointer"
-            onSelect={() => setOpen(true)}
+            onSelect={() => setDeleteOpen(true)}
           >
             <Trash2 className="h-4 w-4" />
             Delete user
