@@ -401,7 +401,7 @@ export default function UserTable({ data, isLoading }: UserTableProps) {
             <DropdownMenuContent align="end" className="w-[200px]">
               <DropdownMenuLabel>Filter by Role</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {["admin", "user"].map((role) => {
+              {["admin", "editor", "user"].map((role) => {
                 return (
                   <DropdownMenuCheckboxItem
                     key={role}
