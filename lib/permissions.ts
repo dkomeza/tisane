@@ -1,4 +1,5 @@
 import { type Session } from "@/lib/auth/server";
+import { type PartialSession } from "@/lib/auth/authorize"
 
 // 1. Define your roles
 export type Role = "admin" | "editor";
@@ -20,7 +21,7 @@ const PERMISSIONS: Record<Role, Permission[]> = {
 };
 
 export function hasPermission(
-  session: Session | null,
+  session: Session | PartialSession | null,
   permission: Permission
 ): boolean {
   if (!session || !session.user) return false;
