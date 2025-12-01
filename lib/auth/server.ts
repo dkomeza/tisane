@@ -26,7 +26,7 @@ export const auth = betterAuth({
         from: process.env.EMAIL_FROM || "Tisane <onboarding@resend.dev>",
         to: [data.user.email],
         subject,
-        react: emailBody,
+        text: emailBody,
       });
 
       if (error) {
