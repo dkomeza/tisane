@@ -18,7 +18,7 @@ export async function editUser(id: string, name: string, role: string) {
   try {
     const parseId = z.string().min(1).safeParse(id);
     const parseName = z.string().min(1).max(100).safeParse(name);
-    const parseRole = z.enum(["user", "admin"]).safeParse(role);
+    const parseRole = z.enum(["user", "editor", "admin"]).safeParse(role);
 
     if (!parseId.success) {
       throw new Error("Invalid user ID");
