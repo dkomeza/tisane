@@ -1,9 +1,8 @@
-import { NextRequest } from "next/server";
 import { Session } from "./server";
 import { cookies, headers } from "next/headers";
 import { auth } from "./server";
 
-type PartialSession = {
+export type PartialSession = {
   user: Pick<Session["user"], "id" | "email" | "role">;
 };
 

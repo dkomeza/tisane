@@ -7,6 +7,9 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
+import { db } from "@/src/db/drizzle";
+import { user } from "@/src/db/schema/auth";
+import { eq } from "drizzle-orm";
 
 export async function inviteUser(email: string) {
   const session = await auth.api.getSession({
@@ -22,6 +25,15 @@ export async function inviteUser(email: string) {
 
     if (!parse.success) {
       return { success: false, error: "Invalid email address" };
+    }
+
+    // Check if user already exists in your database here
+    const exists = await db.query.user.findFirst({
+      where: (user) => eq(user.email, parse.data),
+    });
+
+    if (exists) {
+      return { success: false, error: "User already exists" };
     }
 
     const { data, error } = await resend.emails.send({

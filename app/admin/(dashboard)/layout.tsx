@@ -9,7 +9,7 @@ export default function AdminDashboardLayout({
   return (
     <SidebarProvider>
       <Sidebar />
-      <main>{children}</main>
+      <main className="py-8 px-12 w-full h-svh">{children}</main>
       <SidebarTrigger className="md:hidden fixed top-4 left-4" />
     </SidebarProvider>
   );
