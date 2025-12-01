@@ -99,8 +99,12 @@ const UserActions = ({ user }: { user: User }) => {
               role="button"
               className="cursor-pointer"
               onClick={async () => {
-                await navigator.clipboard.writeText(user.id);
-                toast("User ID copied to clipboard");
+                try {
+                  await navigator.clipboard.writeText(user.id);
+                  toast("User ID copied to clipboard");
+                } catch (error) {
+                  toast.error("Failed to copy to clipboard");
+                }
               }}
             >
               Copy User ID
