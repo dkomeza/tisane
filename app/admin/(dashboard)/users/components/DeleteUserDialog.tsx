@@ -14,6 +14,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { User } from "./UserTable";
 import { useState } from "react";
 import { deleteUser } from "@/app/actions/auth/delete-user";
+import { toast } from "sonner";
 
 interface DeleteUserDialogProps {
   user: User;
@@ -37,8 +38,9 @@ export function DeleteUserDialog({
 
     if (res.success) {
       onOpenChange(false);
+      toast("User deleted successfully");
     } else {
-      console.error(res.error);
+      toast.error(res.error || "Failed to delete user");
     }
   };
 

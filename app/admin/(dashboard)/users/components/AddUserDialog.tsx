@@ -12,12 +12,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { inviteUser } from "@/app/actions/auth/invite-user";
-import { cn } from "@/lib/utils";
 import React from "react";
 import {
   Field,
@@ -28,6 +26,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 export function AddUserDialog() {
   const [email, setEmail] = useState("");
@@ -52,14 +51,9 @@ export function AddUserDialog() {
     if (res.success) {
       setOpen(false);
       setEmail("");
+      toast.success("Invitation sent successfully");
     } else {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = window.setTimeout(() => {
-        setError(null);
-      }, 5000);
-      setError(res.error || "Failed to send invitation");
+      toast.error(res.error || "Failed to send invitation");
     }
 
     setLoading(false);
