@@ -13,25 +13,14 @@ export const auth = betterAuth({
   appName: "tisane",
   emailAndPassword: {
     enabled: true,
-    async sendResetPassword(data, request) {
+    async sendResetPassword(data) {
       const isInvite = !data.user.emailVerified;
 
-      console.log(data.token);
       if (isInvite) return; // Invitation emails are handled elsewhere for better UX
 
-      const subject = isInvite
-        ? "You're invited to join Tisane"
-        : "Reset your Tisane password";
+      const subject = "Reset your Tisane password";
 
-      const baseUrl = new URL(
-        request?.url || process.env.BETTER_AUTH_URL || "http://localhost:3000"
-      ).origin;
-
-      const emailBody = isInvite
-        ? InviteUserEmail({
-            inviteLink: `${baseUrl}/admin/signup?token=${data.token}`,
-          })
-        : `Click the following link to reset your password: ${data.url}`;
+      const emailBody = `Click the following link to reset your password: ${data.url}`;
 
       const { error } = await resend.emails.send({
         from: process.env.EMAIL_FROM || "Tisane <onboarding@resend.dev>",
