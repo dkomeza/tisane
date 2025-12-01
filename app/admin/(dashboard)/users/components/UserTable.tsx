@@ -115,7 +115,7 @@ const UserActions = ({ user }: { user: User }) => {
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem>View details</DropdownMenuItem>
+          <DropdownMenuItem disabled>View details</DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
             onSelect={() => setEditOpen(true)}
