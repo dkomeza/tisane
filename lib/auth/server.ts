@@ -3,7 +3,6 @@ import { db } from "@/src/db/drizzle";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { APIError, betterAuth } from "better-auth";
-import InviteUserEmail from "@/components/emails/InviteUserEmail";
 import { resend } from "../resend";
 
 export const auth = betterAuth({

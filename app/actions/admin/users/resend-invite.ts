@@ -38,7 +38,6 @@ export async function resendInvite(id: string) {
       return { success: false, error: "User has already accepted the invite" };
     }
 
-    // Check if user exists
     await auth.api.requestPasswordReset({
       body: { email: user.email, redirectTo: "/admin/signup" },
       headers: await headers(),
