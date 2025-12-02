@@ -6,11 +6,17 @@ export type PartialSession = {
   user: Pick<Session["user"], "id" | "email" | "role">;
 };
 
-export type AuthorizeResult = {
-  authorized: boolean;
-  type: "auth";
-  session: Session | null;
-};
+export type AuthorizeResult =
+  | {
+      authorized: true;
+      type: "auth";
+      session: Session;
+    }
+  | {
+      authorized: false;
+      type: "auth";
+      session: null;
+    };
 
 export async function authorize(): Promise<AuthorizeResult> {
   const session = await auth.api.getSession({
