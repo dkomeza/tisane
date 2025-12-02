@@ -44,15 +44,20 @@ export function EditUserDialog({
     e.preventDefault();
     setLoading(true);
 
-    const res = await editUser(user.id, name, role);
-    if (res.success) {
-      toast("User updated successfully");
-      onOpenChange(false);
-    } else {
-      toast.error(res.error || "Failed to update user");
+    try {
+      const res = await editUser(user.id, name, role);
+      if (res.success) {
+        toast("User updated successfully");
+        onOpenChange(false);
+      } else {
+        toast.error(res.error || "Failed to update user");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
