@@ -25,11 +25,7 @@ async function UsersTable() {
 }
 
 export default async function UsersPage() {
-  const { authorized, session } = await authorize();
-
-  if (!authorized) {
-    redirect("/admin/login");
-  }
+  const { session } = await authorize();
 
   if (!hasPermission(session, "users.manage")) {
     redirect("/admin");

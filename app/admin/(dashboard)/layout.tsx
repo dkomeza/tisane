@@ -1,12 +1,20 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import Sidebar from "./components/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { authorize } from "@/lib/auth/authorize";
+import { redirect } from "next/navigation";
 
-export default function AdminDashboardLayout({
+export default async function AdminDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { authorized } = await authorize();
+
+  if (!authorized) {
+    redirect("/admin/login");
+  }
+
   return (
     <SidebarProvider>
       <Sidebar />
