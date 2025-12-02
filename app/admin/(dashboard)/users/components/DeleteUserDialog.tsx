@@ -32,15 +32,20 @@ export function DeleteUserDialog({
   const handleDelete = async () => {
     setLoading(true);
 
-    const res = await deleteUser(user.id);
-
-    setLoading(false);
-
-    if (res.success) {
-      onOpenChange(false);
-      toast("User deleted successfully");
-    } else {
-      toast.error(res.error || "Failed to delete user");
+    try {
+      const res = await deleteUser(user.id);
+      if (res.success) {
+        onOpenChange(false);
+        toast("User deleted successfully");
+      } else {
+        throw new Error(res.error || "Failed to delete user");
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 

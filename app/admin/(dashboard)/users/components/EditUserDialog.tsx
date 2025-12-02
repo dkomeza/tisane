@@ -50,11 +50,12 @@ export function EditUserDialog({
         toast("User updated successfully");
         onOpenChange(false);
       } else {
-        toast.error(res.error || "Failed to update user");
+        throw new Error(res.error || "Failed to update user");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred");
-      console.error(error);
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
     } finally {
       setLoading(false);
     }
