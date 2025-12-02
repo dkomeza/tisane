@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth/server";
+import { authorize } from "./lib/auth/authorize";
 
 export async function proxy(request: NextRequest) {
-  console.log("Proxying request to auth server:", request.url);
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const authResult = await authorize();
 
-  if (!session) {
+  if (!authResult.authorized) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
@@ -30,6 +26,6 @@ export const config = {
      * Match all request paths starting with /admin/
      * BUT EXCLUDE any path starting with /admin/login, /admin/signup or /admin/forgot-password
      */
-    "/admin/((?!login|signup|forgot-password).*)",
+    "/admin/((?!login|signup|forgot-password|key).*)",
   ],
 };
