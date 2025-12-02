@@ -45,17 +45,24 @@ export function AddUserDialog() {
     e.preventDefault();
     setLoading(true);
 
-    const res = await inviteUser(email);
+    try {
+      const res = await inviteUser(email);
 
-    if (res.success) {
-      setOpen(false);
-      setEmail("");
-      toast.success("Invitation sent successfully");
-    } else {
-      toast.error(res.error || "Failed to send invitation");
+      if (res.success) {
+        setOpen(false);
+        setEmail("");
+        toast.success("Invitation sent successfully");
+      } else {
+        throw new Error(res.error || "Failed to send invitation");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(message);
+      setError(message);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
