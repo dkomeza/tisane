@@ -51,7 +51,7 @@ import { AddUserDialog } from "./AddUserDialog";
 import { Checkbox } from "./Checkbox";
 import { DeleteUserDialog } from "./DeleteUserDialog";
 import { EditUserDialog } from "./EditUserDialog";
-import { resendInvite } from "@/app/actions/admin/users/resend-invite";
+import { resendInvite } from "@/app/admin/(dashboard)/users/functions/resend-invite";
 import { toast } from "sonner";
 
 export type User = {

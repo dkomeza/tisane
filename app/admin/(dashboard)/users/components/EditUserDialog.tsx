@@ -23,7 +23,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { User } from "./UserTable";
 import { useState } from "react";
 import { toast } from "sonner";
-import { editUser } from "@/app/actions/admin/users/edit-user";
+import { editUser } from "@/app/admin/(dashboard)/users/functions/edit-user";
 
 interface EditUserDialogProps {
   user: User;

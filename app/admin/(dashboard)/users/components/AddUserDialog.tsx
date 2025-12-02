@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
-import { inviteUser } from "@/app/actions/admin/users/invite-user";
+import { inviteUser } from "@/app/admin/(dashboard)/users/functions/invite-user";
 import React from "react";
 import {
   Field,
