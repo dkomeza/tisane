@@ -1,5 +1,5 @@
 // src/db/migrate.ts
-import { migrate } from "drizzle-orm/postgres-js/migrator"; // or your driver
+import { migrate } from "drizzle-orm/neon-serverless/migrator"; // or your driver
 import { db } from "./drizzle"; // import your db instance
 
 async function main() {
@@ -7,10 +7,12 @@ async function main() {
 
   // This will run migrations from the "drizzle" folder
   await migrate(db, {
-    migrationsFolder: "migrations"
+    migrationsFolder: "migrations",
   });
 
   console.log("✅ Migrations completed!");
+
+  await db.$client.end();
 
   // Close the connection so the script exits
   process.exit(0);
