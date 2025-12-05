@@ -5,6 +5,11 @@ import { nextCookies } from "better-auth/next-js";
 import { APIError, betterAuth } from "better-auth";
 import { resend } from "../resend";
 
+const baseURL =
+  (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
+  process.env.BETTER_AUTH_URL ||
+  "http://localhost:3000";
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -33,6 +38,7 @@ export const auth = betterAuth({
       }
     },
   },
+  baseURL,
   plugins: [admin(), nextCookies()],
 });
 
