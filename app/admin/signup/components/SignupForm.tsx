@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,27 +8,38 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { signupUser } from "../actions/signup-user";
 
-function SignupForm() {
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+function SignupForm({ token }: { token: string }) {
+  const [state, action, loading] = useActionState(signupUser, { error: "" });
 
   return (
     <>
       <CardContent>
-        <form id="signup-form" action={signupUser}>
+        <form id="signup-form" action={action}>
           <div className="flex flex-col gap-6">
-            {error && (
+            {state?.error && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                {error}
+                {state.error}
               </div>
             )}
+            <input name="token" value={token} className="hidden" readOnly />
 
             <div className="grid grid-cols-2 gap-4">
-              <Input id="firstName" placeholder="First Name" required />
-              <Input id="surname" placeholder="Surname" required />
+              <Input
+                name="name"
+                id="firstName"
+                placeholder="First Name"
+                required
+              />
+              <Input
+                name="surname"
+                id="surname"
+                placeholder="Surname"
+                required
+              />
             </div>
 
             <Input
+              name="password"
               id="password"
               type="password"
               placeholder="Password"
@@ -36,6 +47,7 @@ function SignupForm() {
             />
 
             <Input
+              name="passwordConfirm"
               id="passwordConfirm"
               type="password"
               placeholder="Confirm Password"
