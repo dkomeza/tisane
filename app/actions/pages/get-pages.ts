@@ -7,20 +7,6 @@ import { db } from "@/src/db/drizzle";
 import z from "zod";
 import { eq } from "drizzle-orm";
 
-export type getPagesRequest = {
-  // Pagination
-  limit?: number;
-  offset?: number;
-  lastId?: string;
-
-  // Filters
-  search?: string; // Search by title or content (in the future will support tags, etc.)
-
-  // Sorting
-  sortBy?: "createdAt" | "updatedAt" | "title";
-  sortOrder?: "asc" | "desc";
-};
-
 const GetPagesSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
   offset: z.number().positive().optional(),
@@ -32,13 +18,15 @@ const GetPagesSchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
 
+type GetPagesParams = z.infer<typeof GetPagesSchema>;
+
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
  * Therefore, it requires proper authentication and authorization.
  *
  * @returns An array of pages. By default, it returns the first 20 pages.
  */
-export async function getPages(request?: getPagesRequest) {
+export async function getPages(request?: GetPagesParams) {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
