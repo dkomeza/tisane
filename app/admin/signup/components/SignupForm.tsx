@@ -4,56 +4,85 @@ import { useActionState, useState } from "react";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import { Loader2 } from "lucide-react";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupButton,
+} from "@/components/ui/input-group";
+import { Loader2, EyeClosed, Eye } from "lucide-react";
 import { signupUser } from "../actions/signup-user";
 
 function SignupForm({ token }: { token: string }) {
   const [state, action, loading] = useActionState(signupUser, { error: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const togglePasswordVisibility = (type: string) => {
+    if (type === "password") {
+      setShowPassword(!showPassword);
+    }
+    if (type === "passwordConfirm") {
+      setShowPasswordConfirm(!showPasswordConfirm);
+    }
+  };
 
   return (
     <>
       <CardContent>
-        <form id="signup-form" action={action}>
-          <div className="flex flex-col gap-6">
-            {state?.error && (
-              <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                {state.error}
-              </div>
-            )}
-            <input name="token" value={token} className="hidden" readOnly />
-
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                name="name"
-                id="firstName"
-                placeholder="First Name"
-                required
-              />
-              <Input
-                name="surname"
-                id="surname"
-                placeholder="Surname"
-                required
-              />
+        <form id="signup-form" action={action} className="flex flex-col gap-6">
+          {state?.error && (
+            <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
+              {state.error}
             </div>
+          )}
+          <input name="token" value={token} className="hidden" readOnly />
 
-            <Input
+          <InputGroup>
+            <InputGroupInput
+              name="name"
+              id="firstName"
+              placeholder="First Name"
+              required
+            />
+            <InputGroupInput
+              name="surname"
+              id="surname"
+              placeholder="Surname"
+              required
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <InputGroupInput
               name="password"
               id="password"
-              type="password"
               placeholder="Password"
+              type={showPassword ? "text" : "password"}
               required
             />
 
-            <Input
+            <InputGroupButton
+              onClick={() => togglePasswordVisibility("password")}
+            >
+              {showPassword ? <Eye /> : <EyeClosed />}
+            </InputGroupButton>
+          </InputGroup>
+
+          <InputGroup>
+            <InputGroupInput
               name="passwordConfirm"
               id="passwordConfirm"
-              type="password"
               placeholder="Confirm Password"
+              type={showPasswordConfirm ? "text" : "password"}
               required
             />
-          </div>
+
+            <InputGroupButton
+              onClick={() => togglePasswordVisibility("passwordConfirm")}
+            >
+              {showPasswordConfirm ? <Eye /> : <EyeClosed />}
+            </InputGroupButton>
+          </InputGroup>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
