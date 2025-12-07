@@ -18,7 +18,7 @@ const GetPagesSchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
 
-type GetPagesParams = z.infer<typeof GetPagesSchema>;
+type GetPagesRequest = z.infer<typeof GetPagesSchema>;
 
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
@@ -26,7 +26,7 @@ type GetPagesParams = z.infer<typeof GetPagesSchema>;
  *
  * @returns An array of pages. By default, it returns the first 20 pages.
  */
-export async function getPages(request?: GetPagesParams) {
+export async function getPages(request?: GetPagesRequest) {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
