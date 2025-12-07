@@ -10,7 +10,7 @@ import {
   pageStatus,
   pageVisibility,
 } from "@/src/db/schema/pages";
-import { and, eq, notInArray } from "drizzle-orm";
+import { and, eq, inArray, notInArray } from "drizzle-orm";
 import { refresh } from "next/cache";
 import z from "zod";
 
@@ -103,6 +103,16 @@ export async function updatePage(request: UpdatePageRequest) {
 }
 
 export async function restorePage(pageId: string) {
+  const res = await restorePages([pageId]);
+
+  if (res.success) {
+    res.message = "Page restored successfully"; // Customize message for single restoration
+  }
+
+  return res;
+}
+
+export async function restorePages(pageIds: string[]) {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.delete")) {
@@ -113,7 +123,7 @@ export async function restorePage(pageId: string) {
     const res = await db
       .update(pages)
       .set({ deletedAt: null })
-      .where(eq(pages.id, pageId))
+      .where(inArray(pages.id, pageIds))
       .returning();
 
     if (res.length === 0) {
@@ -122,7 +132,7 @@ export async function restorePage(pageId: string) {
 
     return {
       success: true,
-      message: `Page restored successfully`,
+      message: `${res.length} pages restored successfully`,
     };
   } catch (error) {
     return {
