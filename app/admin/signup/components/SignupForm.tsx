@@ -7,8 +7,9 @@ import {
   InputGroup,
   InputGroupInput,
   InputGroupButton,
+  InputGroupAddon,
 } from "@/components/ui/input-group";
-import { Loader2, EyeClosed, Eye } from "lucide-react";
+import { Loader2, EyeClosed, Eye, KeyRound, UserRound } from "lucide-react";
 import { signupUser } from "../actions/signup-user";
 
 function SignupForm({ token }: { token: string }) {
@@ -26,20 +27,30 @@ function SignupForm({ token }: { token: string }) {
           )}
           <input name="token" value={token} className="hidden" readOnly />
 
-          <InputGroup>
-            <InputGroupInput
-              name="name"
-              id="firstName"
-              placeholder="First Name"
-              required
-            />
-            <InputGroupInput
-              name="surname"
-              id="surname"
-              placeholder="Surname"
-              required
-            />
-          </InputGroup>
+          <div className="grid grid-cols-2 gap-2">
+            <InputGroup>
+              <InputGroupInput
+                name="name"
+                id="firstName"
+                placeholder="First Name"
+                required
+              />
+              <InputGroupAddon>
+                <UserRound />
+              </InputGroupAddon>
+            </InputGroup>
+            <InputGroup>
+              <InputGroupInput
+                name="surname"
+                id="surname"
+                placeholder="Surname"
+                required
+              />
+              <InputGroupAddon>
+                <UserRound />
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
 
           <InputGroup>
             <InputGroupInput
@@ -49,9 +60,11 @@ function SignupForm({ token }: { token: string }) {
               type={showPassword ? "text" : "password"}
               required
             />
-
+            <InputGroupAddon>
+              <KeyRound />
+            </InputGroupAddon>
             <InputGroupButton
-              onClick={() => setShowPassword(showPassword => !showPassword)}
+              onClick={() => setShowPassword((showPassword) => !showPassword)}
             >
               {showPassword ? <Eye /> : <EyeClosed />}
             </InputGroupButton>
@@ -65,9 +78,11 @@ function SignupForm({ token }: { token: string }) {
               type={showPassword ? "text" : "password"}
               required
             />
-
+            <InputGroupAddon>
+              <KeyRound />
+            </InputGroupAddon>
             <InputGroupButton
-              onClick={() => setShowPassword(showPassword => !showPassword)}
+              onClick={() => setShowPassword((showPassword) => !showPassword)}
             >
               {showPassword ? <Eye /> : <EyeClosed />}
             </InputGroupButton>
