@@ -135,6 +135,9 @@ export async function getPages(request?: getPagesRequest) {
           orderFn(pages.id),
         ];
       },
+      columns: {
+        content: false,
+      },
     });
 
     return { success: true, pages };
