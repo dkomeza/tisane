@@ -16,6 +16,8 @@ const GetPagesSchema = z.object({
 
   sortBy: z.enum(["createdAt", "updatedAt", "title"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
+
+  returnAll: z.boolean().optional(),
 });
 
 type GetPagesRequest = z.infer<typeof GetPagesSchema>;
@@ -48,7 +50,8 @@ export async function getPages(request?: GetPagesRequest) {
       throw new Error("Invalid request parameters");
     }
 
-    const { limit, offset, lastId, search, sortBy, sortOrder } = parse.data;
+    const { limit, offset, lastId, search, sortBy, sortOrder, returnAll } =
+      parse.data;
 
     if (offset && lastId) {
       throw new Error("Cannot use both offset and lastId for pagination");
@@ -71,7 +74,7 @@ export async function getPages(request?: GetPagesRequest) {
       }
     }
 
-    query.where = (pages, { and, ilike, or, gt, lt }) => {
+    query.where = (pages, { and, ilike, or, gt, lt, isNull }) => {
       const conditions = [];
       if (search)
         conditions.push(
@@ -106,6 +109,10 @@ export async function getPages(request?: GetPagesRequest) {
             )
           );
         }
+      }
+
+      if (!returnAll) {
+        conditions.push(isNull(pages.deletedAt));
       }
 
       return conditions.length ? and(...conditions) : undefined;
