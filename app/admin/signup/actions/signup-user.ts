@@ -2,6 +2,10 @@
 
 import { z } from "zod";
 import { auth } from "@/lib/auth/server";
+import { db } from "@/src/db/drizzle";
+import { redirect } from "next/navigation";
+import { user } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
 
 const SignupSchema = z
   .object({
@@ -25,31 +29,45 @@ export async function signupUser(_: unknown, formData: FormData) {
     const parse = SignupSchema.safeParse(rawData);
 
     if (!parse.success) {
-      return { error: "Wrong Data" };
+      throw new Error("Invalid form data");
     }
 
     const { data } = parse;
+
+    const verification = await db.query.verification.findFirst({
+      where(fields, { ilike }) {
+        return ilike(fields.identifier, `reset-password:${data.token}`);
+      },
+    });
+
+    if (!verification) {
+      throw new Error("Invalid or expired token");
+    }
+
+    const userId = verification.value;
 
     const resetResult = await auth.api.resetPassword({
       body: {
         newPassword: data.password,
         token: data.token,
       },
+      asResponse: true,
     });
 
-    if (!resetResult.status) {
-      return { error: "Error resetting password" };
+    if (!resetResult.ok) {
+      throw new Error("Error resetting password");
     }
 
-    const updateResult = await auth.api.updateUser({
-      body: {
+    await db
+      .update(user)
+      .set({
         name: `${data.name} ${data.surname}`,
-      },
-    });
-    console.log(updateResult);
-
-    return { error: "" };
+        emailVerified: true,
+      })
+      .where(eq(user.id, userId));
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Error during signup" };
   }
+
+  redirect("/admin/login");
 }
