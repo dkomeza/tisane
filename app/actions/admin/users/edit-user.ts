@@ -5,6 +5,7 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
+import { refresh } from "next/cache";
 
 export async function editUser(id: string, name: string, role: string) {
   const session = await auth.api.getSession({
@@ -54,5 +55,7 @@ export async function editUser(id: string, name: string, role: string) {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update user",
     };
+  } finally {
+    refresh();
   }
 }

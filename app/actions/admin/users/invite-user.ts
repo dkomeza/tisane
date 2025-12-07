@@ -9,6 +9,7 @@ import { db } from "@/src/db/drizzle";
 import { eq } from "drizzle-orm";
 
 import { extractInviteToken, sendInviteEmail } from "./utils";
+import { refresh } from "next/cache";
 
 export async function inviteUser(email: string) {
   const session = await auth.api.getSession({
@@ -86,5 +87,7 @@ export async function inviteUser(email: string) {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send email",
     };
+  } finally {
+    refresh();
   }
 }
