@@ -1,8 +1,7 @@
 "use server";
 
-import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
-import { headers } from "next/headers";
+import { authorize } from "@/lib/auth/authorize";
 
 import { db } from "@/src/db/drizzle";
 import z from "zod";
@@ -40,9 +39,7 @@ const GetPagesSchema = z.object({
  * @returns An array of pages. By default, it returns the first 20 pages.
  */
 export async function getPages(request?: getPagesRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
     return { success: false, error: "Unauthorized" };
