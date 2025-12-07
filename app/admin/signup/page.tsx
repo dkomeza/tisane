@@ -7,16 +7,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authorize } from "@/lib/auth/authorize";
 
 type AdminSignupPageProps = {
   searchParams: Promise<{ token: string }>;
 };
 
 export default async function AdminSignupPage({
-  searchParams:params,
+  searchParams: params,
 }: AdminSignupPageProps) {
+  const { authorized } = await authorize();
+
+  if (authorized) {
+    redirect("/admin");
+  }
+
   const { token } = await params;
-  console.log(await params)
+
   if (!token) {
     redirect("/");
   }
