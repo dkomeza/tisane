@@ -5,6 +5,7 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
+import { refresh } from "next/cache";
 
 export async function deleteUser(userId: string) {
   const session = await auth.api.getSession({
@@ -47,5 +48,7 @@ export async function deleteUser(userId: string) {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete user",
     };
+  } finally {
+    refresh();
   }
 }
