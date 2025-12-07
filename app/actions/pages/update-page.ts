@@ -101,3 +101,35 @@ export async function updatePage(request: UpdatePageRequest) {
     refresh();
   }
 }
+
+export async function restorePage(pageId: string) {
+  const { session } = await authorize();
+
+  if (!hasPermission(session, "content.delete")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    const res = await db
+      .update(pages)
+      .set({ deletedAt: null })
+      .where(eq(pages.id, pageId))
+      .returning();
+
+    if (res.length === 0) {
+      throw new Error("No pages found to restore");
+    }
+
+    return {
+      success: true,
+      message: `Page restored successfully`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred",
+    };
+  } finally {
+    refresh();
+  }
+}
