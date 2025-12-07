@@ -64,6 +64,7 @@ function SignupForm({ token }: { token: string }) {
               <KeyRound />
             </InputGroupAddon>
             <InputGroupButton
+              type="button"
               onClick={() => setShowPassword((showPassword) => !showPassword)}
             >
               {showPassword ? <Eye /> : <EyeClosed />}
@@ -82,6 +83,7 @@ function SignupForm({ token }: { token: string }) {
               <KeyRound />
             </InputGroupAddon>
             <InputGroupButton
+              type="button"
               onClick={() => setShowPassword((showPassword) => !showPassword)}
             >
               {showPassword ? <Eye /> : <EyeClosed />}
