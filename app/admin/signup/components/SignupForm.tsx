@@ -2,7 +2,6 @@
 import { useActionState, useState } from "react";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -15,16 +14,6 @@ import { signupUser } from "../actions/signup-user";
 function SignupForm({ token }: { token: string }) {
   const [state, action, loading] = useActionState(signupUser, { error: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-
-  const togglePasswordVisibility = (type: string) => {
-    if (type === "password") {
-      setShowPassword(!showPassword);
-    }
-    if (type === "passwordConfirm") {
-      setShowPasswordConfirm(!showPasswordConfirm);
-    }
-  };
 
   return (
     <>
@@ -62,7 +51,7 @@ function SignupForm({ token }: { token: string }) {
             />
 
             <InputGroupButton
-              onClick={() => togglePasswordVisibility("password")}
+              onClick={() => setShowPassword(showPassword => !showPassword)}
             >
               {showPassword ? <Eye /> : <EyeClosed />}
             </InputGroupButton>
@@ -73,14 +62,14 @@ function SignupForm({ token }: { token: string }) {
               name="passwordConfirm"
               id="passwordConfirm"
               placeholder="Confirm Password"
-              type={showPasswordConfirm ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               required
             />
 
             <InputGroupButton
-              onClick={() => togglePasswordVisibility("passwordConfirm")}
+              onClick={() => setShowPassword(showPassword => !showPassword)}
             >
-              {showPasswordConfirm ? <Eye /> : <EyeClosed />}
+              {showPassword ? <Eye /> : <EyeClosed />}
             </InputGroupButton>
           </InputGroup>
         </form>
