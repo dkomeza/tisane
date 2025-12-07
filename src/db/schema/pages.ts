@@ -4,8 +4,10 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 export const pageStatus = pgEnum("page_status", [
@@ -24,10 +26,9 @@ export const pages = pgTable(
   "pages",
   {
     // Metadata
-    id: text("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
     title: text("title").notNull(),
     slug: text("slug").notNull().unique(),
-    tags: text("tags").array().notNull().default([]),
 
     // Status and visibility
     status: pageStatus("status").default("draft").notNull(),
@@ -61,7 +62,7 @@ export const pages = pgTable(
 export const tags = pgTable(
   "tags",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -83,6 +84,7 @@ export const pagesTags = pgTable(
       .references(() => tags.id, { onDelete: "cascade" }),
   },
   (table) => [
+    primaryKey({ columns: [table.pageId, table.tagId] }),
     index("pages_tags_page_idx").on(table.pageId),
     index("pages_tags_tag_idx").on(table.tagId),
   ]
