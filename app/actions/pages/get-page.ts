@@ -4,8 +4,20 @@ import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { db } from "@/src/db/drizzle";
 import { eq } from "drizzle-orm";
+import z from "zod";
 
-export async function getPage(pageId: string) {
+const GetPageSchema = z
+  .object({
+    pageId: z.string().min(1).optional(),
+    slug: z.string().min(1).optional(),
+  })
+  .refine((data) => data.pageId || data.slug, {
+    message: "Either pageId or slug must be provided",
+  });
+
+type GetPagesRequest = z.infer<typeof GetPageSchema>;
+
+export async function getPage(request: GetPagesRequest) {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
@@ -13,8 +25,25 @@ export async function getPage(pageId: string) {
   }
 
   try {
+    const parse = GetPageSchema.safeParse(request);
+
+    if (!parse.success) {
+      throw new Error("Invalid request parameters");
+    }
+
+    const { pageId, slug } = parse.data;
+
+    const query: Parameters<typeof db.query.pages.findFirst>[0] = {};
+
+    if (pageId) {
+      query.where = (pages) => eq(pages.id, pageId);
+    } else if (slug) {
+      // Default to pageId if both are provided
+      query.where = (pages) => eq(pages.slug, slug);
+    }
+
     const page = await db.query.pages.findFirst({
-      where: (pages) => eq(pages.id, pageId),
+      ...query,
     });
 
     return { success: true, page };
