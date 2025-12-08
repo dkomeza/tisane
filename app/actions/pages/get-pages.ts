@@ -5,7 +5,7 @@ import { authorize } from "@/lib/auth/authorize";
 
 import { db } from "@/src/db/drizzle";
 import z from "zod";
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 
 const GetPagesSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
@@ -40,7 +40,11 @@ export async function getPages(request?: GetPagesRequest) {
     if (!request) {
       return {
         success: true,
-        pages: await db.query.pages.findMany({ limit: 20 }),
+        pages: await db.query.pages.findMany({
+          limit: 20,
+          where: (pages, { isNull }) => isNull(pages.deletedAt),
+          orderBy: (page, { desc }) => [desc(page.createdAt), desc(page.id)],
+        }),
       };
     }
 
@@ -121,7 +125,7 @@ export async function getPages(request?: GetPagesRequest) {
     const pages = await db.query.pages.findMany({
       ...query,
       orderBy: (pages, { asc, desc }) => {
-        const orderFn = sortOrder === "desc" ? desc : asc;
+        const orderFn = sortOrder === "asc" ? asc : desc; // Default to desc
         return [
           sortBy ? orderFn(pages[sortBy]) : orderFn(pages.createdAt),
           orderFn(pages.id),
