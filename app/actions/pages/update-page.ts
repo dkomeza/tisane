@@ -10,7 +10,7 @@ import {
   pageStatus,
   pageVisibility,
 } from "@/src/db/schema/pages";
-import { and, eq, notInArray } from "drizzle-orm";
+import { and, eq, inArray, notInArray } from "drizzle-orm";
 import { refresh } from "next/cache";
 import z from "zod";
 
@@ -96,6 +96,52 @@ export async function updatePage(request: UpdatePageRequest) {
       success: false,
       error:
         error instanceof Error ? error.message : "An unknown error occurred",
+    };
+  } finally {
+    refresh();
+  }
+}
+
+export async function restorePage(pageId: string) {
+  const res = await restorePages([pageId]);
+
+  if (res.success) {
+    res.message = "Page restored successfully"; // Customize message for single restoration
+  }
+
+  return res;
+}
+
+export async function restorePages(pageIds: string[]) {
+  const { session } = await authorize();
+
+  if (!hasPermission(session, "content.delete")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  if (pageIds.length === 0) {
+    return { success: false, error: "No page IDs provided" };
+  }
+
+  try {
+    const res = await db
+      .update(pages)
+      .set({ deletedAt: null })
+      .where(inArray(pages.id, pageIds))
+      .returning();
+
+    if (res.length === 0) {
+      throw new Error("No pages found to restore");
+    }
+
+    return {
+      success: true,
+      message: `${res.length} pages restored successfully`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred",
     };
   } finally {
     refresh();

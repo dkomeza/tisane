@@ -39,6 +39,7 @@ export const pages = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
     publishedAt: timestamp("published_at"),
+    deletedAt: timestamp("deleted_at"),
 
     // Content
     content: text("content").notNull(), // Temporary column for storing page content as text

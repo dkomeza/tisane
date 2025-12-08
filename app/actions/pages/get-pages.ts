@@ -16,6 +16,8 @@ const GetPagesSchema = z.object({
 
   sortBy: z.enum(["createdAt", "updatedAt", "title"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
+
+  returnAll: z.boolean().optional(),
 });
 
 type GetPagesRequest = z.infer<typeof GetPagesSchema>;
@@ -38,7 +40,11 @@ export async function getPages(request?: GetPagesRequest) {
     if (!request) {
       return {
         success: true,
-        pages: await db.query.pages.findMany({ limit: 20 }),
+        pages: await db.query.pages.findMany({
+          limit: 20,
+          where: (pages, { isNull }) => isNull(pages.deletedAt),
+          orderBy: (page, { desc }) => [desc(page.createdAt), desc(page.id)],
+        }),
       };
     }
 
@@ -48,7 +54,8 @@ export async function getPages(request?: GetPagesRequest) {
       throw new Error("Invalid request parameters");
     }
 
-    const { limit, offset, lastId, search, sortBy, sortOrder } = parse.data;
+    const { limit, offset, lastId, search, sortBy, sortOrder, returnAll } =
+      parse.data;
 
     if (offset && lastId) {
       throw new Error("Cannot use both offset and lastId for pagination");
@@ -71,7 +78,7 @@ export async function getPages(request?: GetPagesRequest) {
       }
     }
 
-    query.where = (pages, { and, ilike, or, gt, lt }) => {
+    query.where = (pages, { and, ilike, or, gt, lt, isNull }) => {
       const conditions = [];
       if (search)
         conditions.push(
@@ -83,7 +90,7 @@ export async function getPages(request?: GetPagesRequest) {
 
       if (last) {
         const sortColumn = sortBy ? pages[sortBy] : pages.createdAt;
-        const sortDirection = sortOrder === "desc" ? "desc" : "asc";
+        const sortDirection = sortOrder === "asc" ? "asc" : "desc";
 
         if (sortDirection === "asc") {
           conditions.push(
@@ -108,13 +115,17 @@ export async function getPages(request?: GetPagesRequest) {
         }
       }
 
+      if (!returnAll) {
+        conditions.push(isNull(pages.deletedAt));
+      }
+
       return conditions.length ? and(...conditions) : undefined;
     };
 
     const pages = await db.query.pages.findMany({
       ...query,
       orderBy: (pages, { asc, desc }) => {
-        const orderFn = sortOrder === "desc" ? desc : asc;
+        const orderFn = sortOrder === "asc" ? asc : desc; // Default to desc
         return [
           sortBy ? orderFn(pages[sortBy]) : orderFn(pages.createdAt),
           orderFn(pages.id),
