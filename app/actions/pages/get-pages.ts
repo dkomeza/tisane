@@ -5,7 +5,7 @@ import { authorize } from "@/lib/auth/authorize";
 
 import { db } from "@/src/db/drizzle";
 import z from "zod";
-import { eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 const GetPagesSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
