@@ -119,6 +119,10 @@ export async function restorePages(pageIds: string[]) {
     return { success: false, error: "Unauthorized" };
   }
 
+  if (pageIds.length === 0) {
+    return { success: false, error: "No page IDs provided" };
+  }
+
   try {
     const res = await db
       .update(pages)
