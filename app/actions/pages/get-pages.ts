@@ -90,7 +90,7 @@ export async function getPages(request?: GetPagesRequest) {
 
       if (last) {
         const sortColumn = sortBy ? pages[sortBy] : pages.createdAt;
-        const sortDirection = sortOrder === "desc" ? "desc" : "asc";
+        const sortDirection = sortOrder === "asc" ? "asc" : "desc";
 
         if (sortDirection === "asc") {
           conditions.push(
