@@ -1,5 +1,7 @@
 "use client";
+import { authClient } from "@/lib/auth/client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +17,9 @@ function ResetPasswordForm({ token }: { token: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
+  const router = useRouter();
+
   const action = async (formData: FormData) => {
     setLoading(true);
     setError("");
@@ -28,9 +32,21 @@ function ResetPasswordForm({ token }: { token: string }) {
       return;
     }
 
-    setTimeout(() => {
+    try {
+      const { error } = await authClient.resetPassword({
+        newPassword: password,
+        token: token,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      router.push("/admin");
+    } catch (e) {
+      setError("Failed to change password. Please try again. " + e);
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -93,10 +109,10 @@ function ResetPasswordForm({ token }: { token: string }) {
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating account...
+              Resetting password...
             </>
           ) : (
-            "Activate Account"
+            "Reset Password"
           )}
         </Button>
       </CardFooter>
