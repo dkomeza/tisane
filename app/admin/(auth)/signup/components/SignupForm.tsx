@@ -55,7 +55,7 @@ function SignupForm({ token }: { token: string }) {
             name="token"
             value={token}
             className="hidden"
-            type="hidden p"
+            type="hidden"
             readOnly
           />
 
