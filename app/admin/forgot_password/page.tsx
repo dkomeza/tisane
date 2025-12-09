@@ -25,7 +25,7 @@ export default async function AdminForgotPasswordPage({
   const { token } = await params;
 
   if (!token) {
-    redirect("/");
+    redirect("/admin/login");
   }
 
   return (

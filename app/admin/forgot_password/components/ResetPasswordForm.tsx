@@ -39,12 +39,15 @@ function ResetPasswordForm({ token }: { token: string }) {
       });
 
       if (error) {
-        throw error;
+        throw new Error(error.message);
       }
 
-      router.push("/admin");
+      router.push("/admin/login");
     } catch (e) {
-      setError("Failed to change password. Please try again. " + e);
+      setError(
+        "Failed to change password. Please try again. " +
+          (e instanceof Error ? e.message : "")
+      );
       setLoading(false);
     }
   };
