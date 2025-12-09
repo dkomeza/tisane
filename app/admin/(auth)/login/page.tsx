@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
           </form>
           <div className="flex justify-end mt-4 ">
             <Link
-              href="/admin/forgot_password"
+              href="/admin/forgot-password"
               className="relative text-sm text-muted-foreground after:block after:h-px after:bg-muted-foreground after:w-0 after:transition-all after:duration-500 hover:after:w-full"
             >
               Forgot password?

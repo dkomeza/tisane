@@ -26,6 +26,6 @@ export const config = {
      * Match all request paths starting with /admin/
      * BUT EXCLUDE any path starting with /admin/login, /admin/signup or /admin/forgot-password
      */
-    "/admin/((?!login|signup|forgot-password|key).*)",
+    "/admin/((?!login|signup|forgot-password|reset-password).*)",
   ],
 };
