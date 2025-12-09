@@ -31,13 +31,7 @@ export default function AdminForgotPasswordPage() {
       });
 
       toast.success(
-        "If an account with that email exists, a password reset email has been sent.",
-        {
-          action: {
-            label: "OK",
-            onClick: () => {},
-          },
-        }
+        "If an account with that email exists, a password reset email has been sent."
       );
 
       if (error) {
@@ -82,7 +76,7 @@ export default function AdminForgotPasswordPage() {
               </Button>
             </div>
           </form>
-          <Toaster richColors/>
+          <Toaster richColors position="top-center" closeButton />
         </CardContent>
       </Card>
     </section>
