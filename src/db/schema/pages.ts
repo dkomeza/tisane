@@ -53,7 +53,7 @@ export const pages = pgTable(
     // Navigation
     order: integer("order").default(0).notNull(),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    parentId: text("parent_id").references((): any => pages.id, {
+    parentId: uuid("parent_id").references((): any => pages.id, {
       onDelete: "set null",
     }),
   },
