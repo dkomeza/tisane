@@ -31,10 +31,16 @@ export const PasswordSchema = passwordRules.reduce(
 
 export const SignupSchema = z
   .object({
-    name: z.string().min(1).max(30),
-    surname: z.string().min(1).max(30),
+    name: z
+      .string()
+      .min(1, "Please enter your name")
+      .max(30, "Name must be at most 30 characters"),
+    surname: z
+      .string()
+      .min(1, "Please enter your surname")
+      .max(30, "Surname must be at most 30 characters"),
     password: PasswordSchema,
-    passwordConfirm: z.string().min(1),
+    passwordConfirm: z.string().min(1, "Please confirm your password"),
     token: z.any(),
   })
   .refine((val) => val.password === val.passwordConfirm, {
@@ -45,10 +51,13 @@ export const SignupSchema = z
 export const ResetPasswordSchema = z
   .object({
     password: PasswordSchema,
-    passwordConfirm: z.string().min(1),
+    passwordConfirm: z.string().min(1, "Please confirm your password"),
     token: z.any(),
   })
-  .refine((val) => val.password === val.passwordConfirm);
+  .refine((val) => val.password === val.passwordConfirm, {
+    error: "Passwords do not match",
+    path: ["passwordConfirm"],
+  });
 
 export type SignupRequest = z.infer<typeof SignupSchema>;
 export type ResetPasswordRequest = z.infer<typeof ResetPasswordSchema>;
