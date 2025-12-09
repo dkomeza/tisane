@@ -25,8 +25,8 @@ export async function signupUser(_: unknown, formData: FormData) {
     const { data } = parse;
 
     const verification = await db.query.verification.findFirst({
-      where(fields, { ilike }) {
-        return ilike(fields.identifier, `reset-password:${data.token}`);
+      where(fields, { eq }) {
+        return eq(fields.identifier, `reset-password:${data.token}`);
       },
     });
 

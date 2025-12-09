@@ -51,7 +51,13 @@ function SignupForm({ token }: { token: string }) {
               {state.error}
             </div>
           )}
-          <input name="token" value={token} className="hidden" readOnly />
+          <input
+            name="token"
+            value={token}
+            className="hidden"
+            type="hidden p"
+            readOnly
+          />
 
           <FieldGroup className="grid grid-cols-2 gap-3">
             <Controller
