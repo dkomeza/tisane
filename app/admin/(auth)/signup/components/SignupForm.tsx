@@ -1,5 +1,16 @@
 "use client";
 import { useActionState, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Check,
+  X,
+  Loader2,
+  EyeClosed,
+  Eye,
+  KeyRound,
+  UserRound,
+} from "lucide-react";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,17 +20,42 @@ import {
   InputGroupButton,
   InputGroupAddon,
 } from "@/components/ui/input-group";
-import { Loader2, EyeClosed, Eye, KeyRound, UserRound } from "lucide-react";
+import { FormField } from "@/components/ui/form";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+
 import { signupUser } from "../actions/signup-user";
+import { SignupRequest, SignupSchema } from "@/lib/schemas/SignupSchema";
+import PasswordChecklist from "./PasswordChecklist";
+// --- Main Form Component ---
 
 function SignupForm({ token }: { token: string }) {
   const [state, action, loading] = useActionState(signupUser, { error: "" });
   const [showPassword, setShowPassword] = useState(false);
 
+  const form = useForm<SignupRequest>({
+    resolver: zodResolver(SignupSchema),
+    defaultValues: {
+      name: "",
+      surname: "",
+      password: "",
+      passwordConfirm: "",
+      token: token,
+    },
+    mode: "onTouched", // Validates as user interacts
+  });
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const passwordValue = form.watch("password");
+
   return (
     <>
       <CardContent>
-        <form id="signup-form" action={action} className="flex flex-col gap-6">
+        <form id="signup-form" action={action} className="flex flex-col gap-4">
           {state?.error && (
             <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
               {state.error}
@@ -27,68 +63,141 @@ function SignupForm({ token }: { token: string }) {
           )}
           <input name="token" value={token} className="hidden" readOnly />
 
-          <div className="grid grid-cols-2 gap-2">
-            <InputGroup>
-              <InputGroupInput
-                name="name"
-                id="firstName"
-                placeholder="First Name"
-                required
-              />
-              <InputGroupAddon>
-                <UserRound />
-              </InputGroupAddon>
-            </InputGroup>
-            <InputGroup>
-              <InputGroupInput
-                name="surname"
-                id="surname"
-                placeholder="Surname"
-                required
-              />
-              <InputGroupAddon>
-                <UserRound />
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
+          <FieldGroup className="grid grid-cols-2 gap-3">
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="form-signup-name"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Name
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="form-signup-name"
+                      placeholder="Name"
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <UserRound />
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="surname"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="form-signup-surname"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Surname
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="form-signup-surname"
+                      placeholder="Surname"
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <UserRound />
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
 
-          <InputGroup>
-            <InputGroupInput
+          <FieldGroup className="gap-4">
+            <Controller
               name="password"
-              id="password"
-              placeholder="Password"
-              type={showPassword ? "text" : "password"}
-              required
-            />
-            <InputGroupAddon>
-              <KeyRound />
-            </InputGroupAddon>
-            <InputGroupButton
-              type="button"
-              onClick={() => setShowPassword((showPassword) => !showPassword)}
-            >
-              {showPassword ? <Eye /> : <EyeClosed />}
-            </InputGroupButton>
-          </InputGroup>
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="signup-form-password"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Password
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="signup-form-password"
+                      placeholder="Password"
+                      type={showPassword ? "text" : "password"}
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <KeyRound />
+                    </InputGroupAddon>
+                    <InputGroupButton
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Eye /> : <EyeClosed />}
+                    </InputGroupButton>
+                  </InputGroup>
 
-          <InputGroup>
-            <InputGroupInput
-              name="passwordConfirm"
-              id="passwordConfirm"
-              placeholder="Confirm Password"
-              type={showPassword ? "text" : "password"}
-              required
+                  <PasswordChecklist password={passwordValue} />
+                </Field>
+              )}
             />
-            <InputGroupAddon>
-              <KeyRound />
-            </InputGroupAddon>
-            <InputGroupButton
-              type="button"
-              onClick={() => setShowPassword((showPassword) => !showPassword)}
-            >
-              {showPassword ? <Eye /> : <EyeClosed />}
-            </InputGroupButton>
-          </InputGroup>
+
+            <Controller
+              name="passwordConfirm"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="signup-form-password-confirm"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Confirm Password
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="signup-form-password-confirm"
+                      placeholder="Confirm Password"
+                      type={showPassword ? "text" : "password"}
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <KeyRound />
+                    </InputGroupAddon>
+                    <InputGroupButton
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Eye /> : <EyeClosed />}
+                    </InputGroupButton>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">

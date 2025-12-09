@@ -1,21 +1,11 @@
 "use server";
 
-import { z } from "zod";
+import { SignupSchema } from "@/lib/schemas/SignupSchema";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/src/db/drizzle";
 import { redirect } from "next/navigation";
 import { user } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
-
-const SignupSchema = z
-  .object({
-    name: z.string().min(1).max(30),
-    surname: z.string().min(1).max(30),
-    password: z.string().min(8).regex(/[A-Z]/).regex(/[a-z]/).regex(/[0-9]/),
-    passwordConfirm: z.string().min(1),
-    token: z.any(),
-  })
-  .refine((val) => val.password === val.passwordConfirm);
 
 export async function signupUser(_: unknown, formData: FormData) {
   const rawData = {
