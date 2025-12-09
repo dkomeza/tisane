@@ -77,10 +77,10 @@ export const tags = pgTable(
 export const pagesTags = pgTable(
   "pages_tags",
   {
-    pageId: text("page_id")
+    pageId: uuid("page_id")
       .notNull()
       .references(() => pages.id, { onDelete: "cascade" }),
-    tagId: text("tag_id")
+    tagId: uuid("tag_id")
       .notNull()
       .references(() => tags.id, { onDelete: "cascade" }),
   },
