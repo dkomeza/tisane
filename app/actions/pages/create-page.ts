@@ -49,11 +49,11 @@ export async function createPage(request: CreatePageRequest) {
       throw new Error("Invalid request parameters");
     }
 
-    const { tags } = parse.data;
+    const { tags, ...pageData } = parse.data;
 
-    const newPage = await db.insert(pages).values(parse.data).returning();
+    const [page] = await db.insert(pages).values(pageData).returning();
 
-    if (newPage.length === 0) {
+    if (!page) {
       throw new Error("Failed to create page");
     }
 
@@ -61,14 +61,14 @@ export async function createPage(request: CreatePageRequest) {
     if (tags && tags.length > 0) {
       // Assuming there's a pagesTags table to handle many-to-many relationship
       const pagesTagsInserts = tags.map((tagId) => ({
-        pageId: newPage[0].id,
+        pageId: page.id,
         tagId,
       }));
 
       await db.insert(pagesTags).values(pagesTagsInserts);
     }
 
-    return { success: true, page: newPage };
+    return { success: true, page };
   } catch (error) {
     return {
       success: false,
