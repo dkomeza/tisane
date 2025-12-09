@@ -2,15 +2,7 @@
 import { useActionState, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Check,
-  X,
-  Loader2,
-  EyeClosed,
-  Eye,
-  KeyRound,
-  UserRound,
-} from "lucide-react";
+import { Loader2, EyeClosed, Eye, KeyRound, UserRound } from "lucide-react";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +12,6 @@ import {
   InputGroupButton,
   InputGroupAddon,
 } from "@/components/ui/input-group";
-import { FormField } from "@/components/ui/form";
 import {
   Field,
   FieldError,
