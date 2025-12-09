@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 
 const GetPagesSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
-  offset: z.number().positive().optional(),
+  offset: z.number().min(0).optional(),
   lastId: z.string().optional(),
 
   search: z.string().min(1).optional(),
