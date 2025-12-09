@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
         <CardContent>
           <form id="login-form" onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
-              <Toaster richColors position="top-center" closeButton/>
+              <Toaster richColors position="top-center"/>
               <div className="grid gap-2">
                 <Input
                   id="email"

@@ -76,7 +76,7 @@ export default function AdminForgotPasswordPage() {
               </Button>
             </div>
           </form>
-          <Toaster richColors position="top-center" closeButton />
+          <Toaster richColors position="top-center" />
         </CardContent>
       </Card>
     </section>
