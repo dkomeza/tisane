@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authorize } from "@/lib/auth/authorize";
 
 type AdminForgotPasswordPageProps = {
   searchParams: Promise<{ token: string }>;
@@ -16,11 +15,6 @@ type AdminForgotPasswordPageProps = {
 export default async function AdminForgotPasswordPage({
   searchParams: params,
 }: AdminForgotPasswordPageProps) {
-  const { authorized } = await authorize();
-
-  if (authorized) {
-    redirect("/admin");
-  }
 
   const { token } = await params;
 

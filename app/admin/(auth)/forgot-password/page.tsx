@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
+
 import {
   Card,
   CardContent,
@@ -40,6 +40,7 @@ export default function AdminForgotPasswordPage() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
       setLoading(false);
     }
   };
@@ -56,11 +57,6 @@ export default function AdminForgotPasswordPage() {
         <CardContent>
           <form id="reset-password-form" onSubmit={handleEmail}>
             <div className="flex flex-col gap-6">
-              {error && (
-                <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                  {error}
-                </div>
-              )}
               <div className="grid gap-2">
                 <Input
                   id="email"
@@ -72,11 +68,10 @@ export default function AdminForgotPasswordPage() {
               </div>
 
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? "Logging in..." : "Login"}
+                {loading ? "Sending..." : "Send"}
               </Button>
             </div>
           </form>
-          <Toaster richColors position="top-center" />
         </CardContent>
       </Card>
     </section>

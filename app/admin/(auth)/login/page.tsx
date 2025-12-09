@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -60,7 +59,6 @@ export default function AdminLoginPage() {
         <CardContent>
           <form id="login-form" onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
-              <Toaster richColors position="top-center"/>
               <div className="grid gap-2">
                 <Input
                   id="email"
