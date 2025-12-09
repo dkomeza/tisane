@@ -17,29 +17,28 @@ import {
 export default function AdminForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleEmail = async (e: React.FormEvent) => {
-    console.log("Reset password for email:", email);
     e.preventDefault();
     setLoading(true);
-    setError(null);
     try {
-      const { data, error } = await authClient.requestPasswordReset({
+      const { error } = await authClient.requestPasswordReset({
         email,
         redirectTo: "/admin/login",
       });
 
-      toast.success(
-        "If an account with that email exists, a password reset email has been sent."
-      );
-
       if (error) {
-        toast.error("Error sending email. Please try again.");
         throw new Error(error.message);
+      } else {
+        toast.success(
+          "If an account with that email exists, a password reset email has been sent."
+        );
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      toast.error(
+        "Failed to send reset email. Please try again. " +
+          (err instanceof Error ? err.message : "")
+      );
     } finally {
       setLoading(false);
     }

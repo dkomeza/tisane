@@ -72,6 +72,7 @@ function ResetPasswordForm({ token }: { token: string }) {
         "Failed to change password. Please try again. " +
           (e instanceof Error ? e.message : "")
       );
+    } finally {
       setLoading(false);
     }
   };
