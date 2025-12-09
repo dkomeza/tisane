@@ -41,7 +41,7 @@ export const SignupSchema = z
       .max(30, "Surname must be at most 30 characters"),
     password: PasswordSchema,
     passwordConfirm: z.string().min(1, "Please confirm your password"),
-    token: z.any(),
+    token: z.string("Token is required"),
   })
   .refine((val) => val.password === val.passwordConfirm, {
     error: "Passwords do not match",
@@ -52,7 +52,7 @@ export const ResetPasswordSchema = z
   .object({
     password: PasswordSchema,
     passwordConfirm: z.string().min(1, "Please confirm your password"),
-    token: z.any(),
+    token: z.string("Token is required"),
   })
   .refine((val) => val.password === val.passwordConfirm, {
     error: "Passwords do not match",
