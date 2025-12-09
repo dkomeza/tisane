@@ -12,19 +12,43 @@ import {
   InputGroupAddon,
 } from "@/components/ui/input-group";
 import { Loader2, EyeClosed, Eye, KeyRound } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  ResetPasswordRequest,
+  ResetPasswordSchema,
+} from "@/lib/schemas/SignupSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import PasswordChecklist from "@/app/admin/(auth)/signup/components/PasswordChecklist";
 
 function ResetPasswordForm({ token }: { token: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const form = useForm<ResetPasswordRequest>({
+    resolver: zodResolver(ResetPasswordSchema),
+    defaultValues: {
+      password: "",
+      passwordConfirm: "",
+      token: token,
+    },
+    mode: "onTouched",
+  });
+  const passwordValue = form.watch("password");
+
   const router = useRouter();
 
-  const action = async (formData: FormData) => {
+  const action = async (data: ResetPasswordRequest) => {
     setLoading(true);
     setError("");
-    const password = formData.get("password") as string;
-    const passwordConfirm = formData.get("passwordConfirm") as string;
+
+    const { password, passwordConfirm } = data;
 
     if (password !== passwordConfirm) {
       setError("Passwords do not match");
@@ -55,7 +79,11 @@ function ResetPasswordForm({ token }: { token: string }) {
   return (
     <>
       <CardContent>
-        <form id="signup-form" action={action} className="flex flex-col gap-6">
+        <form
+          id="signup-form"
+          onSubmit={form.handleSubmit(action)}
+          className="flex flex-col gap-6"
+        >
           {error && (
             <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
               {error}
@@ -63,43 +91,80 @@ function ResetPasswordForm({ token }: { token: string }) {
           )}
           <input name="token" value={token} className="hidden" readOnly />
 
-          <InputGroup>
-            <InputGroupInput
+          <FieldGroup className="gap-4">
+            <Controller
               name="password"
-              id="password"
-              placeholder="Password"
-              type={showPassword ? "text" : "password"}
-              required
-            />
-            <InputGroupAddon>
-              <KeyRound />
-            </InputGroupAddon>
-            <InputGroupButton
-              type="button"
-              onClick={() => setShowPassword((showPassword) => !showPassword)}
-            >
-              {showPassword ? <Eye /> : <EyeClosed />}
-            </InputGroupButton>
-          </InputGroup>
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="signup-form-password"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Password
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="signup-form-password"
+                      placeholder="Password"
+                      type={showPassword ? "text" : "password"}
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <KeyRound />
+                    </InputGroupAddon>
+                    <InputGroupButton
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Eye /> : <EyeClosed />}
+                    </InputGroupButton>
+                  </InputGroup>
 
-          <InputGroup>
-            <InputGroupInput
-              name="passwordConfirm"
-              id="passwordConfirm"
-              placeholder="Confirm Password"
-              type={showPassword ? "text" : "password"}
-              required
+                  <PasswordChecklist password={passwordValue} />
+                </Field>
+              )}
             />
-            <InputGroupAddon>
-              <KeyRound />
-            </InputGroupAddon>
-            <InputGroupButton
-              type="button"
-              onClick={() => setShowPassword((showPassword) => !showPassword)}
-            >
-              {showPassword ? <Eye /> : <EyeClosed />}
-            </InputGroupButton>
-          </InputGroup>
+
+            <Controller
+              name="passwordConfirm"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="gap-2">
+                  <FieldLabel
+                    htmlFor="signup-form-password-confirm"
+                    className="text-xs pl-1 w-max! font-light"
+                  >
+                    Confirm Password
+                  </FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      {...field}
+                      id="signup-form-password-confirm"
+                      placeholder="Confirm Password"
+                      type={showPassword ? "text" : "password"}
+                      aria-invalid={fieldState.invalid}
+                      required
+                    />
+                    <InputGroupAddon>
+                      <KeyRound />
+                    </InputGroupAddon>
+                    <InputGroupButton
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Eye /> : <EyeClosed />}
+                    </InputGroupButton>
+                  </InputGroup>
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">

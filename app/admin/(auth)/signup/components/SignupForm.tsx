@@ -22,7 +22,6 @@ import {
 import { signupUser } from "../actions/signup-user";
 import { SignupRequest, SignupSchema } from "@/lib/schemas/SignupSchema";
 import PasswordChecklist from "./PasswordChecklist";
-// --- Main Form Component ---
 
 function SignupForm({ token }: { token: string }) {
   const [state, action, loading] = useActionState(signupUser, { error: "" });
