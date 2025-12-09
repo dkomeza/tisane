@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authorize } from "@/lib/auth/authorize";
 
 type AdminSignupPageProps = {
   searchParams: Promise<{ token: string }>;
@@ -16,12 +15,6 @@ type AdminSignupPageProps = {
 export default async function AdminSignupPage({
   searchParams: params,
 }: AdminSignupPageProps) {
-  const { authorized } = await authorize();
-
-  if (authorized) {
-    redirect("/admin");
-  }
-
   const { token } = await params;
 
   if (!token) {
@@ -30,7 +23,7 @@ export default async function AdminSignupPage({
 
   return (
     <section className="h-screen flex justify-center items-center">
-      <Card className="w-full max-w-sm min-w-sm h-min">
+      <Card className="w-full max-w-md h-min">
         <CardHeader className="text-center">
           <CardTitle>Create Your Account</CardTitle>
           <CardDescription>

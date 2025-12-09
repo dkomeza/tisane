@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -38,6 +40,7 @@ export default function AdminLoginPage() {
         },
         onError: (ctx) => {
           setError(ctx.error.message);
+          toast.error(ctx.error.message);
           setLoading(false);
         },
       }
@@ -56,11 +59,6 @@ export default function AdminLoginPage() {
         <CardContent>
           <form id="login-form" onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
-              {error && (
-                <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md">
-                  {error}
-                </div>
-              )}
               <div className="grid gap-2">
                 <Input
                   id="email"
@@ -68,7 +66,6 @@ export default function AdminLoginPage() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
                 />
               </div>
               <div className="grid gap-2">
@@ -78,11 +75,18 @@ export default function AdminLoginPage() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
               </div>
             </div>
           </form>
+          <div className="flex justify-end mt-4 ">
+            <Link
+              href="/admin/forgot-password"
+              className="relative text-sm text-muted-foreground after:block after:h-px after:bg-muted-foreground after:w-0 after:transition-all after:duration-500 hover:after:w-full"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <Button
