@@ -4,6 +4,8 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import {
   Card,
   CardContent,
@@ -28,7 +30,18 @@ export default function AdminForgotPasswordPage() {
         redirectTo: "/admin/login",
       });
 
+      toast.success(
+        "If an account with that email exists, a password reset email has been sent.",
+        {
+          action: {
+            label: "OK",
+            onClick: () => {},
+          },
+        }
+      );
+
       if (error) {
+        toast.error("Error sending email. Please try again.");
         throw new Error(error.message);
       }
     } catch (err) {
@@ -69,6 +82,7 @@ export default function AdminForgotPasswordPage() {
               </Button>
             </div>
           </form>
+          <Toaster richColors/>
         </CardContent>
       </Card>
     </section>
