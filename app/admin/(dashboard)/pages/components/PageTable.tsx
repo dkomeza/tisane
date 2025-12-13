@@ -134,17 +134,49 @@ function PageTable(props: PageTableProps) {
   }
 
   return (
-    <div className="flex flex-col flex-1 gap-4">
-      <div className="flex-1 border rounded-lg overflow-hidden">
+    <div className="flex flex-col flex-1 gap-4 overflow-hidden">
+      <div className="flex-1 border rounded-lg overflow-scroll">
         <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Title</th>
-              <th className="px-4 py-2">Slug</th>
-              <th className="px-4 py-2">Created At</th>
+          <thead className="">
+            <tr className="">
+              <th className="px-4 py-3 sticky top-0 bg-secondary">Title</th>
+              <th className="px-4 py-3 sticky top-0 bg-secondary">Slug</th>
+              <th className="px-4 py-3 sticky top-0 bg-secondary">
+                Created At
+              </th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {props.type === "data"
+              ? props.data.map((page) => (
+                  <tr key={page.id} className="border-t">
+                    <td className="px-4 py-4">{page.title}</td>
+                    <td className="px-4 py-4">{page.slug}</td>
+                    <td className="px-4 py-4">
+                      {new Date(page.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              : Array.from({ length: 20 }).map((_, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        ██████████████
+                      </Skeleton>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        █████████
+                      </Skeleton>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        ████-██-██
+                      </Skeleton>
+                    </td>
+                  </tr>
+                ))}
+          </tbody>
         </table>
       </div>
       <TableFooter
