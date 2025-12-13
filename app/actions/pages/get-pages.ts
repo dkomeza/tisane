@@ -4,23 +4,34 @@ import { hasPermission } from "@/lib/permissions";
 import { authorize } from "@/lib/auth/authorize";
 
 import { db } from "@/src/db/drizzle";
-import z from "zod";
-import { eq } from "drizzle-orm";
+import { GetPagesSchema, GetPagesRequest } from "@/lib/schemas/PagesSchema";
+import {
+  asc,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  isNull,
+  sql,
+} from "drizzle-orm";
+import { pages as PagesSchema } from "@/src/db/schema/pages";
 
-const GetPagesSchema = z.object({
-  limit: z.number().min(1).max(100).optional(),
-  offset: z.number().min(0).optional(),
-  lastId: z.string().optional(),
+type Page = Omit<typeof PagesSchema.$inferSelect, "content"> & {
+  queryOrder: number;
+};
 
-  search: z.string().min(1).optional(),
+type GetPagesResponse =
+  | {
+      success: false;
+      error: string;
+    }
+  | {
+      success: true;
+      pages: Array<Page>;
+      pagesCount: number;
+    };
 
-  sortBy: z.enum(["createdAt", "updatedAt", "title"]).optional(),
-  sortOrder: z.enum(["asc", "desc"]).optional(),
-
-  returnAll: z.boolean().optional(),
-});
-
-type GetPagesRequest = z.infer<typeof GetPagesSchema>;
+const pageColumns = getTableColumns(PagesSchema);
 
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
@@ -28,26 +39,26 @@ type GetPagesRequest = z.infer<typeof GetPagesSchema>;
  *
  * @returns An array of pages. By default, it returns the first 20 pages.
  */
-export async function getPages(request?: GetPagesRequest) {
+export async function getPages(
+  request?: GetPagesRequest
+): Promise<GetPagesResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
     return { success: false, error: "Unauthorized" };
   }
 
-  try {
-    // Validating the request
-    if (!request) {
-      return {
-        success: true,
-        pages: await db.query.pages.findMany({
-          limit: 20,
-          where: (pages, { isNull }) => isNull(pages.deletedAt),
-          orderBy: (page, { desc }) => [desc(page.createdAt), desc(page.id)],
-        }),
-      };
-    }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { content, ...targetPage } = pageColumns;
 
+  try {
+    // Counting total pages
+    const [totalPages] = await db
+      .select({ count: count(PagesSchema.id) })
+      .from(PagesSchema)
+      .where(isNull(PagesSchema.deletedAt));
+
+    // Validating the request
     const parse = GetPagesSchema.safeParse(request);
 
     if (!parse.success) {
@@ -122,21 +133,44 @@ export async function getPages(request?: GetPagesRequest) {
       return conditions.length ? and(...conditions) : undefined;
     };
 
-    const pages = await db.query.pages.findMany({
-      ...query,
-      orderBy: (pages, { asc, desc }) => {
-        const orderFn = sortOrder === "asc" ? asc : desc; // Default to desc
-        return [
-          sortBy ? orderFn(pages[sortBy]) : orderFn(pages.createdAt),
-          orderFn(pages.id),
-        ];
-      },
-      columns: {
-        content: false,
-      },
-    });
+    const pages = await db
+      .select({
+        ...targetPage,
+        queryOrder: sql<number>`ROW_NUMBER() OVER (ORDER BY ${
+          sortBy ? pageColumns[sortBy] : PagesSchema.createdAt
+        } ${sortOrder === "asc" ? sql`ASC` : sql`DESC`}, ${PagesSchema.id} ${
+          sortOrder === "asc" ? sql`ASC` : sql`DESC`
+        })`,
+      })
+      .from(PagesSchema)
+      .where(isNull(PagesSchema.deletedAt))
+      .orderBy(
+        sortBy
+          ? sortOrder === "asc"
+            ? asc(pageColumns[sortBy])
+            : desc(pageColumns[sortBy])
+          : sortOrder === "asc"
+            ? asc(PagesSchema.createdAt)
+            : desc(PagesSchema.createdAt),
+        sortOrder === "asc" ? asc(PagesSchema.id) : desc(PagesSchema.id)
+      )
+      .limit(query.limit || 20)
+      .offset(query.offset ?? 0);
+    // const pages = await db.query.pages.findMany({
+    //   ...query,
+    //   orderBy: (pages, { asc, desc }) => {
+    //     const orderFn = sortOrder === "asc" ? asc : desc; // Default to desc
+    //     return [
+    //       sortBy ? orderFn(pages[sortBy]) : orderFn(pages.createdAt),
+    //       orderFn(pages.id),
+    //     ];
+    //   },
+    //   columns: {
+    //     content: false,
+    //   },
+    // });
 
-    return { success: true, pages };
+    return { success: true, pages, pagesCount: totalPages.count };
   } catch (error) {
     return {
       success: false,
