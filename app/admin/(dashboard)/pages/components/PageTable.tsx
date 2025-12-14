@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { pages } from "@/src/db/schema/pages";
+import React, { useMemo, useState } from "react";
 import { PagesTableProps } from "../page";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -12,13 +11,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
-
-type PageTableData = Omit<typeof pages.$inferSelect, "content">;
+import {
+  GetPageGroupsResponse,
+  PageGroup as PageGroupT,
+} from "@/app/actions/pages/get-pages";
+import { ResultData } from "@/lib/types/Result";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Eye, SquarePen } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Checkbox } from "../../users/components/Checkbox";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import DeletePageDialog from "./DeletePageDialog";
 
 type PageDataTableProps = {
   type: "data";
-  data: PageTableData[];
-  total: number;
+  data: ResultData<GetPageGroupsResponse>;
   tableProps: PagesTableProps;
 };
 
@@ -111,7 +119,87 @@ function TableFooter(props: TableFooterProps) {
   );
 }
 
+type PageGroupProps = {
+  group: PageGroupT;
+  slugPrefix?: string;
+  indentLevel?: number;
+};
+function PageGroup({
+  group,
+  slugPrefix = "",
+  indentLevel = 0,
+}: PageGroupProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  return (
+    <>
+      <tr key={group.page.id} className="border-t">
+        <td className="px-4 py-4">
+          <input
+            type="checkbox"
+            className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+          />
+        </td>
+        <td
+          className="px-4 py-4 flex items-center"
+          style={{
+            paddingLeft: `${indentLevel * 2 + 1}rem`,
+          }}
+        >
+          {group.pages.length > 0 && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={cn(
+                "mr-2 p-0 w-8 h-8 [&>svg]:transition-transform",
+                isExpanded ? "[&>svg]:rotate-90" : "[&>svg]:rotate-0"
+              )}
+            >
+              <ChevronRight />
+            </Button>
+          )}
+          {group.page.title}
+        </td>
+        <td className="px-4 py-4">{`${slugPrefix}/${group.page.slug}`}</td>
+        <td className="px-4 py-4">
+          {new Date(group.page.createdAt).toLocaleDateString()}
+        </td>
+        <td className="flex justify-end items-center pr-2">
+          <Link
+            href={
+              slugPrefix
+                ? `/${slugPrefix}/${group.page.slug}`
+                : `/${group.page.slug}`
+            }
+            target="_blank"
+          >
+            <Button variant="ghost" size="icon">
+              <Eye />
+            </Button>
+          </Link>
+          <Link href={`/admin/pages/${group.page.id}`}>
+            <Button variant="ghost" size="icon">
+              <SquarePen />
+            </Button>
+          </Link>
+          <DeletePageDialog page={group.page} />
+        </td>
+      </tr>
+      {isExpanded &&
+        group.pages.map((childPageGroup) => (
+          <PageGroup
+            key={childPageGroup.page.id}
+            group={childPageGroup}
+            slugPrefix={`${slugPrefix}/${group.page.slug}`}
+            indentLevel={indentLevel + 1}
+          />
+        ))}
+    </>
+  );
+}
+
 function PageTable(props: PageTableProps) {
+  const searchParams = useSearchParams();
   const loading = props.type === "loading";
 
   const footerData = useMemo(() => {
@@ -119,7 +207,7 @@ function PageTable(props: PageTableProps) {
       return {
         page: parseInt(props.tableProps.page || "1"),
         perPage: parseInt(props.tableProps.perPage || "20"),
-        total: props.total,
+        total: props.data.count,
       };
     }
     return { page: 1, perPage: 10, total: 0 };
@@ -137,27 +225,30 @@ function PageTable(props: PageTableProps) {
     <div className="flex flex-col flex-1 gap-4 overflow-hidden">
       <div className="flex-1 border rounded-lg overflow-scroll">
         <table className="w-full border-collapse">
-          <thead className="">
-            <tr className="">
+          <thead>
+            <tr>
+              <th className="px-4 py-3 sticky top-0 bg-secondary w-4">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                />
+              </th>
               <th className="px-4 py-3 sticky top-0 bg-secondary">Title</th>
-              <th className="px-4 py-3 sticky top-0 bg-secondary">Slug</th>
-              <th className="px-4 py-3 sticky top-0 bg-secondary">
+              <th className="px-4 py-3 sticky top-0 bg-secondary w-64">Slug</th>
+              <th className="px-4 py-3 sticky top-0 bg-secondary w-32 text-left">
                 Created At
               </th>
+              <th className="sticky top-0 bg-secondary w-0"></th>
             </tr>
           </thead>
           <tbody>
             {props.type === "data"
-              ? props.data.map((page) => (
-                  <tr key={page.id} className="border-t">
-                    <td className="px-4 py-4">{page.title}</td>
-                    <td className="px-4 py-4">{page.slug}</td>
-                    <td className="px-4 py-4">
-                      {new Date(page.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
+              ? props.data.pages.map((pageGroup) => (
+                  <PageGroup key={pageGroup.page.id} group={pageGroup} />
                 ))
-              : Array.from({ length: 20 }).map((_, index) => (
+              : Array.from({
+                  length: parseInt(searchParams.get("perPage") || "20"),
+                }).map((_, index) => (
                   <tr key={index} className="border-t">
                     <td className="px-4 py-4">
                       <Skeleton className="text-transparent inline">

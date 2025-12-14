@@ -7,7 +7,7 @@ import { hasPermission } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getPages } from "@/app/actions/pages/get-pages";
+import { getPageGroups, getPages } from "@/app/actions/pages/get-pages";
 import { GetPagesRequest } from "@/lib/schemas/PagesSchema";
 
 export type PagesTableProps = {
@@ -34,21 +34,13 @@ async function PagesLoader(props: PagesTableProps) {
     sortOrder: props.sortOrder,
   };
 
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  const res = await getPages(request);
+  const res = await getPageGroups(request);
 
   if (!res.success) {
     return <PageTable type="error" error={res.error || ""} />;
   }
 
-  return (
-    <PageTable
-      type="data"
-      data={res.pages}
-      total={res.pagesCount}
-      tableProps={props}
-    />
-  );
+  return <PageTable type="data" data={res.data} tableProps={props} />;
 }
 
 async function Pages({ searchParams }: PagesProps) {
