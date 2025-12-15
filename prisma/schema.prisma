@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique(map: "settings_key_unique")
+  value String
+
+  @@map("settings")
+}
