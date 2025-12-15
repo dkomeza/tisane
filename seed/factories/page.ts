@@ -1,10 +1,23 @@
 import { faker } from "@faker-js/faker";
 import { pages, pageStatus, pageVisibility } from "@/src/db/schema/pages";
+import { db } from "@/src/db/drizzle";
 
 export type Page = Omit<typeof pages.$inferSelect, "id">;
 const usedSlugs = new Map<string, number>();
 
-export function uniqueSlug(base: string) {
+export async function getUsedSlugs(): Promise<void> {
+  const existingPages = await db.select().from(pages);
+  existingPages.forEach((page) => {
+    const key = page.slug.toLowerCase();
+    const count = usedSlugs.get(key) ?? 0;
+    usedSlugs.set(key, count + 1);
+  });
+
+  console.log(`Loaded ${existingPages.length} existing slugs`);
+  console.log(usedSlugs);
+}
+
+function uniqueSlug(base: string) {
   const key = base.toLowerCase();
 
   const count = usedSlugs.get(key) ?? 0;
@@ -20,7 +33,7 @@ export function makePage(overrides: Partial<Page> = {}): Page {
 
   return {
     title: title,
-    slug: uniqueSlug(title).replace(/\s+/g, "-"),
+    slug: uniqueSlug(faker.word.noun()).replace(/\s+/g, "-"),
     status: status,
     visibility: faker.helpers.arrayElement(pageVisibility.enumValues),
     createdAt: new Date(),

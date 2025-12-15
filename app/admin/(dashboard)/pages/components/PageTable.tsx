@@ -23,6 +23,16 @@ import { Checkbox } from "../../users/components/Checkbox";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import DeletePageDialog from "./DeletePageDialog";
+import { Item } from "@/components/ui/item";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type PageDataTableProps = {
   type: "data";
@@ -74,6 +84,8 @@ function TableFooter(props: TableFooterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const pages = Math.ceil(props.total / props.perPage);
+
   function handleLimitChange(value: string) {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -82,12 +94,21 @@ function TableFooter(props: TableFooterProps) {
     router.replace(`/admin/pages?${params.toString()}`);
   }
 
+  function getPaginationHref(page: number) {
+    if (page < 1) return undefined;
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    return `/admin/pages?${params.toString()}`;
+  }
+
   return (
     <div className="flex justify-between">
       <div className="text-sm text-secondary-foreground/70 mt-2">
         Showing{" "}
         <SkeletonText loading={props.loading} placeholder="1-9">
-          {Math.min(props.perPage, props.total)}
+          {Math.min((props.page - 1) * props.perPage + 1, props.total)}-
+          {Math.min(props.page * props.perPage, props.total)}
         </SkeletonText>{" "}
         of{" "}
         <SkeletonText loading={props.loading} placeholder="99">
@@ -95,7 +116,98 @@ function TableFooter(props: TableFooterProps) {
         </SkeletonText>{" "}
         items
       </div>
-      <div></div>
+      <div>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href={getPaginationHref(props.page - 1) || "#"}
+                {...(props.page <= 1 && {
+                  "aria-disabled": true,
+                  tabIndex: -1,
+                })}
+                className={cn(
+                  props.page <= 1 && "pointer-events-none opacity-50"
+                )}
+              >
+                Previous
+              </PaginationPrevious>
+            </PaginationItem>
+            {props.loading ? (
+              <>
+                {[...Array(3)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <Skeleton className="text-transparent">
+                      <PaginationEllipsis />
+                    </Skeleton>
+                  </PaginationItem>
+                ))}
+              </>
+            ) : (
+              <>
+                {[1, 2, 3].map(
+                  (page) =>
+                    page <= pages && (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href={getPaginationHref(page) || "#"}
+                          aria-current={
+                            props.page === page ? "page" : undefined
+                          }
+                          className={cn(
+                            props.page === page
+                              ? "bg-primary text-primary-foreground"
+                              : "",
+                            "hover:bg-primary/10"
+                          )}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                )}
+                {pages > 6 && <PaginationEllipsis />}
+                {[pages - 2, pages - 1, pages].map(
+                  (page) =>
+                    page > 3 && (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href={getPaginationHref(page) || "#"}
+                          aria-current={
+                            props.page === page ? "page" : undefined
+                          }
+                          className={cn(
+                            props.page === page
+                              ? "bg-primary text-primary-foreground"
+                              : "",
+                            "hover:bg-primary/10"
+                          )}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                )}
+              </>
+            )}
+            <PaginationItem>
+              <PaginationNext
+                href={getPaginationHref(props.page + 1) || "#"}
+                {...(props.page * props.perPage >= props.total && {
+                  "aria-disabled": true,
+                  tabIndex: -1,
+                })}
+                className={cn(
+                  props.page * props.perPage >= props.total &&
+                    "pointer-events-none opacity-50"
+                )}
+              >
+                Next
+              </PaginationNext>
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
       <div className="flex gap-2 items-center">
         <p>Rows per page:</p>
 
@@ -132,15 +244,15 @@ function PageGroup({
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
-      <tr key={group.page.id} className="border-t">
-        <td className="px-4 py-4">
+      <tr key={group.page.id} className="border-t [&>td]:px-4 [&>td]:py-4">
+        <td>
           <input
             type="checkbox"
             className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
           />
         </td>
         <td
-          className="px-4 py-4 flex items-center"
+          className="flex items-center"
           style={{
             paddingLeft: `${indentLevel * 2 + 1}rem`,
           }}
@@ -160,11 +272,39 @@ function PageGroup({
           )}
           {group.page.title}
         </td>
-        <td className="px-4 py-4">{`${slugPrefix}/${group.page.slug}`}</td>
-        <td className="px-4 py-4">
-          {new Date(group.page.createdAt).toLocaleDateString()}
+        <td className="whitespace-nowrap overflow-hidden text-ellipsis w-72">{`${slugPrefix}/${group.page.slug}`}</td>
+        <td>{new Date(group.page.updatedAt).toLocaleDateString()}</td>
+        <td>
+          <div
+            className={cn(
+              "text-xs py-1 px-3 border rounded-full w-fit font-semibold",
+              group.page.status === "published"
+                ? "bg-green-300 dark:bg-green-300/90 text-green-900"
+                : group.page.status === "draft"
+                  ? "bg-yellow-300 dark:bg-yellow-300/90 text-yellow-900"
+                  : "bg-blue-300 dark:bg-blue-300/90 text-blue-900"
+            )}
+          >
+            {group.page.status}
+          </div>
         </td>
-        <td className="flex justify-end items-center pr-2">
+        <td>
+          <div
+            className={cn(
+              "text-xs py-1 px-3 border rounded-full w-fit font-semibold",
+              group.page.visibility === "public"
+                ? ""
+                : group.page.visibility === "private"
+                  ? "bg-black text-white"
+                  : "bg-gray-300 dark:bg-gray-300/90 text-black"
+            )}
+          >
+            {group.page.visibility !== "password_protected"
+              ? group.page.visibility
+              : "protected"}
+          </div>
+        </td>
+        <td className="px-0 py-0 flex justify-end items-center pr-2">
           <Link
             href={
               slugPrefix
@@ -224,21 +364,21 @@ function PageTable(props: PageTableProps) {
   return (
     <div className="flex flex-col flex-1 gap-4 overflow-hidden">
       <div className="flex-1 border rounded-lg overflow-scroll">
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-auto">
           <thead>
-            <tr>
-              <th className="px-4 py-3 sticky top-0 bg-secondary w-4">
+            <tr className="[&>th]:text-left [&>th]:border-b [&>th]:border-b-border [&>th]:font-medium [&>th]:px-4 [&>th]:py-3 sticky top-0 bg-secondary">
+              <th className="w-4">
                 <input
                   type="checkbox"
                   className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
                 />
               </th>
-              <th className="px-4 py-3 sticky top-0 bg-secondary">Title</th>
-              <th className="px-4 py-3 sticky top-0 bg-secondary w-64">Slug</th>
-              <th className="px-4 py-3 sticky top-0 bg-secondary w-32 text-left">
-                Created At
-              </th>
-              <th className="sticky top-0 bg-secondary w-0"></th>
+              <th className="">Title</th>
+              <th className="w-72">Slug</th>
+              <th className="w-36">Last Modified</th>
+              <th className="w-24">Status</th>
+              <th className="w-24">Visibility</th>
+              <th className="w-0"></th>
             </tr>
           </thead>
           <tbody>

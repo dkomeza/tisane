@@ -7,7 +7,7 @@ import { hasPermission } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getPageGroups, getPages } from "@/app/actions/pages/get-pages";
+import { getPageGroups } from "@/app/actions/pages/get-pages";
 import { GetPagesRequest } from "@/lib/schemas/PagesSchema";
 
 export type PagesTableProps = {
@@ -34,6 +34,7 @@ async function PagesLoader(props: PagesTableProps) {
     sortOrder: props.sortOrder,
   };
 
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   const res = await getPageGroups(request);
 
   if (!res.success) {

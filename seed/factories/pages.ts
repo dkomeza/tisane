@@ -1,12 +1,15 @@
 import { faker } from "@faker-js/faker";
-import { makePage, Page } from "./page";
-import { makeTag } from "./tag";
+import { getUsedSlugs, makePage, Page } from "./page";
+import { getUsedTags, makeTag } from "./tag";
 
-faker.seed(42); // IMPORTANT: reproducible seeds
+faker.seed(43); // IMPORTANT: reproducible seeds
 
 export const TAG_COUNT = 40;
-export const ROOT_PAGE_COUNT = 5;
-export const CHILD_PAGES_PER_ROOT = 5;
+export const ROOT_PAGE_COUNT = 10;
+export const CHILD_PAGES_PER_ROOT = 10;
+
+await getUsedSlugs();
+await getUsedTags();
 
 export const tags = Array.from({ length: TAG_COUNT }, makeTag);
 
