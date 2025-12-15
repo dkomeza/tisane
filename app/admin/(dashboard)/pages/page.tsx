@@ -34,7 +34,6 @@ async function PagesLoader(props: PagesTableProps) {
     sortOrder: props.sortOrder,
   };
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   const res = await getPages(request);
 
   if (!res.success) {
