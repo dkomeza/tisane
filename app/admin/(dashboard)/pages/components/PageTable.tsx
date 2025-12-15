@@ -19,11 +19,8 @@ import { ResultData } from "@/lib/types/Result";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Eye, SquarePen } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "../../users/components/Checkbox";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import DeletePageDialog from "./DeletePageDialog";
-import { Item } from "@/components/ui/item";
 import {
   Pagination,
   PaginationContent,
@@ -33,6 +30,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type PageDataTableProps = {
   type: "data";
@@ -246,10 +244,7 @@ function PageGroup({
     <>
       <tr key={group.page.id} className="border-t [&>td]:px-4 [&>td]:py-4">
         <td>
-          <input
-            type="checkbox"
-            className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-          />
+          <Checkbox />
         </td>
         <td
           className="flex items-center"
@@ -368,10 +363,7 @@ function PageTable(props: PageTableProps) {
           <thead>
             <tr className="[&>th]:text-left [&>th]:border-b [&>th]:border-b-border [&>th]:font-medium [&>th]:px-4 [&>th]:py-3 sticky top-0 bg-secondary">
               <th className="w-4">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                />
+                <Checkbox />
               </th>
               <th className="">Title</th>
               <th className="w-72">Slug</th>
