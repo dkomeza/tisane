@@ -2,10 +2,8 @@
 
 import { SignupSchema } from "@/lib/schemas/SignupSchema";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/src/db/drizzle";
+import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { user } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function signupUser(_: unknown, formData: FormData) {
   const rawData = {
@@ -24,9 +22,12 @@ export async function signupUser(_: unknown, formData: FormData) {
 
     const { data } = parse;
 
-    const verification = await db.query.verification.findFirst({
-      where(fields, { eq }) {
-        return eq(fields.identifier, `reset-password:${data.token}`);
+    const verification = await prisma.verification.findFirst({
+      where: {
+        identifier: `reset-password:${data.token}`,
+        expiresAt: {
+          gt: new Date(),
+        },
       },
     });
 
@@ -48,13 +49,13 @@ export async function signupUser(_: unknown, formData: FormData) {
       throw new Error("Error resetting password");
     }
 
-    await db
-      .update(user)
-      .set({
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
         name: `${data.name} ${data.surname}`,
         emailVerified: true,
-      })
-      .where(eq(user.id, userId));
+      },
+    });
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Error during signup" };
   }
