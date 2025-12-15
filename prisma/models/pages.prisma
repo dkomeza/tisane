@@ -1,0 +1,58 @@
+enum PageStatus {
+    draft
+    published
+    archived
+
+    @@map("page_status")
+}
+
+enum PageVisibility {
+    public
+    private
+    password_protected
+
+    @@map("page_visibility")
+}
+
+model Page {
+    // Metadata
+    id    String @id @default(uuid(7))
+    title String
+    slug  String @unique()
+    tags  Tag[]
+
+    // Status & Visibility
+    status       PageStatus     @default(draft)
+    visibility   PageVisibility @default(public)
+    created_at   DateTime       @default(now())
+    updated_at   DateTime       @updatedAt
+    published_at DateTime?
+    deleted_at   DateTime?
+
+    // Content
+    content String
+
+    // SEO
+    seo_title        String?
+    seo_description  String?
+    open_graph_image String?
+    canonical_url    String?
+
+    // Nesting & Ordering
+    order     Int     @default(0)
+    parent_id String?
+    parent    Page?   @relation("PageToPage", fields: [parent_id], references: [id])
+    children  Page[]  @relation("PageToPage")
+
+    @@map("pages")
+}
+
+model Tag {
+    id         String   @id @default(uuid(7))
+    name       String   @unique()
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    pages      Page[]
+
+    @@index([name])
+}

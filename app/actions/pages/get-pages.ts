@@ -3,24 +3,15 @@
 import { hasPermission } from "@/lib/permissions";
 import { authorize } from "@/lib/auth/authorize";
 
-import { db } from "@/src/db/drizzle";
-import z from "zod";
-import { eq } from "drizzle-orm";
+import { GetPagesSchema, GetPagesRequest } from "@/lib/schemas/PagesSchema";
+import { Result } from "@/lib/types/Result";
+import prisma, { Page, Prisma } from "@/lib/prisma";
 
-const GetPagesSchema = z.object({
-  limit: z.number().min(1).max(100).optional(),
-  offset: z.number().min(0).optional(),
-  lastId: z.string().optional(),
-
-  search: z.string().min(1).optional(),
-
-  sortBy: z.enum(["createdAt", "updatedAt", "title"]).optional(),
-  sortOrder: z.enum(["asc", "desc"]).optional(),
-
-  returnAll: z.boolean().optional(),
-});
-
-type GetPagesRequest = z.infer<typeof GetPagesSchema>;
+export type PageWithoutContent = Omit<Page, "content">;
+export type GetPagesResponse = Result<
+  { pages: PageWithoutContent[]; count: number },
+  string
+>;
 
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
@@ -28,7 +19,9 @@ type GetPagesRequest = z.infer<typeof GetPagesSchema>;
  *
  * @returns An array of pages. By default, it returns the first 20 pages.
  */
-export async function getPages(request?: GetPagesRequest) {
+export async function getPages(
+  request?: GetPagesRequest
+): Promise<GetPagesResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
@@ -37,17 +30,6 @@ export async function getPages(request?: GetPagesRequest) {
 
   try {
     // Validating the request
-    if (!request) {
-      return {
-        success: true,
-        pages: await db.query.pages.findMany({
-          limit: 20,
-          where: (pages, { isNull }) => isNull(pages.deletedAt),
-          orderBy: (page, { desc }) => [desc(page.createdAt), desc(page.id)],
-        }),
-      };
-    }
-
     const parse = GetPagesSchema.safeParse(request);
 
     if (!parse.success) {
@@ -62,81 +44,39 @@ export async function getPages(request?: GetPagesRequest) {
     }
 
     // Building the query
-    const query: Parameters<typeof db.query.pages.findMany>[0] = {};
+    const query: Prisma.PageFindManyArgs = {};
+    const where: Prisma.PageWhereInput = {};
+    const sortFunction = sortOrder || "desc";
 
-    query.limit = limit ?? 20;
-    if (offset) query.offset = offset;
-
-    let last = null;
-    if (lastId) {
-      last = await db.query.pages.findFirst({
-        where: (pages) => eq(pages.id, lastId),
-      });
-
-      if (!last) {
-        throw new Error("Invalid lastId for pagination");
-      }
+    query.take = limit ?? 20;
+    if (offset) query.skip = offset;
+    if (lastId) query.cursor = { id: lastId };
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ];
     }
-
-    query.where = (pages, { and, ilike, or, gt, lt, isNull }) => {
-      const conditions = [];
-      if (search)
-        conditions.push(
-          or(
-            ilike(pages.title, `%${search}%`),
-            ilike(pages.content, `%${search}%`)
-          )
-        );
-
-      if (last) {
-        const sortColumn = sortBy ? pages[sortBy] : pages.createdAt;
-        const sortDirection = sortOrder === "asc" ? "asc" : "desc";
-
-        if (sortDirection === "asc") {
-          conditions.push(
-            or(
-              gt(sortColumn, last[sortBy ?? "createdAt"]),
-              and(
-                eq(sortColumn, last[sortBy ?? "createdAt"]),
-                gt(pages.id, last.id)
-              )
-            )
-          );
-        } else {
-          conditions.push(
-            or(
-              lt(sortColumn, last[sortBy ?? "createdAt"]),
-              and(
-                eq(sortColumn, last[sortBy ?? "createdAt"]),
-                lt(pages.id, last.id)
-              )
-            )
-          );
-        }
-      }
-
-      if (!returnAll) {
-        conditions.push(isNull(pages.deletedAt));
-      }
-
-      return conditions.length ? and(...conditions) : undefined;
-    };
-
-    const pages = await db.query.pages.findMany({
-      ...query,
-      orderBy: (pages, { asc, desc }) => {
-        const orderFn = sortOrder === "asc" ? asc : desc; // Default to desc
-        return [
-          sortBy ? orderFn(pages[sortBy]) : orderFn(pages.createdAt),
-          orderFn(pages.id),
-        ];
+    if (!returnAll) where.deleted_at = null;
+    query.orderBy = [
+      sortBy
+        ? {
+            [sortBy]: sortFunction,
+          }
+        : {
+            created_at: sortFunction,
+          },
+      {
+        id: sortFunction,
       },
-      columns: {
-        content: false,
-      },
-    });
+    ];
+    query.where = where;
+    query.omit = { content: true };
 
-    return { success: true, pages };
+    const pages = await prisma.page.findMany(query);
+    const count = await prisma.page.count({ where });
+
+    return { success: true, data: { pages, count } };
   } catch (error) {
     return {
       success: false,
