@@ -10,8 +10,8 @@ const CreatePageSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
 
-  status: z.enum(PageStatus).optional(),
-  visibility: z.enum(PageVisibility).optional(),
+  status: z.enum(Object.values(PageStatus)).optional(),
+  visibility: z.enum(Object.values(PageVisibility)).optional(),
 
   content: z.string().min(1),
 
