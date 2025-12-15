@@ -13,14 +13,6 @@ export type GetPagesResponse = Result<
   string
 >;
 
-async function getPagesCount(): Promise<number> {
-  const totalPages = await prisma.page.count({
-    where: { deleted_at: null },
-  });
-
-  return totalPages;
-}
-
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
  * Therefore, it requires proper authentication and authorization.
@@ -37,8 +29,6 @@ export async function getPages(
   }
 
   try {
-    const count = await getPagesCount();
-
     // Validating the request
     const parse = GetPagesSchema.safeParse(request);
 
@@ -84,6 +74,7 @@ export async function getPages(
     query.omit = { content: true };
 
     const pages = await prisma.page.findMany(query);
+    const count = await prisma.page.count({ where });
 
     return { success: true, data: { pages, count } };
   } catch (error) {
