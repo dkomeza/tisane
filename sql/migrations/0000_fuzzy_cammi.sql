@@ -61,32 +61,33 @@ CREATE TABLE "settings" (
 );
 --> statement-breakpoint
 CREATE TABLE "pages" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
 	"slug" text NOT NULL,
-	"tags" text[] DEFAULT '{}' NOT NULL,
 	"status" "page_status" DEFAULT 'draft' NOT NULL,
 	"visibility" "page_visibility" DEFAULT 'public' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"published_at" timestamp,
+	"deleted_at" timestamp,
 	"content" text NOT NULL,
 	"seo_title" text,
 	"seo_description" text,
 	"open_graph_image" text,
 	"canonical_url" text,
 	"order" integer DEFAULT 0 NOT NULL,
-	"parent_id" text,
+	"parent_id" uuid,
 	CONSTRAINT "pages_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "pages_tags" (
-	"page_id" text NOT NULL,
-	"tag_id" text NOT NULL
+	"page_id" uuid NOT NULL,
+	"tag_id" uuid NOT NULL,
+	CONSTRAINT "pages_tags_page_id_tag_id_pk" PRIMARY KEY("page_id","tag_id")
 );
 --> statement-breakpoint
 CREATE TABLE "tags" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
