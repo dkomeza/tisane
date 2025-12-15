@@ -10,13 +10,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
-import React from "react";
-import { PageGroup } from "@/app/actions/pages/get-pages";
+import { useState } from "react";
+import { PageWithoutContent as Page } from "@/app/actions/pages/get-pages";
 import { deletePage } from "@/app/actions/pages/delete-page";
 import { Spinner } from "@/components/ui/spinner";
 
-function DeletePageDialog({ page }: { page: PageGroup["page"] }) {
-  const [loading, setLoading] = React.useState(false);
+function DeletePageDialog({ page }: { page: Page }) {
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     setLoading(true);

@@ -2,23 +2,16 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import { db } from "@/src/db/drizzle";
-
-import {
-  pages,
-  pagesTags,
-  pageStatus,
-  pageVisibility,
-} from "@/src/db/schema/pages";
 import { refresh } from "next/cache";
 import z from "zod";
+import prisma, { PageVisibility, PageStatus } from "@/lib/prisma";
 
 const CreatePageSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
 
-  status: z.enum(pageStatus.enumValues).optional(),
-  visibility: z.enum(pageVisibility.enumValues).optional(),
+  status: z.enum(PageStatus).optional(),
+  visibility: z.enum(PageVisibility).optional(),
 
   content: z.string().min(1),
 
@@ -51,21 +44,19 @@ export async function createPage(request: CreatePageRequest) {
 
     const { tags, ...pageData } = parse.data;
 
-    const [page] = await db.insert(pages).values(pageData).returning();
+    const page = await prisma.page.create({
+      data: {
+        ...pageData,
+        ...(tags && {
+          tags: {
+            connect: tags.map((tagId) => ({ id: tagId })),
+          },
+        }),
+      },
+    });
 
     if (!page) {
       throw new Error("Failed to create page");
-    }
-
-    // Handle tags association if tags are provided
-    if (tags && tags.length > 0) {
-      // Assuming there's a pagesTags table to handle many-to-many relationship
-      const pagesTagsInserts = tags.map((tagId) => ({
-        pageId: page.id,
-        tagId,
-      }));
-
-      await db.insert(pagesTags).values(pagesTagsInserts);
     }
 
     return { success: true, page };

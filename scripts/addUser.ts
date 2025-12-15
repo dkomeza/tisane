@@ -1,7 +1,6 @@
 import prompts from "prompts";
 import { auth } from "@/lib/auth/server";
-import { db } from "@/src/db/drizzle";
-import { user } from "@/src/db/schema/auth";
+import prisma from "@/lib/prisma";
 import { eq } from "drizzle-orm";
 
 async function main() {
@@ -38,12 +37,11 @@ async function main() {
 
   try {
     // Check if user already exists
-    const existingUsers = await db
-      .select()
-      .from(user)
-      .where(eq(user.email, response.email));
+    const existingUsers = await prisma.user.findFirst({
+      where: { email: response.email },
+    });
 
-    if (existingUsers.length > 0) {
+    if (existingUsers) {
       console.error("User with this email already exists");
       process.exit(1);
     }
@@ -83,23 +81,17 @@ async function main() {
     }
 
     // Now update the user to be admin
-    const newUsers = await db
-      .select()
-      .from(user)
-      .where(eq(user.email, response.email));
-    const newUser = newUsers[0];
+    const user = await prisma.user.update({
+      where: { email: response.email },
+      data: { role: "admin", emailVerified: true },
+    });
 
-    if (!newUser) {
-      console.error("Failed to find the created user.");
+    if (!user) {
+      console.error("User creation failed at update step.");
       process.exit(1);
     }
 
-    console.log("Promoting user to admin...");
-    await db.update(user).set({ role: "admin" }).where(eq(user.id, newUser.id));
-
-    console.log(
-      `User ${newUser.name} (${newUser.email}) created and set as admin!`
-    );
+    console.log(`User ${user.name} (${user.email}) created and set as admin!`);
     process.exit(0);
   } catch (error) {
     console.error("Error creating user:", error);

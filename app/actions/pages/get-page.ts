@@ -2,8 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import { db } from "@/src/db/drizzle";
-import { eq } from "drizzle-orm";
+import prisma, { Prisma } from "@/lib/prisma";
 import z from "zod";
 
 const GetPageSchema = z
@@ -33,18 +32,23 @@ export async function getPage(request: GetPagesRequest) {
 
     const { pageId, slug } = parse.data;
 
-    const query: Parameters<typeof db.query.pages.findFirst>[0] = {};
+    const query: Prisma.PageFindFirstArgs = {
+      include: {
+        tags: true,
+      },
+    };
 
     if (pageId) {
-      query.where = (pages) => eq(pages.id, pageId);
+      query.where = {
+        id: pageId,
+      };
     } else if (slug) {
-      // Default to pageId if both are provided
-      query.where = (pages) => eq(pages.slug, slug);
+      query.where = {
+        slug: slug,
+      };
     }
 
-    const page = await db.query.pages.findFirst({
-      ...query,
-    });
+    const page = await prisma.page.findFirst(query);
 
     return { success: true, page };
   } catch (error) {

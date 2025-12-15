@@ -1,5 +1,5 @@
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/src/db/drizzle";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import prisma from "../prisma";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { APIError, betterAuth } from "better-auth";
@@ -11,8 +11,8 @@ const baseURL =
   "http://localhost:3000";
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg",
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
   }),
   appName: "tisane",
   emailAndPassword: {

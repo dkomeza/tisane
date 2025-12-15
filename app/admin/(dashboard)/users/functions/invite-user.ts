@@ -5,7 +5,7 @@ import z from "zod";
 import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
-import { db } from "@/src/db/drizzle";
+import prisma from "@/lib/prisma";
 import { eq } from "drizzle-orm";
 
 import { extractInviteToken, sendInviteEmail } from "./utils";
@@ -30,8 +30,10 @@ export async function inviteUser(email: string) {
     }
 
     // Check if user already exists in your database here
-    const exists = await db.query.user.findFirst({
-      where: (user) => eq(user.email, parse.data),
+    const exists = await prisma.user.findFirst({
+      where: {
+        email: parse.data,
+      },
     });
 
     if (exists) {

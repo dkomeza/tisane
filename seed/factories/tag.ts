@@ -1,11 +1,10 @@
-import { db } from "@/src/db/drizzle";
-import { tags } from "@/src/db/schema/pages";
+import prisma from "@/lib/prisma";
 import { faker } from "@faker-js/faker";
 
 const usedTags = new Map<string, number>();
 
 export async function getUsedTags(): Promise<void> {
-  const existingTags = await db.select().from(tags);
+  const existingTags = await prisma.tag.findMany();
   existingTags.forEach((tag) => {
     const key = tag.name.toLowerCase();
     const count = usedTags.get(key) ?? 0;

@@ -2,9 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import { db } from "@/src/db/drizzle";
-import { pages } from "@/src/db/schema";
-import { inArray } from "drizzle-orm";
+import prisma from "@/lib/prisma";
 import { refresh } from "next/cache";
 
 export async function deletePage(pageId: string) {
@@ -28,19 +26,22 @@ export async function deletePages(pageIds: string[]) {
   }
 
   try {
-    const res = await db
-      .update(pages)
-      .set({ deletedAt: new Date() })
-      .where(inArray(pages.id, pageIds))
-      .returning();
+    const updated = await prisma.page.updateMany({
+      data: { deleted_at: new Date() },
+      where: {
+        id: {
+          in: pageIds,
+        },
+      },
+    });
 
-    if (res.length === 0) {
+    if (updated.count === 0) {
       throw new Error("No pages found to delete");
     }
 
     return {
       success: true,
-      message: `${res.length} pages deleted successfully`,
+      message: `${updated.count} pages deleted successfully`,
     };
   } catch (error) {
     return {
