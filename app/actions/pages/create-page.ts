@@ -15,13 +15,12 @@ const CreatePageSchema = z.object({
 
   content: z.string().min(1),
 
-  metaTitle: z.string().optional(),
-  metaDescription: z.string().optional(),
-  openGraphImage: z.string().optional(),
-  canonicalUrl: z.string().optional(),
+  seo_title: z.string().optional(),
+  seo_description: z.string().optional(),
+  open_graph_image: z.string().optional(),
+  canonical_url: z.string().optional(),
 
   order: z.number().int().optional(),
-  parentId: z.string().optional(),
 
   tags: z.array(z.string()).optional(), // Array of tag IDs
 });
