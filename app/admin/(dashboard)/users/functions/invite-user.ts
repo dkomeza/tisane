@@ -6,7 +6,6 @@ import { auth } from "@/lib/auth/server";
 import { hasPermission } from "@/lib/permissions";
 import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
-import { eq } from "drizzle-orm";
 
 import { extractInviteToken, sendInviteEmail } from "./utils";
 import { refresh } from "next/cache";
