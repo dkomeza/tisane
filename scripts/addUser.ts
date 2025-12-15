@@ -1,7 +1,6 @@
 import prompts from "prompts";
 import { auth } from "@/lib/auth/server";
 import prisma from "@/lib/prisma";
-import { eq } from "drizzle-orm";
 
 async function main() {
   console.log("Creating the first admin user...");
