@@ -55,4 +55,5 @@ model Tag {
     pages      Page[]
 
     @@index([name])
+    @@map("tags")
 }
