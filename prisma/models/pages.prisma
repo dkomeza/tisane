@@ -25,7 +25,7 @@ model Page {
     status       PageStatus     @default(draft)
     visibility   PageVisibility @default(public)
     created_at   DateTime       @default(now())
-    updated_at   DateTime       @default(now())
+    updated_at   DateTime       @updatedAt
     published_at DateTime?
     deleted_at   DateTime?
 
@@ -51,7 +51,7 @@ model Tag {
     id         String   @id @default(uuid(7))
     name       String   @unique()
     created_at DateTime @default(now())
-    updated_at DateTime @default(now())
+    updated_at DateTime @updatedAt
     pages      Page[]
 
     @@index([name])
