@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/select";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  GetPageGroupsResponse,
-  PageGroup as PageGroupT,
+  GetPagesResponse,
+  PageWithoutContent as Page,
 } from "@/app/actions/pages/get-pages";
 import { ResultData } from "@/lib/types/Result";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 type PageDataTableProps = {
   type: "data";
-  data: ResultData<GetPageGroupsResponse>;
+  data: ResultData<GetPagesResponse>;
   tableProps: PagesTableProps;
 };
 
@@ -229,106 +229,61 @@ function TableFooter(props: TableFooterProps) {
   );
 }
 
-type PageGroupProps = {
-  group: PageGroupT;
-  slugPrefix?: string;
-  indentLevel?: number;
-};
-function PageGroup({
-  group,
-  slugPrefix = "",
-  indentLevel = 0,
-}: PageGroupProps) {
+function PageGroup({ page }: { page: Page }) {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
-      <tr key={group.page.id} className="border-t [&>td]:px-4 [&>td]:py-4">
+      <tr key={page.id} className="border-t [&>td]:px-4 [&>td]:py-4">
         <td>
           <Checkbox />
         </td>
-        <td
-          className="flex items-center"
-          style={{
-            paddingLeft: `${indentLevel * 2 + 1}rem`,
-          }}
-        >
-          {group.pages.length > 0 && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                "mr-2 p-0 w-8 h-8 [&>svg]:transition-transform",
-                isExpanded ? "[&>svg]:rotate-90" : "[&>svg]:rotate-0"
-              )}
-            >
-              <ChevronRight />
-            </Button>
-          )}
-          {group.page.title}
-        </td>
-        <td className="whitespace-nowrap overflow-hidden text-ellipsis w-72">{`${slugPrefix}/${group.page.slug}`}</td>
-        <td>{new Date(group.page.updatedAt).toLocaleDateString()}</td>
+        <td className="flex items-center">{page.title}</td>
+        <td className="whitespace-nowrap overflow-hidden text-ellipsis w-72">{`/${page.slug}`}</td>
+        <td>{new Date(page.updated_at).toLocaleDateString()}</td>
         <td>
           <div
             className={cn(
               "text-xs py-1 px-3 border rounded-full w-fit font-semibold",
-              group.page.status === "published"
+              page.status === "published"
                 ? "bg-green-300 dark:bg-green-300/90 text-green-900"
-                : group.page.status === "draft"
+                : page.status === "draft"
                   ? "bg-yellow-300 dark:bg-yellow-300/90 text-yellow-900"
                   : "bg-blue-300 dark:bg-blue-300/90 text-blue-900"
             )}
           >
-            {group.page.status}
+            {page.status}
           </div>
         </td>
         <td>
           <div
             className={cn(
               "text-xs py-1 px-3 border rounded-full w-fit font-semibold",
-              group.page.visibility === "public"
+              page.visibility === "public"
                 ? ""
-                : group.page.visibility === "private"
+                : page.visibility === "private"
                   ? "bg-black text-white"
                   : "bg-gray-300 dark:bg-gray-300/90 text-black"
             )}
           >
-            {group.page.visibility !== "password_protected"
-              ? group.page.visibility
+            {page.visibility !== "password_protected"
+              ? page.visibility
               : "protected"}
           </div>
         </td>
         <td className="px-0 py-0 flex justify-end items-center pr-2">
-          <Link
-            href={
-              slugPrefix
-                ? `/${slugPrefix}/${group.page.slug}`
-                : `/${group.page.slug}`
-            }
-            target="_blank"
-          >
+          <Link href={`/${page.slug}`} target="_blank">
             <Button variant="ghost" size="icon">
               <Eye />
             </Button>
           </Link>
-          <Link href={`/admin/pages/${group.page.id}`}>
+          <Link href={`/admin/pages/${page.id}`}>
             <Button variant="ghost" size="icon">
               <SquarePen />
             </Button>
           </Link>
-          <DeletePageDialog page={group.page} />
+          <DeletePageDialog page={page} />
         </td>
       </tr>
-      {isExpanded &&
-        group.pages.map((childPageGroup) => (
-          <PageGroup
-            key={childPageGroup.page.id}
-            group={childPageGroup}
-            slugPrefix={`${slugPrefix}/${group.page.slug}`}
-            indentLevel={indentLevel + 1}
-          />
-        ))}
     </>
   );
 }
@@ -345,7 +300,7 @@ function PageTable(props: PageTableProps) {
         total: props.data.count,
       };
     }
-    return { page: 1, perPage: 10, total: 0 };
+    return { page: 1, perPage: 20, total: 0 };
   }, [props]);
 
   if (props.type === "error") {
@@ -375,8 +330,8 @@ function PageTable(props: PageTableProps) {
           </thead>
           <tbody>
             {props.type === "data"
-              ? props.data.pages.map((pageGroup) => (
-                  <PageGroup key={pageGroup.page.id} group={pageGroup} />
+              ? props.data.pages.map((page) => (
+                  <PageGroup key={page.id} page={page} />
                 ))
               : Array.from({
                   length: parseInt(searchParams.get("perPage") || "20"),

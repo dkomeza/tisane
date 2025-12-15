@@ -1,16 +1,18 @@
 import { resend } from "@/lib/resend";
 import InviteUserEmail from "@/components/emails/InviteUserEmail";
-import { db } from "@/src/db/drizzle";
-import { and, desc, eq, gt } from "drizzle-orm";
+import prisma from "@/lib/prisma";
 
 export async function extractInviteToken(id: string) {
-  const verification = await db.query.verification.findFirst({
-    where: (verification) => {
-      const idCond = eq(verification.value, id);
-      const expiryCond = gt(verification.expiresAt, new Date());
-      return and(idCond, expiryCond);
+  const verification = await prisma.verification.findFirst({
+    where: {
+      identifier: `invite-user:${id}`,
+      expiresAt: {
+        gt: new Date(),
+      },
     },
-    orderBy: (verification) => desc(verification.createdAt),
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   const token = verification

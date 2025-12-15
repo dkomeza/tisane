@@ -7,10 +7,9 @@ import { GetPagesSchema, GetPagesRequest } from "@/lib/schemas/PagesSchema";
 import { Result } from "@/lib/types/Result";
 import prisma, { Page, Prisma } from "@/lib/prisma";
 
-type PageWithoutContent = Omit<Page, "content">;
-
-type GetPagesResponse = Result<
-  { pages: PageWithoutContent[]; pagesCount: number },
+export type PageWithoutContent = Omit<Page, "content">;
+export type GetPagesResponse = Result<
+  { pages: PageWithoutContent[]; count: number },
   string
 >;
 
@@ -38,7 +37,7 @@ export async function getPages(
   }
 
   try {
-    const pagesCount = await getPagesCount();
+    const count = await getPagesCount();
 
     // Validating the request
     const parse = GetPagesSchema.safeParse(request);
@@ -86,7 +85,7 @@ export async function getPages(
 
     const pages = await prisma.page.findMany(query);
 
-    return { success: true, data: { pages, pagesCount } };
+    return { success: true, data: { pages, count } };
   } catch (error) {
     return {
       success: false,

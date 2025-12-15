@@ -7,7 +7,7 @@ import { hasPermission } from "@/lib/permissions";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { getPageGroups } from "@/app/actions/pages/get-pages";
+import { getPages } from "@/app/actions/pages/get-pages";
 import { GetPagesRequest } from "@/lib/schemas/PagesSchema";
 
 export type PagesTableProps = {
@@ -35,7 +35,7 @@ async function PagesLoader(props: PagesTableProps) {
   };
 
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  const res = await getPageGroups(request);
+  const res = await getPages(request);
 
   if (!res.success) {
     return <PageTable type="error" error={res.error || ""} />;
