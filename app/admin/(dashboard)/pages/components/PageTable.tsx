@@ -230,12 +230,11 @@ function TableFooter(props: TableFooterProps) {
 }
 
 function PageGroup({ page }: { page: Page }) {
-  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
       <tr key={page.id} className="border-t [&>td]:px-4 [&>td]:py-4">
         <td>
-          <Checkbox />
+          <Checkbox disabled />
         </td>
         <td className="flex items-center">{page.title}</td>
         <td className="whitespace-nowrap overflow-hidden text-ellipsis w-72">{`/${page.slug}`}</td>
@@ -318,7 +317,7 @@ function PageTable(props: PageTableProps) {
           <thead>
             <tr className="[&>th]:text-left [&>th]:border-b [&>th]:border-b-border [&>th]:font-medium [&>th]:px-4 [&>th]:py-3 sticky top-0 bg-secondary">
               <th className="w-4">
-                <Checkbox />
+                <Checkbox disabled />
               </th>
               <th className="">Title</th>
               <th className="w-72">Slug</th>
