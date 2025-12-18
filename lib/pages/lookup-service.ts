@@ -21,8 +21,7 @@ type CachedPage = Pick<
   }[];
 };
 
-export function getPageBySlug(slug: string): Promise<CachedPage | null> {
-  const realSlug = !slug || slug === "/" ? "home" : slug;
+async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
   return prisma.page.findUnique({
     select: {
       id: true,
@@ -43,43 +42,24 @@ export function getPageBySlug(slug: string): Promise<CachedPage | null> {
         },
       },
     },
-    where: { slug: realSlug, status: "published", visibility: "public" },
+    where: { slug, status: "published", visibility: "public" },
   });
 }
 
-export function getCachedPageBySlug(slug: string): Promise<CachedPage | null> {
+export function getPageBySlug(slug: string): Promise<CachedPage | null> {
   const realSlug = !slug || slug === "/" ? "home" : slug;
+  return fetchPageBySlug(realSlug);
+}
 
+export function getCachedPageBySlug(slug: string): Promise<CachedPage | null> {
   return unstable_cache(
     async () => {
-      const page: CachedPage | null = await prisma.page.findUnique({
-        select: {
-          id: true,
-          title: true,
-          slug: true,
-          content: true,
-          status: true,
-          visibility: true,
-          created_at: true,
-          updated_at: true,
-          seo_description: true,
-          seo_title: true,
-          open_graph_image: true,
-          canonical_url: true,
-          tags: {
-            select: {
-              name: true,
-            },
-          },
-        },
-        where: { slug: realSlug, status: "published", visibility: "public" },
-      });
-      return page;
+      return getPageBySlug(slug);
     },
-    [`slug-${realSlug}`],
+    [`slug-${slug}`],
     {
       revalidate: false,
-      tags: [`page[${realSlug}]`],
+      tags: [`page[${slug}]`],
     }
   )();
 }
