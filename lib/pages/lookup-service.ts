@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import prisma, { Page } from "@/lib/prisma";
 
-type CachedPage = Pick<
+export type CachedPage = Pick<
   Page,
   | "id"
   | "title"
