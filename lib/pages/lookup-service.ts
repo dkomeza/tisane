@@ -79,7 +79,7 @@ export function getCachedPageBySlug(slug: string): Promise<CachedPage | null> {
     [`slug-${realSlug}`],
     {
       revalidate: false,
-      tags: [`page-slug-${realSlug}`],
+      tags: [`page[${realSlug}]`],
     }
   )();
 }
