@@ -16,7 +16,7 @@ export default function NotFound() {
                 </CardHeader>
                 <CardContent className="text-center">
                     <p className="text-gray-600 mb-6">
-                        Oops! The page you’re looking for doesn’t exist.
+                        Oops! The page you're looking for doesn't exist.
                     </p>
                     <Baby className="mx-auto w-24 h-24 text-brand-pink/70 mb-6 animate-bounce" />
                 </CardContent>
