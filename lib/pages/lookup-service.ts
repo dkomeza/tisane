@@ -60,7 +60,7 @@ function normalizeSlug(slug: string[]): string {
  *
  * An empty slug or "/" is treated as the "home" page slug.
  *
- * @param slug - The URL slug for the page (e.g. "about", "blog/post-1", or "/").
+ * @param slug - The URL slug segments for the page (e.g. ["about"], ["blog", "post-1"], or [] for home).
  * @returns A promise that resolves to the matching cached page, or `null` if no page exists.
  */
 export async function getPageBySlug(
