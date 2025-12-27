@@ -1,27 +1,28 @@
-import { PageForm } from "@/app/components/PageForm";
-import { PageFormValues } from "@/lib/schemas/EditCreateSchema";
-import { toast } from "sonner";
+import prisma from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import EditPageClient from "./EditPageClient";
 
-export default function EditPage() {
-  const mock: PageFormValues = {
-    title: "About",
-    slug: "about",
-    status: "published",
-    seoTitle: "About us",
-    seoDescription: "About company",
-    content: "{}",
-  };
+export default async function EditPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const page = await prisma.page.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!page) {
+    notFound();
+  }
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-6">Edit Page</h1>
-      <PageForm
-        defaultValues={mock}
-        onSubmit={async (data) => {
-          console.log("UPDATE", data);
-          toast.success("Page updated");
-        }}
-      />
-    </>
+    <EditPageClient
+      id={page.id}
+      initialData={{
+        title: page.title,
+        slug: page.slug,
+        status: page.status as any,
+        seoTitle: page.seo_title || undefined,
+        seoDescription: page.seo_description || undefined,
+        content: page.content,
+      }}
+    />
   );
 }
