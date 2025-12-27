@@ -197,7 +197,7 @@ function TableFooter(props: TableFooterProps) {
                 })}
                 className={cn(
                   props.page * props.perPage >= props.total &&
-                    "pointer-events-none opacity-50"
+                  "pointer-events-none opacity-50"
                 )}
               >
                 Next
@@ -275,7 +275,7 @@ function PageGroup({ page }: { page: Page }) {
               <Eye />
             </Button>
           </Link>
-          <Link href={`/admin/pages/${page.id}`}>
+          <Link href={`/admin/pages/${page.id}/edit`}>
             <Button variant="ghost" size="icon">
               <SquarePen />
             </Button>
@@ -330,29 +330,29 @@ function PageTable(props: PageTableProps) {
           <tbody>
             {props.type === "data"
               ? props.data.pages.map((page) => (
-                  <PageGroup key={page.id} page={page} />
-                ))
+                <PageGroup key={page.id} page={page} />
+              ))
               : Array.from({
-                  length: parseInt(searchParams.get("perPage") || "20"),
-                }).map((_, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="px-4 py-4">
-                      <Skeleton className="text-transparent inline">
-                        ██████████████
-                      </Skeleton>
-                    </td>
-                    <td className="px-4 py-4">
-                      <Skeleton className="text-transparent inline">
-                        █████████
-                      </Skeleton>
-                    </td>
-                    <td className="px-4 py-4">
-                      <Skeleton className="text-transparent inline">
-                        ████-██-██
-                      </Skeleton>
-                    </td>
-                  </tr>
-                ))}
+                length: parseInt(searchParams.get("perPage") || "20"),
+              }).map((_, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-4">
+                    <Skeleton className="text-transparent inline">
+                      ██████████████
+                    </Skeleton>
+                  </td>
+                  <td className="px-4 py-4">
+                    <Skeleton className="text-transparent inline">
+                      █████████
+                    </Skeleton>
+                  </td>
+                  <td className="px-4 py-4">
+                    <Skeleton className="text-transparent inline">
+                      ████-██-██
+                    </Skeleton>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
