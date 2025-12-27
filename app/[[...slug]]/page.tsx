@@ -17,7 +17,7 @@ export async function generateMetadata({
   const { slug = [] } = await params;
   const page = await getCachedPageBySlug(slug);
 
-  if (!page) {
+  if (!page || page.visibility !== "public" || page.status !== "published") {
     return {
       title: "Page Not Found",
     };
