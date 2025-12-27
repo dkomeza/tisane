@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const PageStatus = ["draft", "published"] as const;
+export const PageStatus = ["draft", "published", "archived"] as const;
 
 export const pageSchema = z.object({
   title: z.string().min(3),
