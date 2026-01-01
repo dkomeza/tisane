@@ -13,4 +13,16 @@ export const GetPagesSchema = z.object({
   returnAll: z.boolean().optional(),
 });
 
+export const PageStatus = ["draft", "published", "archived"] as const;
+
+export const PageSchema = z.object({
+  title: z.string().min(3),
+  slug: z.string().min(3),
+  status: z.enum(PageStatus),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  content: z.string().optional(),
+});
+
+export type PageFormValues = z.infer<typeof PageSchema>;
 export type GetPagesRequest = z.infer<typeof GetPagesSchema>;
