@@ -18,7 +18,7 @@ export default async function EditPage(props: { params: Promise<{ id: string }> 
       initialData={{
         title: page.title,
         slug: page.slug,
-        status: page.status as any,
+        status: page.status,
         seoTitle: page.seo_title || undefined,
         seoDescription: page.seo_description || undefined,
         content: page.content,

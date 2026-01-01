@@ -3,10 +3,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  pageSchema,
+  PageSchema,
   PageFormValues,
   PageStatus,
-} from "@/lib/schemas/EditCreateSchema";
+} from "@/lib/schemas/PagesSchema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 
 const slugify = (text: string) =>
   text
@@ -46,7 +47,7 @@ export function PageForm({
   isSubmitting?: boolean;
 }) {
   const form = useForm<PageFormValues>({
-    resolver: zodResolver(pageSchema),
+    resolver: zodResolver(PageSchema),
     defaultValues: {
       status: "draft",
       content: "{}",
@@ -55,7 +56,8 @@ export function PageForm({
   });
 
   const { watch, setValue } = form;
-  const title = watch("title");
+
+  const [slugChanged, setSlugChanged] = useState(false);
 
   return (
     <Form {...form}>
@@ -70,7 +72,15 @@ export function PageForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Page Title" {...field} />
+                <Input
+                  placeholder="Page Title"
+                  {...field}
+                  onChange={(e) => {
+                    if (slugChanged) {
+                      setValue("slug", slugify(e.currentTarget.value));
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,16 +94,10 @@ export function PageForm({
             <FormItem>
               <FormLabel>Slug</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="page-slug"
-                  {...field}
-                  onBlur={(e) => {
-                    field.onBlur();
-                    if (!e.target.value && title) {
-                      setValue("slug", slugify(title));
-                    }
-                  }}
-                />
+                <Input placeholder="page-slug" {...field}
+                onChange={() => {
+                  setSlugChanged(true);
+                }} />
               </FormControl>
               <FormDescription>
                 The URL-friendly name of the page.
