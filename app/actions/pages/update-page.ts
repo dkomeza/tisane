@@ -4,30 +4,7 @@ import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma, { PageStatus, PageVisibility } from "@/lib/prisma";
 import { refresh } from "next/cache";
-import z from "zod";
-
-const UpdatePageSchema = z.object({
-  pageId: z.string().min(1),
-
-  title: z.string().min(1).optional(),
-  slug: z.string().min(1).optional(),
-
-  status: z.enum(Object.values(PageStatus)).optional(),
-  visibility: z.enum(Object.values(PageVisibility)).optional(),
-
-  content: z.string().min(1).optional(),
-
-  seo_title: z.string().optional(),
-  seo_description: z.string().optional(),
-  open_graph_image: z.string().optional(),
-  canonical_url: z.string().optional(),
-
-  order: z.number().int().optional(),
-
-  tags: z.array(z.string()).optional(), // Array of tag IDs
-});
-
-type UpdatePageRequest = z.infer<typeof UpdatePageSchema>;
+import { UpdatePageRequest, UpdatePageSchema } from "@/lib/schemas/PagesSchema";
 
 export async function updatePage(request: UpdatePageRequest) {
   const { session } = await authorize();

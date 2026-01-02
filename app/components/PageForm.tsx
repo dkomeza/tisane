@@ -2,11 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  PageSchema,
-  PageFormValues,
-  PageStatus,
-} from "@/lib/schemas/PagesSchema";
+import { CreatePageSchema, CreatePageRequest } from "@/lib/schemas/PagesSchema";
+import { PageStatus } from "@/lib/prisma";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -42,18 +39,23 @@ export function PageForm({
   onSubmit,
   isSubmitting,
 }: {
-  defaultValues?: Partial<PageFormValues>;
-  onSubmit: (data: PageFormValues) => void;
+  defaultValues?: Partial<CreatePageRequest>;
+  onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
-  const form = useForm<PageFormValues>({
-    resolver: zodResolver(PageSchema),
-    defaultValues: {
-      status: "draft",
-      content: "{}",
-      ...defaultValues,
-    },
-  });
+const form = useForm<CreatePageRequest>({
+  resolver: zodResolver(CreatePageSchema),
+  defaultValues: {
+    title: "",
+    slug: "",
+    status: "draft",
+    seo_title: "",
+    seo_description: "",
+    content: "",
+    ...defaultValues,
+  },
+});
+
 
   const { watch, setValue } = form;
 
@@ -120,7 +122,7 @@ export function PageForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {PageStatus.map((status) => (
+                  {Object.values(PageStatus).map((status) => (
                     <SelectItem key={status} value={status}>
                       {status.charAt(0).toUpperCase() + status.slice(1)}
                     </SelectItem>
@@ -136,7 +138,7 @@ export function PageForm({
           <h3 className="text-lg font-medium">SEO</h3>
           <FormField
             control={form.control}
-            name="seoTitle"
+            name="seo_title"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>SEO Title</FormLabel>
@@ -154,7 +156,7 @@ export function PageForm({
 
           <FormField
             control={form.control}
-            name="seoDescription"
+            name="seo_description"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>SEO Description</FormLabel>
