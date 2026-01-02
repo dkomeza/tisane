@@ -11,6 +11,7 @@ type ButtonProps = {
   content: string;
   variant: "small" | "large";
   color: "primary" | "dark" | "white" | "violet" | "pink" | "clear";
+  textColor: "black" | "white" | "pink" | "violet";
   isDisabled: boolean;
 };
 
@@ -26,12 +27,13 @@ export const Button: CMSComponent<"button", ButtonProps> = {
     content: z.string().min(1).max(100).default("Click me"),
     variant: z.enum(["small", "large"]).default("large"),
     color: z.enum(["primary", "dark", "white", "violet", "pink", "clear"]).default("primary"),
+    textColor: z.enum(["black", "white", "pink", "violet"]).default("white"),
     isDisabled: z.boolean().default(false),
   }),
 };
 
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
-  const variantStyles = {
+  const colorStyles = {
     primary: "bg-[#6B2AF6] text-white hover:bg-[#4f46e5]",
     dark: "bg-[#8C1858] text-white hover:bg-black",
     white: "bg-[#F8F8F8] text-black border border-gray-100 hover:bg-gray-50",
@@ -39,6 +41,8 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
     pink: "bg-[#FF2B97] text-white hover:bg-[#db2777]",
     clear: "bg-transparent text-black hover:bg-gray-100",
   };
+
+  const disabledStyle = "bg-[#a1a1aa] text-white/70 cursor-not-allowed opacity-50 pointer-events-none";
 
   return <button disabled={data.isDisabled}>{data.content}</button>;
 }
