@@ -4,7 +4,7 @@ import {
   BlockProps,
   CMSComponent,
 } from "@/components/registry";
-import { clear } from "console";
+import { ArrowRight } from "lucide-react";
 import z from "zod";
 
 type ButtonProps = {
@@ -76,7 +76,11 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
         ${finalClass}
       `}
     >
-      <span>{data.content}</span>
+      <span>
+        <ArrowRight className="w-4 h-4" /> 
+        {data.content}
+        <ArrowRight className="w-4 h-4" />
+      </span>
     </button>
   );
 }
