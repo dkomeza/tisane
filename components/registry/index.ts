@@ -1,12 +1,25 @@
+import { StoreApi, UseBoundStore } from "zustand";
 import { Button } from "./elements/Button";
 import z from "zod";
+import { CMSStore } from "./store";
 
-export type CMSComponent<Props> = {
+type ZustandStore = UseBoundStore<StoreApi<CMSStore>>;
+
+export type BlockProps<P> = {
   id: string;
-  label: string;
+  data: P;
+};
 
-  ClientComponent: React.FC<{ id: string; data: Props }>;
-  AdminComponent: React.FC<{ id: string; data: Props }>;
+export type AdminBlockProps<P> = BlockProps<P> & {
+  useStore: ZustandStore;
+};
+
+export type CMSComponent<Id extends string, Props> = {
+  readonly id: Id;
+  readonly label: string;
+
+  ClientComponent: React.FC<BlockProps<Props>>;
+  AdminComponent: React.FC<AdminBlockProps<Props>>;
   PreviewComponent: React.FC;
 
   Schema: z.ZodType<Props>;
@@ -18,4 +31,3 @@ export const COMPONENT_REGISTRY = {
 
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
 export type ComponentType = keyof ComponentRegistry;
-
