@@ -2,7 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import prisma, { PageStatus, PageVisibility } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { refresh } from "next/cache";
 import { UpdatePageRequest, UpdatePageSchema } from "@/lib/schemas/PagesSchema";
 

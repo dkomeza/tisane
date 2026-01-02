@@ -1,13 +1,13 @@
 "use client";
 
 import { PageForm } from "@/app/components/PageForm";
-import { updatePage } from "../../actions";
+import { updatePage } from "@/app/actions/pages/update-page";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { PageFormValues } from "@/lib/schemas/EditCreateSchema";
+import { UpdatePageRequest } from "@/lib/schemas/PagesSchema";
 
-export default function EditPageClient({ id, initialData }: { id: string, initialData: PageFormValues }) {
+export default function EditPageClient({ id, initialData }: { id: string, initialData: UpdatePageRequest }) {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,7 +19,7 @@ export default function EditPageClient({ id, initialData }: { id: string, initia
                 isSubmitting={isSubmitting}
                 onSubmit={async (data) => {
                     setIsSubmitting(true);
-                    const result = await updatePage(id, data);
+                    const result = await updatePage({pageId:id, ...data});
                     setIsSubmitting(false);
 
                     if (result.error) {
