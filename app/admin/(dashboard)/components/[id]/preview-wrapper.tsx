@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { COMPONENT_REGISTRY, ComponentType } from "@/components/registry";
+import { useEffect } from "react";
+import {
+  COMPONENT_REGISTRY,
+  ComponentRegistry,
+  ComponentType,
+  Block,
+  BlockProps,
+  AdminBlockProps,
+} from "@/components/registry";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Monitor, Shield } from "lucide-react";
 import { create } from "zustand";
-import { CMSStore, Block } from "@/components/registry/store";
+import { CMSStore } from "@/components/registry/store";
 import { nanoid } from "nanoid";
 import {
   Breadcrumb,
@@ -19,8 +26,8 @@ import Link from "next/link";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 
-interface Props {
-  componentType: ComponentType;
+interface Props<T extends ComponentType> {
+  componentType: T;
 }
 
 const usePreviewStore = create<CMSStore>((set) => ({
@@ -34,26 +41,30 @@ const usePreviewStore = create<CMSStore>((set) => ({
     })),
 }));
 
-export function ComponentPreviewWrapper({ componentType }: Props) {
-  const component = COMPONENT_REGISTRY[componentType];
-  const [activeTab, setActiveTab] = useState<"client" | "admin">("client");
+export function ComponentPreviewWrapper<T extends ComponentType>({
+  componentType,
+}: Props<T>) {
+  const component = COMPONENT_REGISTRY[componentType] as ComponentRegistry[T];
   const { blocks, setBlocks } = usePreviewStore();
 
   useEffect(() => {
-    // Initialize with a single block of the component type
-    const initialBlock: Block<typeof componentType> = {
+    const initialBlock: Block<T> = {
       id: nanoid(8),
       type: componentType,
-      data: { ...component.Schema.parse({}) },
+      data: { ...component.Schema.parse({}) } as Block<T>["data"],
     };
     setBlocks([initialBlock]);
   }, [componentType, setBlocks, component.Schema]);
 
   if (!component || blocks.length === 0) return null;
-  const block = blocks[0];
+  const block = blocks[0] as Block<T>;
 
-  const ClientComponent = component.ClientComponent;
-  const AdminComponent = component.AdminComponent;
+  const ClientComponent = component.ClientComponent as React.FC<
+    BlockProps<typeof block.data>
+  >;
+  const AdminComponent = component.AdminComponent as React.FC<
+    AdminBlockProps<typeof block.data>
+  >;
 
   return (
     <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500">
