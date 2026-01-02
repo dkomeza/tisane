@@ -3,7 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { refresh, revalidateTag } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 
 export async function deletePage(pageId: string) {
   const res = await deletePages([pageId]);
@@ -49,7 +49,7 @@ export async function deletePages(pageIds: string[]) {
     }
 
     for (const page of pages) {
-      revalidateTag(`page[${page.slug}]`, "max");
+      updateTag(`page[${page.slug}]`);
     }
 
     return {

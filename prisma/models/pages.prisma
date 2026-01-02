@@ -30,7 +30,7 @@ model Page {
     deleted_at   DateTime?
 
     // Content
-    content String
+    content Json
 
     // SEO
     seo_title        String?

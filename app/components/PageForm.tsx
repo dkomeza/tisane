@@ -80,9 +80,10 @@ export function PageForm({
                   placeholder="Page Title"
                   {...field}
                   onChange={(e) => {
-                    if (slugChanged) {
+                    if (!slugChanged) {
                       setValue("slug", slugify(e.currentTarget.value));
                     }
+                    field.onChange(e);
                   }}
                 />
               </FormControl>
@@ -101,8 +102,9 @@ export function PageForm({
                 <Input
                   placeholder="page-slug"
                   {...field}
-                  onChange={() => {
+                  onChange={(e) => {
                     setSlugChanged(true);
+                    field.onChange(e);
                   }}
                 />
               </FormControl>

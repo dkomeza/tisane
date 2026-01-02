@@ -3,7 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { refresh, revalidateTag } from "next/cache";
+import { refresh, updateTag } from "next/cache";
 import { UpdatePageRequest, UpdatePageSchema } from "@/lib/schemas/PagesSchema";
 
 export async function updatePage(request: UpdatePageRequest) {
@@ -51,10 +51,10 @@ export async function updatePage(request: UpdatePageRequest) {
       });
     }
 
-    revalidateTag(`page[${updatedPage.slug}]`, "max");
+    updateTag(`page[${updatedPage.slug}]`);
 
     if (existingPage.slug !== updatedPage.slug) {
-      revalidateTag(`page[${existingPage.slug}]`, "max");
+      updateTag(`page[${existingPage.slug}]`);
     }
 
     return { success: true, page: updatedPage };

@@ -1,6 +1,6 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
+import { cacheTag } from "next/cache";
 import prisma, { Page } from "@/lib/prisma";
 
 export type CachedPage = Pick<
@@ -82,15 +82,9 @@ export async function getPageBySlug(
 export async function getCachedPageBySlug(
   slug: string[]
 ): Promise<CachedPage | null> {
+  "use cache";
   const realSlug = normalizeSlug(slug);
-  return unstable_cache(
-    async () => {
-      return fetchPageBySlug(realSlug);
-    },
-    [`slug-${realSlug}`],
-    {
-      revalidate: false,
-      tags: [`page[${realSlug}]`],
-    }
-  )();
+  cacheTag(`page[${realSlug}]`);
+
+  return await fetchPageBySlug(realSlug);
 }

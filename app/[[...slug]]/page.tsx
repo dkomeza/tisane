@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 
-// Define the params interface
 interface PageProps {
   params: Promise<{
     slug?: string[];
