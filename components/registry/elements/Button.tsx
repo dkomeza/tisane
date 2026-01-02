@@ -42,7 +42,23 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
     clear: "bg-transparent text-black hover:bg-gray-100",
   };
 
+  const textColorStyles = {
+    black: "text-black",
+    white: "text-white",
+    pink: "text-pink-500",
+    violet: "text-violet-500",
+  };  
+
+  const sizeStyles = {
+    small: "px-4 py-2 text-sm",
+    large: "px-6 py-3 text-lg",
+  };
+
   const disabledStyle = "bg-[#a1a1aa] text-white/70 cursor-not-allowed opacity-50 pointer-events-none";
+
+  const finalClass = data.isDisabled 
+    ? disabledStyle 
+    : colorStyles[data.color] + " " + textColorStyles[data.textColor] + " " + sizeStyles[data.variant];
 
   return <button disabled={data.isDisabled}>{data.content}</button>;
 }
