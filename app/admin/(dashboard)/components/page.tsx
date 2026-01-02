@@ -31,7 +31,7 @@ export default function ComponentsAdminPage() {
             href={`/admin/components/${component.id}`}
             className="group block"
           >
-            <Card className="h-full border-muted/60 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:-translate-y-1 overflow-hidden bg-card/50 backdrop-blur-sm pt-0">
+            <Card className="h-full border-muted/60 transition-all duration-300 hover:border-primary/50 hover:shadow-lg overflow-hidden bg-card/50 backdrop-blur-sm pt-0 gap-4">
               <CardHeader className="bg-muted/30 border-b border-border/50 py-4">
                 <div className="flex items-center justify-between">
                   <div className="p-2 rounded-md bg-primary/10 text-primary">
@@ -51,10 +51,10 @@ export default function ComponentsAdminPage() {
                   Interactive preview available.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
-                <div className="flex items-center text-sm font-medium text-primary group-hover:underline decoration-2 underline-offset-4">
-                  View Component{" "}
-                  <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <CardContent>
+                <div className="flex items-center text-sm font-medium text-primary relative w-fit">
+                  View Component <ArrowRight className="ml-1 w-4 h-4" />
+                  <span className="absolute top-full h-0.5 bg-primary left-1/2 right-1/2 group-hover:left-0 group-hover:right-0 transition-all" />
                 </div>
               </CardContent>
             </Card>
