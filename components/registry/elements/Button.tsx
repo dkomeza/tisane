@@ -26,7 +26,9 @@ export const Button: CMSComponent<"button", ButtonProps> = {
   Schema: z.object({
     content: z.string().min(1).max(100).default("Click me"),
     variant: z.enum(["small", "large"]).default("large"),
-    color: z.enum(["primary", "dark", "white", "violet", "pink", "clear"]).default("primary"),
+    color: z
+      .enum(["primary", "dark", "white", "violet", "pink", "clear"])
+      .default("primary"),
     textColor: z.enum(["black", "white", "pink", "violet"]).default("white"),
     isDisabled: z.boolean().default(false),
   }),
@@ -47,20 +49,36 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
     white: "text-white",
     pink: "text-pink-500",
     violet: "text-violet-500",
-  };  
+  };
 
   const sizeStyles = {
     small: "px-4 py-2 text-sm",
     large: "px-6 py-3 text-lg",
   };
 
-  const disabledStyle = "bg-[#a1a1aa] text-white/70 cursor-not-allowed opacity-50 pointer-events-none";
+  const disabledStyle =
+    "bg-[#a1a1aa] text-white/70 cursor-not-allowed opacity-50 pointer-events-none";
 
-  const finalClass = data.isDisabled 
-    ? disabledStyle 
-    : colorStyles[data.color] + " " + textColorStyles[data.textColor] + " " + sizeStyles[data.variant];
+  const finalClass = data.isDisabled
+    ? disabledStyle
+    : colorStyles[data.color] +
+      " " +
+      textColorStyles[data.textColor] +
+      " " +
+      sizeStyles[data.variant];
 
-  return <button disabled={data.isDisabled}>{data.content}</button>;
+  return (
+    <button
+      disabled={data.isDisabled}
+      className={`
+        flex items-center justify-center gap-3 px-8 py-3 
+        font-medium transition-colors duration-200 
+        ${finalClass}
+      `}
+    >
+      <span>{data.content}</span>
+    </button>
+  );
 }
 
 function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
