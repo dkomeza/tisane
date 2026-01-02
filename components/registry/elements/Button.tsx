@@ -93,15 +93,15 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   ];
 
   return (
-    <div className="flex flex-col gap-5 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
+    <div className="flex flex-col gap-5 p-4 rounded-xl shadow-sm border border-gray-200">
       <div className="space-y-2">
-        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
           <Type className="w-3 h-3" />
           Label Text
         </label>
         <textarea
           rows={2}
-          className="w-full p-3 text-sm text-gray-800 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9061F5]/50 focus:border-[#9061F5] outline-none transition-all resize-none"
+          className="w-full p-3 text-sm text-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9061F5]/50 focus:border-[#9061F5] outline-none transition-all resize-none"
           value={block.data.content}
           onChange={(e) => updateBlock(id, { content: e.target.value })}
           placeholder="e.g. Get Started"
@@ -109,7 +109,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
       </div>
 
       <div className="space-y-2">
-        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
           <Palette className="w-3 h-3" />
           Color Theme
         </label>
@@ -140,7 +140,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
             <BoxSelect className="w-3 h-3" />
             Size
           </label>
@@ -163,7 +163,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
         </div>
 
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
             <MousePointer2 className="w-3 h-3" />
             Interaction
           </label>
@@ -180,7 +180,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#9061F5]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#9061F5]"></div>
               </div>
-              <span className="text-sm text-gray-600 group-hover:text-gray-900">
+              <span className="text-sm text-white group-hover:text-gray-100">
                 Disabled
               </span>
             </label>
