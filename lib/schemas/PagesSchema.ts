@@ -1,5 +1,5 @@
 import z from "zod";
-import { PageStatus, PageVisibility } from "../prisma";
+import { PageStatus, PageVisibility } from "@/src/generated/prisma/enums";
 
 export const GetPagesSchema = z.object({
   limit: z.number().min(1).max(100).optional(),
@@ -63,10 +63,9 @@ export const UpdatePageSchema = z.object({
   tags: z.array(z.string()).optional(), // Array of tag IDs
 });
 
-export type UpdatePageRequest = z.infer<typeof UpdatePageSchema>;
-
-export type GetPageRequest = z.infer<typeof GetPageSchema>;
-
 export type CreatePageRequest = z.infer<typeof CreatePageSchema>;
-
+export type UpdatePageRequest = z.infer<typeof UpdatePageSchema>;
+export type GetPageRequest = z.infer<typeof GetPageSchema>;
 export type GetPagesRequest = z.infer<typeof GetPagesSchema>;
+
+export { PageStatus, PageVisibility };

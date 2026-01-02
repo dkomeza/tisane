@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreatePageSchema, CreatePageRequest } from "@/lib/schemas/PagesSchema";
-import { PageStatus } from "@/lib/prisma";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -43,21 +42,20 @@ export function PageForm({
   onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
-const form = useForm<CreatePageRequest>({
-  resolver: zodResolver(CreatePageSchema),
-  defaultValues: {
-    title: "",
-    slug: "",
-    status: "draft",
-    seo_title: "",
-    seo_description: "",
-    content: "",
-    ...defaultValues,
-  },
-});
+  const form = useForm<CreatePageRequest>({
+    resolver: zodResolver(CreatePageSchema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      status: "draft",
+      seo_title: "",
+      seo_description: "",
+      content: "",
+      ...defaultValues,
+    },
+  });
 
-
-  const { watch, setValue } = form;
+  const { setValue } = form;
 
   const [slugChanged, setSlugChanged] = useState(false);
 
@@ -96,10 +94,13 @@ const form = useForm<CreatePageRequest>({
             <FormItem>
               <FormLabel>Slug</FormLabel>
               <FormControl>
-                <Input placeholder="page-slug" {...field}
-                onChange={() => {
-                  setSlugChanged(true);
-                }} />
+                <Input
+                  placeholder="page-slug"
+                  {...field}
+                  onChange={() => {
+                    setSlugChanged(true);
+                  }}
+                />
               </FormControl>
               <FormDescription>
                 The URL-friendly name of the page.
@@ -122,7 +123,7 @@ const form = useForm<CreatePageRequest>({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.values(PageStatus).map((status) => (
+                  {Object.values(CreatePageSchema).map((status) => (
                     <SelectItem key={status} value={status}>
                       {status.charAt(0).toUpperCase() + status.slice(1)}
                     </SelectItem>
