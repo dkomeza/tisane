@@ -5,7 +5,13 @@ import {
   CMSComponent,
 } from "@/components/registry";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Type,
+  Palette,
+  MousePointer2,
+  BoxSelect,
+} from "lucide-react";
 import z from "zod";
 
 type Color = "primary" | "dark" | "white" | "violet" | "pink";
@@ -70,49 +76,117 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
 
 function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   const { blocks, updateBlock } = useStore();
-
   const block = blocks.find((b) => b.id === id) as Block<"button">;
 
   if (!block) return null;
 
+  const colorOptions: { value: Color; bgClass: string; label: string }[] = [
+    { value: "primary", bgClass: "bg-[#9061F5]", label: "Primary" },
+    { value: "dark", bgClass: "bg-[#FF2B97]", label: "Dark" },
+    {
+      value: "white",
+      bgClass: "bg-gray-100 border border-gray-300",
+      label: "White",
+    },
+    { value: "violet", bgClass: "bg-[#B499F5]", label: "Violet" },
+    { value: "pink", bgClass: "bg-[#F2599F]", label: "Pink" },
+  ];
+
   return (
-    <div className="flex flex-col gap-2">
-      <textarea
-        value={block.data.content}
-        onChange={(e) => updateBlock(id, { content: e.target.value })}
-      ></textarea>
-      <select
-        name="color"
-        id="color"
-        value={block.data.color}
-        onChange={(e) => updateBlock(id, { color: e.target.value as Color })}
-      >
-        <option value="primary">Primary</option>
-        <option value="dark">Dark</option>
-        <option value="white">White</option>
-        <option value="violet">Violet</option>
-        <option value="pink">Pink</option>
-        <option value="clear">Clear</option>
-      </select>
+    <div className="flex flex-col gap-5 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <Type className="w-3 h-3" />
+          Label Text
+        </label>
+        <textarea
+          rows={2}
+          className="w-full p-3 text-sm text-gray-800 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9061F5]/50 focus:border-[#9061F5] outline-none transition-all resize-none"
+          value={block.data.content}
+          onChange={(e) => updateBlock(id, { content: e.target.value })}
+          placeholder="e.g. Get Started"
+        />
+      </div>
 
-      <input
-        type="checkbox"
-        checked={block.data.isDisabled}
-        onChange={(e) => updateBlock(id, { isDisabled: e.target.checked })}
-      />
-      <label htmlFor="isDisabled">Is Disabled</label>
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <Palette className="w-3 h-3" />
+          Color Theme
+        </label>
+        <div className="flex flex-wrap gap-3">
+          {colorOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => updateBlock(id, { color: option.value })}
+              className={cn(
+                "group relative w-10 h-10 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400",
+                option.bgClass,
+                block.data.color === option.value
+                  ? "ring-2 ring-offset-2 ring-gray-900 scale-110"
+                  : "hover:scale-105 hover:opacity-90"
+              )}
+              title={option.label}
+              aria-label={`Select ${option.label} color`}
+            >
+              {block.data.color === option.value && (
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      <select
-        name="variant"
-        id="variant"
-        value={block.data.variant}
-        onChange={(e) =>
-          updateBlock(id, { variant: e.target.value as "small" | "large" })
-        }
-      >
-        <option value="small">Small</option>
-        <option value="large">Large</option>
-      </select>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <BoxSelect className="w-3 h-3" />
+            Size
+          </label>
+          <div className="flex p-1 bg-gray-100 rounded-lg">
+            {(["small", "large"] as const).map((variant) => (
+              <button
+                key={variant}
+                onClick={() => updateBlock(id, { variant })}
+                className={cn(
+                  "flex-1 py-1.5 text-sm font-medium rounded-md capitalize transition-all",
+                  block.data.variant === variant
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                )}
+              >
+                {variant}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+            <MousePointer2 className="w-3 h-3" />
+            Interaction
+          </label>
+          <div className="flex items-center h-[38px]">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <div className="relative inline-flex items-center">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={block.data.isDisabled}
+                  onChange={(e) =>
+                    updateBlock(id, { isDisabled: e.target.checked })
+                  }
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#9061F5]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#9061F5]"></div>
+              </div>
+              <span className="text-sm text-gray-600 group-hover:text-gray-900">
+                Disabled
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
