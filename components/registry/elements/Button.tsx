@@ -8,6 +8,7 @@ import z from "zod";
 
 type ButtonProps = {
   content: string;
+  variant: "small" | "large";
 };
 
 export const Button: CMSComponent<"button", ButtonProps> = {
