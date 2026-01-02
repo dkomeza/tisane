@@ -4,12 +4,13 @@ import {
   BlockProps,
   CMSComponent,
 } from "@/components/registry";
+import { clear } from "console";
 import z from "zod";
 
 type ButtonProps = {
   content: string;
   variant: "small" | "large";
-  color: "primary" | "dark" | "white" | "violet" | "pink";
+  color: "primary" | "dark" | "white" | "violet" | "pink" | "clear";
   isDisabled: boolean;
 };
 
@@ -24,12 +25,21 @@ export const Button: CMSComponent<"button", ButtonProps> = {
   Schema: z.object({
     content: z.string().min(1).max(100).default("Click me"),
     variant: z.enum(["small", "large"]).default("large"),
-    color: z.enum(["primary", "dark", "white", "violet", "pink"]).default("primary"),
+    color: z.enum(["primary", "dark", "white", "violet", "pink", "clear"]).default("primary"),
     isDisabled: z.boolean().default(false),
   }),
 };
 
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
+  const variantStyles = {
+    primary: "bg-[#6B2AF6] text-white hover:bg-[#4f46e5]",
+    dark: "bg-[#8C1858] text-white hover:bg-black",
+    white: "bg-[#F8F8F8] text-black border border-gray-100 hover:bg-gray-50",
+    violet: "bg-[#9061F5] text-white hover:bg-[#7c3aed]",
+    pink: "bg-[#FF2B97] text-white hover:bg-[#db2777]",
+    clear: "bg-transparent text-black hover:bg-gray-100",
+  };
+
   return <button disabled={data.isDisabled}>{data.content}</button>;
 }
 
