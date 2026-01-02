@@ -26,7 +26,7 @@ async function PagesLoader(props: PagesTableProps) {
   const request: GetPagesRequest = {
     offset: props.page
       ? (parseInt(props.page) - 1) *
-        (props.perPage ? parseInt(props.perPage) : 20)
+      (props.perPage ? parseInt(props.perPage) : 20)
       : 0,
     limit: props.perPage ? parseInt(props.perPage) : 20,
     lastId: props.lastId,
@@ -61,7 +61,7 @@ async function Pages({ searchParams }: PagesProps) {
             their content.
           </p>
         </div>
-        <Link href="/admin/pages/new">
+        <Link href="/admin/pages/create">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             New Page

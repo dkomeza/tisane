@@ -3,29 +3,8 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { refresh } from "next/cache";
-import z from "zod";
-import prisma, { PageVisibility, PageStatus } from "@/lib/prisma";
-
-const CreatePageSchema = z.object({
-  title: z.string().min(1),
-  slug: z.string().min(1),
-
-  status: z.enum(Object.values(PageStatus)).optional(),
-  visibility: z.enum(Object.values(PageVisibility)).optional(),
-
-  content: z.string().min(1),
-
-  seo_title: z.string().optional(),
-  seo_description: z.string().optional(),
-  open_graph_image: z.string().optional(),
-  canonical_url: z.string().optional(),
-
-  order: z.number().int().optional(),
-
-  tags: z.array(z.string()).optional(), // Array of tag IDs
-});
-
-type CreatePageRequest = z.infer<typeof CreatePageSchema>;
+import prisma from "@/lib/prisma";
+import { CreatePageSchema, CreatePageRequest } from "@/lib/schemas/PagesSchema";
 
 export async function createPage(request: CreatePageRequest) {
   const { session } = await authorize();
