@@ -1,5 +1,6 @@
 import {
   AdminBlockProps,
+  Block,
   BlockProps,
   CMSComponent,
 } from "@/components/registry";
@@ -26,14 +27,10 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
   return <button>{data.content}</button>;
 }
 
-function ButtonAdminComponent({
-  id,
-  data,
-  useStore,
-}: AdminBlockProps<ButtonProps>) {
+function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   const { blocks, updateBlock } = useStore();
 
-  const block = blocks.find((b) => b.id === id);
+  const block = blocks.find((b) => b.id === id) as Block<"button">;
 
   if (!block) return null;
 

@@ -1,12 +1,5 @@
 import z from "zod";
-import { ComponentRegistry, ComponentType } from ".";
-
-export type Block<T extends ComponentType = ComponentType> = {
-  id: string;
-  type: string;
-  data: z.infer<ComponentRegistry[T]["Schema"]>;
-  children?: Block[];
-};
+import { Block, ComponentRegistry, ComponentType } from ".";
 
 export type CMSStore = {
   blocks: Block[];
