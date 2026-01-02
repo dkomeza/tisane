@@ -16,6 +16,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { Tabs, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 
 interface Props {
   componentType: ComponentType;
@@ -50,10 +52,8 @@ export function ComponentPreviewWrapper({ componentType }: Props) {
   if (!component || blocks.length === 0) return null;
   const block = blocks[0];
 
-  const ActiveComponent =
-    activeTab === "client"
-      ? component.ClientComponent
-      : component.AdminComponent;
+  const ClientComponent = component.ClientComponent;
+  const AdminComponent = component.AdminComponent;
 
   return (
     <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500">
@@ -75,52 +75,50 @@ export function ComponentPreviewWrapper({ componentType }: Props) {
           </span>
         </p>
       </div>
-
-      <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm py-0">
-        {/* Tabs */}
-        <div className="border-b border-border/50 bg-muted/20 p-2 flex items-center justify-between">
-          <div className="flex p-1 bg-muted rounded-lg w-fit">
-            <button
-              onClick={() => setActiveTab("client")}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                activeTab === "client"
-                  ? "bg-background shadow-sm text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Monitor className="w-4 h-4" />
-              Client View
-            </button>
-            <button
-              onClick={() => setActiveTab("admin")}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                activeTab === "admin"
-                  ? "bg-background shadow-sm text-primary"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Shield className="w-4 h-4" />
-              Admin View
-            </button>
+      <Tabs defaultValue="client" className="flex-1">
+        <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm py-0">
+          <div className="border-b border-border/50 bg-muted/20 p-3 flex items-center justify-between">
+            <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
+              <TabsTrigger
+                value="client"
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                  "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
+                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                )}
+              >
+                <Monitor className="w-4 h-4" /> Client View
+              </TabsTrigger>
+              <TabsTrigger
+                value="admin"
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                  "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
+                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                )}
+              >
+                <Shield className="w-4 h-4" /> Admin View
+              </TabsTrigger>
+            </TabsList>
           </div>
-        </div>
+          <div className="flex-1 p-8 min-h-[400px] flex items-center justify-center relative">
+            <TabsContent value="client">
+              <ClientComponent id={block.id} data={block.data} />
+            </TabsContent>
+            <TabsContent value="admin">
+              <AdminComponent
+                id={block.id}
+                data={block.data}
+                useStore={usePreviewStore}
+              />
+            </TabsContent>
+          </div>
 
-        {/* Component render */}
-        <div className="flex-1 p-8 min-h-[400px] flex items-center justify-center relative">
-          <ActiveComponent
-            id={block.id}
-            data={block.data}
-            useStore={usePreviewStore}
-          />
-        </div>
-
-        {/* Debug props */}
-        <div className="p-4 border-t border-border/50 bg-muted/10 text-xs text-muted-foreground font-mono">
-          Props: {JSON.stringify(blocks)}
-        </div>
-      </Card>
+          <div className="p-4 border-t border-border/50 bg-muted/10 text-xs text-muted-foreground font-mono">
+            Code: {JSON.stringify(blocks)}
+          </div>
+        </Card>
+      </Tabs>
     </div>
   );
 }
