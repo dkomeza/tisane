@@ -25,6 +25,7 @@ import {
   Rss,
   Settings2,
   UserCircle2,
+  Box,
   type LucideIcon,
 } from "lucide-react";
 
@@ -48,6 +49,7 @@ const groups: Group[] = [
     items: [
       { label: "Menus", href: "/admin/menus", icon: Menu },
       { label: "Appearance", href: "/admin/appearance", icon: Palette },
+      { label: "Components", href: "/admin/components", icon: Box },
     ],
   },
   {
