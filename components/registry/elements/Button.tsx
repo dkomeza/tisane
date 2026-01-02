@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import z from "zod";
 
-type Color = "primary" | "dark" | "white" | "violet" | "pink" | "clear";
+type Color = "primary" | "dark" | "white" | "violet" | "pink";
 
 type ButtonProps = {
   content: string;
@@ -29,7 +29,7 @@ export const Button: CMSComponent<"button", ButtonProps> = {
     content: z.string().min(1).max(100).default("Click me"),
     variant: z.enum(["small", "large"]).default("large"),
     color: z
-      .enum(["primary", "dark", "white", "violet", "pink", "clear"])
+      .enum(["primary", "dark", "white", "violet", "pink"])
       .default("primary"),
     isDisabled: z.boolean().default(false),
   }),
@@ -37,24 +37,20 @@ export const Button: CMSComponent<"button", ButtonProps> = {
 
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
   const colorStyles = {
-    primary: "bg-[#6B2AF6] text-white hover:bg-[#4f46e5] disabled:bg-[#a1a1aa]",
-    dark: "bg-[#8C1858] text-white hover:bg-black disabled:bg-[#a1a1aa]",
+    primary:
+      "bg-[#9061F5] text-white hover:bg-[#6B2AF6] disabled:bg-[#A7A49F] disabled:text-[#F1EFEC]",
+    dark: "bg-[#FF2B97] text-white hover:bg-[#8C1858] disabled:bg-[#64635F] disabled:text-[#D2CFCB]",
     white:
-      "bg-[#F8F8F8] text-black border border-gray-100 hover:bg-gray-50 disabled:bg-gray-200",
-    violet: "bg-[#9061F5] text-white hover:bg-[#7c3aed] disabled:bg-[#a1a1aa]",
-    pink: "bg-[#FF2B97] text-white hover:bg-[#db2777] disabled:bg-[#a1a1aa]",
-    clear: "bg-transparent text-black hover:bg-gray-100 disabled:bg-gray-200",
+      "bg-transparent text-[#F8F8F8] border border-[#F8F8F8] disabled:bg-[#D2CFCB] disabled:border-none",
+    violet:
+      "bg-transparent text-[#B499F5] border border-[#B499F5] hover:text-[#6B2AF6] hover:border-[#6B2AF6] disabled:text-[#A7A49F] disabled:border-[#A7A49F]",
+    pink: "text-[#F2599F] border border-[#F2599F] hover:text-[#8C1858] hover:border-[#8C1858] disabled:text-[#D2CFCB] disabled:border-[#D2CFCB]",
   };
 
   const sizeStyles = {
     small: "px-4 py-2 text-sm",
     large: "px-6 py-3 text-lg",
   };
-
-  const disabledStyle =
-    "bg-[#a1a1aa] text-white/70 cursor-not-allowed opacity-50 pointer-events-none";
-
-  const finalClass = colorStyles[data.color] + " " + sizeStyles[data.variant];
 
   return (
     <button
@@ -65,9 +61,9 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
         sizeStyles[data.variant]
       )}
     >
-      <ArrowRight className="" />
+      <ArrowRight className="size-7" />
       <span className="flex-1 text-center">{data.content}</span>
-      <ArrowRight className="w-10 h-10" />
+      <ArrowRight className="size-7" />
     </button>
   );
 }
