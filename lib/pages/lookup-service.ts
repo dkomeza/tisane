@@ -1,3 +1,5 @@
+"use server";
+
 import { unstable_cache } from "next/cache";
 import prisma, { Page } from "@/lib/prisma";
 
@@ -42,26 +44,28 @@ async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
         },
       },
     },
-    where: { slug, status: "published", visibility: "public" },
+    where: { slug, deleted_at: null },
   });
 }
 
-function normalizeSlug(slug: string): string {
-  if (!slug || slug === "/") {
+function normalizeSlug(slug: string[]): string {
+  if (slug.length === 0 || (slug.length === 1 && slug[0] === "")) {
     return "home";
   }
-  return slug;
+  return slug.join("/");
 }
 
 /**
- * Fetches a published, publicly visible page by its slug.
+ * Fetches a page by its slug.
  *
  * An empty slug or "/" is treated as the "home" page slug.
  *
- * @param slug - The URL slug for the page (e.g. "about", "blog/post-1", or "/").
+ * @param slug - The URL slug segments for the page (e.g. ["about"], ["blog", "post-1"], or [] for home).
  * @returns A promise that resolves to the matching cached page, or `null` if no page exists.
  */
-export function getPageBySlug(slug: string): Promise<CachedPage | null> {
+export async function getPageBySlug(
+  slug: string[]
+): Promise<CachedPage | null> {
   const realSlug = normalizeSlug(slug);
   return fetchPageBySlug(realSlug);
 }
@@ -75,11 +79,13 @@ export function getPageBySlug(slug: string): Promise<CachedPage | null> {
  * @param slug - The URL slug for the page to retrieve from cache.
  * @returns A promise that resolves to the cached page data, or `null` if not found.
  */
-export function getCachedPageBySlug(slug: string): Promise<CachedPage | null> {
+export async function getCachedPageBySlug(
+  slug: string[]
+): Promise<CachedPage | null> {
   const realSlug = normalizeSlug(slug);
   return unstable_cache(
     async () => {
-      return getPageBySlug(realSlug);
+      return fetchPageBySlug(realSlug);
     },
     [`slug-${realSlug}`],
     {
