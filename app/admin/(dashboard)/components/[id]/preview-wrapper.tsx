@@ -8,6 +8,14 @@ import { Monitor, Shield } from "lucide-react";
 import { create } from "zustand";
 import { CMSStore, Block } from "@/components/registry/store";
 import { nanoid } from "nanoid";
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 interface Props {
   componentType: ComponentType;
@@ -49,7 +57,15 @@ export function ComponentPreviewWrapper({ componentType }: Props) {
 
   return (
     <div className="flex flex-col h-full space-y-6 animate-in fade-in duration-500">
-      {/* Header */}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbLink asChild>
+            <Link href="/admin/components">Components</Link>
+          </BreadcrumbLink>
+          <BreadcrumbSeparator />
+          <BreadcrumbPage>{component.label} Preview</BreadcrumbPage>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">{component.label}</h1>
         <p className="text-muted-foreground">
