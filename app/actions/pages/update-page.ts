@@ -3,7 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 import { UpdatePageRequest, UpdatePageSchema } from "@/lib/schemas/PagesSchema";
 
 export async function updatePage(request: UpdatePageRequest) {
@@ -21,6 +21,14 @@ export async function updatePage(request: UpdatePageRequest) {
     }
 
     const { pageId, tags, ...updateData } = parse.data;
+
+    const existingPage = await prisma.page.findUnique({
+      where: { id: pageId },
+    });
+
+    if (!existingPage) {
+      return { success: false, error: "Page not found" };
+    }
 
     const updatedPage = await prisma.page.update({
       data: { ...updateData },
@@ -41,6 +49,12 @@ export async function updatePage(request: UpdatePageRequest) {
           },
         },
       });
+    }
+
+    revalidateTag(`page[${updatedPage.slug}]`, "max");
+
+    if (existingPage.slug !== updatedPage.slug) {
+      revalidateTag(`page[${existingPage.slug}]`, "max");
     }
 
     return { success: true, page: updatedPage };

@@ -3,7 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 
 export async function deletePage(pageId: string) {
   const res = await deletePages([pageId]);
@@ -26,6 +26,15 @@ export async function deletePages(pageIds: string[]) {
   }
 
   try {
+    const pages = await prisma.page.findMany({
+      where: {
+        id: {
+          in: pageIds,
+        },
+        deleted_at: null,
+      },
+    });
+
     const updated = await prisma.page.updateMany({
       data: { deleted_at: new Date() },
       where: {
@@ -37,6 +46,10 @@ export async function deletePages(pageIds: string[]) {
 
     if (updated.count === 0) {
       throw new Error("No pages found to delete");
+    }
+
+    for (const page of pages) {
+      revalidateTag(`page[${page.slug}]`, "max");
     }
 
     return {

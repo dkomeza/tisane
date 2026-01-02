@@ -17,10 +17,15 @@ export async function generateMetadata({
   const { slug = [] } = await params;
   const page = await getCachedPageBySlug(slug);
 
-  if (!page || page.visibility !== "public" || page.status !== "published") {
-    return {
-      title: "Page Not Found",
-    };
+  if (!page) {
+    notFound();
+  }
+
+  if (page.visibility !== "public" || page.status !== "published") {
+    const { session } = await authorize();
+    if (!hasPermission(session, "content.read")) {
+      notFound();
+    }
   }
 
   return {

@@ -2,7 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreatePageSchema, CreatePageRequest } from "@/lib/schemas/PagesSchema";
+import {
+  CreatePageSchema,
+  CreatePageRequest,
+  PageStatus,
+} from "@/lib/schemas/PagesSchema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -123,7 +127,7 @@ export function PageForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.values(CreatePageSchema).map((status) => (
+                  {Object.values(PageStatus).map((status) => (
                     <SelectItem key={status} value={status}>
                       {status.charAt(0).toUpperCase() + status.slice(1)}
                     </SelectItem>
