@@ -33,6 +33,7 @@ import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const slugify = (text: string) =>
   text
@@ -170,16 +171,18 @@ function MatadataForm({
 
 function ContentForm({ form }: { form: UseFormReturn<CreatePageRequest> }) {
   return (
-    <div className="flex-1 flex flex-col gap-4 overflow-scroll p-6">
-      <button
-        type="button"
-        className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full"
-      >
-        <h2 className="flex items-center text-xl gap-2">
-          <PlusCircle /> Add new component
-        </h2>
-      </button>
-    </div>
+    <ScrollArea className="flex-1 flex p-6">
+      <div className="flex-1 flex flex-col gap-4">
+        <button
+          type="button"
+          className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full"
+        >
+          <h2 className="flex items-center text-xl gap-2">
+            <PlusCircle /> Add new component
+          </h2>
+        </button>
+      </div>
+    </ScrollArea>
   );
 }
 
