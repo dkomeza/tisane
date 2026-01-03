@@ -15,8 +15,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN npm run db:generate
-RUN npm run db:deploy
+# Generate Prisma Client
+RUN DATABASE_URL="postgresql://user:password@localhost:5432/db?schema=public" npm run db:generate
 RUN npm run build
 
 FROM base AS runner
