@@ -87,3 +87,26 @@ export const COMPONENT_REGISTRY = {
 
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
 export type ComponentType = keyof ComponentRegistry;
+
+export function preprocess(data: unknown): DBComponent[] {
+  if (data == null) {
+    return [];
+  }
+
+  if (typeof data === "string") {
+    try {
+      const parsed = JSON.parse(data);
+      return DBComponentsArraySchema.parse(parsed);
+    } catch (error) {
+      throw new Error(
+        error instanceof Error ? error.message : "Error processing page content"
+      );
+    }
+  }
+
+  if (typeof data === "object" && Array.isArray(data)) {
+    return DBComponentsArraySchema.parse(data);
+  }
+
+  throw new Error("Invalid data format for page content");
+}

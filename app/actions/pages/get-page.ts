@@ -1,12 +1,18 @@
 "use server";
 
-import { DBComponentsArraySchema } from "@/components/registry";
+import { preprocess } from "@/components/registry";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma, { Prisma } from "@/lib/prisma";
-import { GetPageSchema, GetPageRequest } from "@/lib/schemas/PagesSchema";
+import {
+  GetPageSchema,
+  GetPageRequest,
+  GetPageResponse,
+} from "@/lib/schemas/PagesSchema";
 
-export async function getPage(request: GetPageRequest) {
+export async function getPage(
+  request: GetPageRequest
+): Promise<GetPageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
@@ -44,18 +50,14 @@ export async function getPage(request: GetPageRequest) {
       throw new Error("Page not found");
     }
 
-    const contentParse = DBComponentsArraySchema.safeParse(page.content);
-
-    if (!contentParse.success) {
-      throw new Error("Corrupted page content");
-    }
+    const content = preprocess(page.content);
 
     const res = {
       ...page,
-      content: JSON.stringify(contentParse.data),
+      content,
     };
 
-    return { success: true, page: res };
+    return { success: true, data: { page: res } };
   } catch (error) {
     return {
       success: false,

@@ -4,9 +4,16 @@ import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { refresh } from "next/cache";
 import prisma from "@/lib/prisma";
-import { CreatePageSchema, CreatePageRequest } from "@/lib/schemas/PagesSchema";
+import {
+  CreatePageSchema,
+  CreatePageRequest,
+  CreatePageResponse,
+} from "@/lib/schemas/PagesSchema";
+import { preprocess } from "@/components/registry";
 
-export async function createPage(request: CreatePageRequest) {
+export async function createPage(
+  request: CreatePageRequest
+): Promise<CreatePageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.create")) {
@@ -37,7 +44,12 @@ export async function createPage(request: CreatePageRequest) {
       throw new Error("Failed to create page");
     }
 
-    return { success: true, page };
+    const parsedPage = {
+      ...page,
+      content: preprocess(page.content),
+    };
+
+    return { success: true, data: { page: parsedPage } };
   } catch (error) {
     return {
       success: false,
