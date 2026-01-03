@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { COMPONENT_REGISTRY } from "@/components/registry";
+import { nanoid } from "nanoid";
 
 interface PageProps {
   params: Promise<{
@@ -77,7 +78,7 @@ export default async function CMSPage({ params }: PageProps) {
 
           return (
             // @ts-expect-error - We are sure that data matches the schema
-            <ClientComponent key={index} data={content.data} id={content.id} />
+            <ClientComponent key={index} data={content.data} id={nanoid()} />
           );
         })}
     </>
