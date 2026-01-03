@@ -3,7 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { refresh } from "next/cache";
-import prisma from "@/lib/prisma";
+import prisma, { Prisma } from "@/lib/prisma";
 import {
   CreatePageSchema,
   CreatePageRequest,
@@ -29,15 +29,17 @@ export async function createPage(
 
     const { tags, ...pageData } = parse.data;
 
+    const data = {
+      ...pageData,
+      ...(tags && {
+        tags: {
+          connect: tags.map((tagId) => ({ id: tagId })),
+        },
+      }),
+    } as Prisma.PageCreateInput;
+
     const page = await prisma.page.create({
-      data: {
-        ...pageData,
-        ...(tags && {
-          tags: {
-            connect: tags.map((tagId) => ({ id: tagId })),
-          },
-        }),
-      },
+      data,
     });
 
     if (!page) {

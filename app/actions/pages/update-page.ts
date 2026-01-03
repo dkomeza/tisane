@@ -2,7 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import prisma from "@/lib/prisma";
+import prisma, { Prisma } from "@/lib/prisma";
 import { refresh, updateTag } from "next/cache";
 import {
   UpdatePageRequest,
@@ -38,7 +38,7 @@ export async function updatePage(
     }
 
     const updatedPage = await prisma.page.update({
-      data: { ...updateData },
+      data: updateData as Prisma.PageUpdateInput,
       where: { id: pageId },
     });
 

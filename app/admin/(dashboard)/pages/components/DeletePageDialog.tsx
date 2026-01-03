@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
 import { useState } from "react";
-import { PageWithoutContent as Page } from "@/app/actions/pages/get-pages";
+import { PageWithoutContent as Page } from "@/lib/schemas/PagesSchema";
 import { deletePage } from "@/app/actions/pages/delete-page";
 import { Spinner } from "@/components/ui/spinner";
 
