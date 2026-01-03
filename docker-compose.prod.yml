@@ -30,8 +30,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: builder
-      args:
-        DATABASE_URL: ${DATABASE_URL}
     env_file:
       - .env
     command: npx prisma migrate deploy
