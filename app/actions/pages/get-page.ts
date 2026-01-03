@@ -1,10 +1,10 @@
 "use server";
 
+import { DBComponentsArraySchema } from "@/components/registry";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma, { Prisma } from "@/lib/prisma";
 import { GetPageSchema, GetPageRequest } from "@/lib/schemas/PagesSchema";
-
 
 export async function getPage(request: GetPageRequest) {
   const { session } = await authorize();
@@ -40,7 +40,22 @@ export async function getPage(request: GetPageRequest) {
 
     const page = await prisma.page.findFirst(query);
 
-    return { success: true, page };
+    if (!page) {
+      throw new Error("Page not found");
+    }
+
+    const contentParse = DBComponentsArraySchema.safeParse(page.content);
+
+    if (!contentParse.success) {
+      throw new Error("Corrupted page content");
+    }
+
+    const res = {
+      ...page,
+      content: contentParse.data,
+    };
+
+    return { success: true, page: res };
   } catch (error) {
     return {
       success: false,

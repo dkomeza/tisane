@@ -1,13 +1,14 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import EditPageClient from "./EditPageClient";
+import { getPage } from "@/app/actions/pages/get-page";
 
 export default async function EditPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const page = await prisma.page.findUnique({
-    where: { id: params.id },
+  const {page} = await getPage({
+    pageId: params.id,
   });
 
   if (!page) {

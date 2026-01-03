@@ -54,7 +54,6 @@ export async function getPages(
     if (search) {
       where.OR = [
         { title: { contains: search, mode: "insensitive" } },
-        { content: { contains: search, mode: "insensitive" } },
       ];
     }
     if (!returnAll) where.deleted_at = null;
