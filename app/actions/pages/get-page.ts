@@ -52,7 +52,7 @@ export async function getPage(request: GetPageRequest) {
 
     const res = {
       ...page,
-      content: contentParse.data,
+      content: JSON.stringify(contentParse.data),
     };
 
     return { success: true, page: res };
