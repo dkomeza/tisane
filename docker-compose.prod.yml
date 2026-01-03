@@ -10,7 +10,7 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-      mino_init:
+      minio_init:
         condition: service_completed_successfully
       migrator:
         condition: service_completed_successfully
