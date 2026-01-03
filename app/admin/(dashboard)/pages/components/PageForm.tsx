@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Resolver } from "react-hook-form";
+import { useForm, Resolver, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreatePageSchema,
@@ -32,6 +32,7 @@ import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { PlusCircle } from "lucide-react";
 
 const slugify = (text: string) =>
   text
@@ -167,6 +168,21 @@ function MatadataForm({
   );
 }
 
+function ContentForm({ form }: { form: UseFormReturn<CreatePageRequest> }) {
+  return (
+    <div className="flex-1 flex flex-col gap-4 overflow-scroll p-6">
+      <button
+        type="button"
+        className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full"
+      >
+        <h2 className="flex items-center text-xl gap-2">
+          <PlusCircle /> Add new component
+        </h2>
+      </button>
+    </div>
+  );
+}
+
 export function PageForm({
   defaultValues,
   onSubmit,
@@ -190,10 +206,13 @@ export function PageForm({
   });
 
   return (
-    <Tabs defaultValue="metadata">
+    <Tabs defaultValue="metadata" className="flex-1 overflow-hidden">
       <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-0">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-1 flex-col overflow-hidden"
+          >
             <div className="border-b border-border/50 bg-muted/20 py-3 px-6 flex items-center justify-between">
               <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
                 <TabsTrigger
@@ -221,9 +240,15 @@ export function PageForm({
                 {isSubmitting ? "Saving..." : "Save Page"}
               </Button>
             </div>
-            <div className="p-6">
-              <TabsContent value="metadata">
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <TabsContent value="metadata" className="p-6">
                 <MatadataForm form={form} />
+              </TabsContent>
+              <TabsContent
+                value="content"
+                className="flex flex-1  overflow-hidden"
+              >
+                <ContentForm form={form} />
               </TabsContent>
             </div>
           </form>
