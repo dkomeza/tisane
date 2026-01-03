@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { PagesTableProps } from "../page";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -14,10 +14,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   GetPagesResponse,
   PageWithoutContent as Page,
-} from "@/app/actions/pages/get-pages";
+} from "@/lib/schemas/PagesSchema";
 import { ResultData } from "@/lib/types/Result";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Eye, SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import DeletePageDialog from "./DeletePageDialog";
@@ -275,7 +275,7 @@ function PageGroup({ page }: { page: Page }) {
               <Eye />
             </Button>
           </Link>
-          <Link href={`/admin/pages/${page.id}`}>
+          <Link href={`/admin/pages/${page.id}/edit`}>
             <Button variant="ghost" size="icon">
               <SquarePen />
             </Button>
@@ -296,7 +296,7 @@ function PageTable(props: PageTableProps) {
       return {
         page: parseInt(props.tableProps.page || "1"),
         perPage: parseInt(props.tableProps.perPage || "20"),
-        total: props.data.count,
+        total: props.data.total,
       };
     }
     return { page: 1, perPage: 20, total: 0 };

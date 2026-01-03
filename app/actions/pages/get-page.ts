@@ -1,22 +1,18 @@
 "use server";
 
+import { preprocess } from "@/components/registry";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma, { Prisma } from "@/lib/prisma";
-import z from "zod";
+import {
+  GetPageSchema,
+  GetPageRequest,
+  GetPageResponse,
+} from "@/lib/schemas/PagesSchema";
 
-const GetPageSchema = z
-  .object({
-    pageId: z.string().min(1).optional(),
-    slug: z.string().min(1).optional(),
-  })
-  .refine((data) => data.pageId || data.slug, {
-    message: "Either pageId or slug must be provided",
-  });
-
-type GetPagesRequest = z.infer<typeof GetPageSchema>;
-
-export async function getPage(request: GetPagesRequest) {
+export async function getPage(
+  request: GetPageRequest
+): Promise<GetPageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
@@ -50,7 +46,18 @@ export async function getPage(request: GetPagesRequest) {
 
     const page = await prisma.page.findFirst(query);
 
-    return { success: true, page };
+    if (!page) {
+      throw new Error("Page not found");
+    }
+
+    const content = preprocess(page.content);
+
+    const res = {
+      ...page,
+      content,
+    };
+
+    return { success: true, data: { page: res } };
   } catch (error) {
     return {
       success: false,

@@ -1,14 +1,14 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
+import { cacheTag } from "next/cache";
 import prisma, { Page } from "@/lib/prisma";
+import { DBComponent, DBComponentsArraySchema } from "@/components/registry";
 
 export type CachedPage = Pick<
   Page,
   | "id"
   | "title"
   | "slug"
-  | "content"
   | "status"
   | "visibility"
   | "created_at"
@@ -21,10 +21,12 @@ export type CachedPage = Pick<
   tags: {
     name: string;
   }[];
+} & {
+  content: DBComponent[];
 };
 
 async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
-  return prisma.page.findUnique({
+  const page = await prisma.page.findUnique({
     select: {
       id: true,
       title: true,
@@ -46,6 +48,30 @@ async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
     },
     where: { slug, deleted_at: null },
   });
+
+  if (!page) {
+    return null;
+  }
+
+  try {
+    if (typeof page.content === "string") {
+      page.content = JSON.parse(page.content);
+    }
+  } catch (e) {
+    console.error("Failed to parse page content JSON:", e);
+    return null;
+  }
+
+  const { success, data } = DBComponentsArraySchema.safeParse(page.content);
+  if (!success) {
+    console.error("Failed to parse page components:", data);
+    return null;
+  }
+
+  return {
+    ...page,
+    content: data,
+  };
 }
 
 function normalizeSlug(slug: string[]): string {
@@ -82,15 +108,9 @@ export async function getPageBySlug(
 export async function getCachedPageBySlug(
   slug: string[]
 ): Promise<CachedPage | null> {
+  "use cache";
   const realSlug = normalizeSlug(slug);
-  return unstable_cache(
-    async () => {
-      return fetchPageBySlug(realSlug);
-    },
-    [`slug-${realSlug}`],
-    {
-      revalidate: false,
-      tags: [`page[${realSlug}]`],
-    }
-  )();
+  cacheTag(`page[${realSlug}]`);
+
+  return await fetchPageBySlug(realSlug);
 }

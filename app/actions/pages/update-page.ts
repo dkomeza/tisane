@@ -2,34 +2,18 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import prisma, { PageStatus, PageVisibility } from "@/lib/prisma";
-import { refresh } from "next/cache";
-import z from "zod";
+import prisma, { Prisma } from "@/lib/prisma";
+import { refresh, updateTag } from "next/cache";
+import {
+  UpdatePageRequest,
+  UpdatePageResponse,
+  UpdatePageSchema,
+} from "@/lib/schemas/PagesSchema";
+import { preprocess } from "@/components/registry";
 
-const UpdatePageSchema = z.object({
-  pageId: z.string().min(1),
-
-  title: z.string().min(1).optional(),
-  slug: z.string().min(1).optional(),
-
-  status: z.enum(Object.values(PageStatus)).optional(),
-  visibility: z.enum(Object.values(PageVisibility)).optional(),
-
-  content: z.string().min(1).optional(),
-
-  seo_title: z.string().optional(),
-  seo_description: z.string().optional(),
-  open_graph_image: z.string().optional(),
-  canonical_url: z.string().optional(),
-
-  order: z.number().int().optional(),
-
-  tags: z.array(z.string()).optional(), // Array of tag IDs
-});
-
-type UpdatePageRequest = z.infer<typeof UpdatePageSchema>;
-
-export async function updatePage(request: UpdatePageRequest) {
+export async function updatePage(
+  request: UpdatePageRequest
+): Promise<UpdatePageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.create")) {
@@ -45,8 +29,16 @@ export async function updatePage(request: UpdatePageRequest) {
 
     const { pageId, tags, ...updateData } = parse.data;
 
+    const existingPage = await prisma.page.findUnique({
+      where: { id: pageId },
+    });
+
+    if (!existingPage) {
+      return { success: false, error: "Page not found" };
+    }
+
     const updatedPage = await prisma.page.update({
-      data: { ...updateData },
+      data: updateData as Prisma.PageUpdateInput,
       where: { id: pageId },
     });
 
@@ -66,7 +58,20 @@ export async function updatePage(request: UpdatePageRequest) {
       });
     }
 
-    return { success: true, page: updatedPage };
+    updateTag(`page[${updatedPage.slug}]`);
+
+    if (existingPage.slug !== updatedPage.slug) {
+      updateTag(`page[${existingPage.slug}]`);
+    }
+
+    const content = preprocess(updatedPage.content);
+
+    const res = {
+      ...updatedPage,
+      content,
+    };
+
+    return { success: true, data: { page: res } };
   } catch (error) {
     return {
       success: false,

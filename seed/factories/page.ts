@@ -3,7 +3,9 @@ import prisma, {
   PageStatus,
   Page as PageT,
   PageVisibility,
+  Prisma,
 } from "@/lib/prisma";
+import { PageCreateManyInput } from "@/src/generated/prisma/models";
 
 export type Page = Omit<PageT, "id">;
 const usedSlugs = new Map<string, number>();
@@ -29,10 +31,25 @@ function uniqueSlug(base: string) {
   return count === 0 ? key : `${key}-${count}`;
 }
 
-export function makePage(overrides: Partial<Page> = {}): Page {
+export function makePage(overrides: Partial<PageCreateManyInput> = {}): PageCreateManyInput {
   const title = faker.book.title();
   const status = faker.helpers.arrayElement(Object.values(PageStatus));
   const publishedAt = status === "published" ? faker.date.past() : null;
+
+  const content = {
+    type: "doc",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: faker.lorem.paragraph(),
+          },
+        ],
+      },
+    ],
+  } as Prisma.JsonObject;
 
   return {
     title: title,
@@ -43,7 +60,7 @@ export function makePage(overrides: Partial<Page> = {}): Page {
     updated_at: new Date(),
     published_at: publishedAt,
     deleted_at: null,
-    content: faker.lorem.paragraphs(3),
+    content,
     seo_title: title,
     seo_description: faker.lorem.sentences(2),
     open_graph_image: null,
