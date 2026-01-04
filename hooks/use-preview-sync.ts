@@ -20,15 +20,19 @@ export function usePreviewBroadcaster(
     return () => bc.close();
   }, [channelName]);
 
-  const broadcast = (blocks: DBComponent[]) => {
+  const broadcast = (blocks: DBComponent[], attempts = 0) => {
+    if (attempts > 5) return;
+
     if (channel) {
       try {
         channel.postMessage({
           type: "UPDATE_CONTENT",
           blocks,
         } as PreviewMessage);
-      } catch (error) {
-        console.error("Failed to broadcast preview message:", error);
+      } catch {
+        setTimeout(() => {
+          broadcast(blocks, attempts + 1);
+        }, 100);
       }
     }
   };
