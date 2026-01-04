@@ -15,13 +15,21 @@ export function usePreviewBroadcaster(
 
   useEffect(() => {
     const bc = new BroadcastChannel(channelName);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChannel(bc);
     return () => bc.close();
   }, [channelName]);
 
   const broadcast = (blocks: DBComponent[]) => {
     if (channel) {
-      channel.postMessage({ type: "UPDATE_CONTENT", blocks } as PreviewMessage);
+      try {
+        channel.postMessage({
+          type: "UPDATE_CONTENT",
+          blocks,
+        } as PreviewMessage);
+      } catch (error) {
+        console.error("Failed to broadcast preview message:", error);
+      }
     }
   };
 

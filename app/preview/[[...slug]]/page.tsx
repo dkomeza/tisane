@@ -3,9 +3,23 @@
 import { PageContentRenderer } from "@/components/cms/PageContentRenderer";
 import { usePreviewReceiver } from "@/hooks/use-preview-sync";
 import { Loader2 } from "lucide-react";
+import { use } from "react";
 
-export default function PreviewPage() {
-  const { blocks } = usePreviewReceiver();
+interface PageProps {
+  params: Promise<{
+    slug?: string[];
+  }>;
+}
+
+export default function PreviewPage({ params }: PageProps) {
+  const { slug = [] } = use(params);
+  const parsedSlug = slug
+    .filter((part) => part && part.trim() !== "")
+    .join("/");
+
+  const { blocks } = usePreviewReceiver(
+    parsedSlug !== "" ? parsedSlug : undefined
+  );
 
   if (!blocks) {
     return (

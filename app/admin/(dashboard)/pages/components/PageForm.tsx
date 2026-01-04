@@ -49,6 +49,7 @@ import {
 import { create } from "zustand";
 import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
+import { ContentPreview } from "./ContentPreview";
 
 const slugify = (text: string) =>
   text
@@ -264,39 +265,6 @@ function ContentForm() {
   );
 }
 
-function ContentPreview({ form }: { form: UseFormReturn<CreatePageRequest> }) {
-  return (
-    <>
-      <FormField
-        control={form.control}
-        name="content"
-        render={() => (
-          <ContentBlocksPreview blocks={form.getValues("content")} />
-        )}
-      />
-    </>
-  );
-}
-
-function ContentBlocksPreview({ blocks }: { blocks?: DBComponent[] }) {
-  return (
-    <>
-      {blocks?.map((block) => {
-        const component = COMPONENT_REGISTRY[block.type];
-        if (!component) return null;
-
-        const ClientComponent = component.ClientComponent as React.FC<
-          BlockProps<typeof block.data>
-        >;
-
-        return (
-          <ClientComponent key={nanoid(8)} id={block.type} data={block.data} />
-        );
-      })}
-    </>
-  );
-}
-
 function parseBlocks(blocks: DBComponent[]): Block[] {
   return blocks.map((block) => {
     const parsedBlock: Block = {
@@ -318,7 +286,7 @@ export function PageForm({
   isSubmitting?: boolean;
 }) {
   const { blocks, setBlocks } = useContentStore();
-  const { broadcast } = usePreviewBroadcaster();
+  const { broadcast } = usePreviewBroadcaster(defaultValues?.slug);
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
     defaultValues: {
@@ -342,15 +310,21 @@ export function PageForm({
   useEffect(() => {
     form.setValue(
       "content",
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       blocks.map(({ id, ...rest }) => rest)
     );
     broadcast(form.getValues("content") || []);
   }, [blocks, form, broadcast]);
 
   const TABS = ["metadata", "content", "preview"] as const;
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("metadata");
 
   return (
-    <Tabs defaultValue="metadata" className="flex-1 overflow-hidden">
+    <Tabs
+      value={activeTab}
+      onValueChange={(val) => setActiveTab(val as (typeof TABS)[number])}
+      className="flex-1 overflow-hidden"
+    >
       <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-0">
         <Form {...form}>
           <form
@@ -387,9 +361,14 @@ export function PageForm({
               >
                 <ContentForm />
               </TabsContent>
-              <TabsContent value="preview" className="p-6">
-                <ContentPreview form={form} />
-              </TabsContent>
+              <div
+                className={cn(
+                  "p-6 flex-1 outline-none overflow-hidden",
+                  activeTab === "preview" ? "flex" : "hidden"
+                )}
+              >
+                <ContentPreview slug={defaultValues?.slug} />
+              </div>
             </div>
           </form>
         </Form>
