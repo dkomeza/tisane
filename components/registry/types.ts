@@ -9,6 +9,8 @@ export type CMSStore = {
     id: string,
     data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>
   ) => void;
+  addBlock?: (block: Block) => void;
+  removeBlock?: (id: string) => void;
 };
 
 type ZustandStore = UseBoundStore<StoreApi<CMSStore>>;

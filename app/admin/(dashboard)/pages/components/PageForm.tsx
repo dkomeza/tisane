@@ -33,7 +33,6 @@ import {
   DBComponent,
   AdminBlockProps,
   Block,
-  BlockProps,
 } from "@/components/registry/types";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
@@ -68,6 +67,14 @@ const useContentStore = create<CMSStore>((set) => ({
       blocks: state.blocks.map((block) =>
         block.id === id ? { ...block, data: { ...block.data, ...data } } : block
       ),
+    })),
+  addBlock: (block) =>
+    set((state) => ({
+      blocks: [...state.blocks, block],
+    })),
+  removeBlock: (id) =>
+    set((state) => ({
+      blocks: state.blocks.filter((block) => block.id !== id),
     })),
 }));
 
@@ -197,7 +204,7 @@ function MatadataForm({
 }
 
 function ContentForm() {
-  const { blocks } = useContentStore();
+  const { blocks, addBlock } = useContentStore();
 
   return (
     <ScrollArea className="flex-1 flex p-6">
@@ -248,6 +255,20 @@ function ContentForm() {
                           <button
                             key={componentId}
                             className="border border-border/50 rounded-md p-2"
+                            onClick={() => {
+                              const newBlock: Block = {
+                                id: nanoid(8),
+                                type: componentId,
+                                data: {
+                                  ...COMPONENT_REGISTRY[
+                                    componentId
+                                  ].Schema.parse({}),
+                                },
+                              };
+
+                              if (!newBlock || !addBlock) return;
+                              addBlock(newBlock);
+                            }}
                           >
                             <Preview />
                           </button>

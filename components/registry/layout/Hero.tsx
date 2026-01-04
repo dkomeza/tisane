@@ -9,7 +9,7 @@ import {
 import z from "zod";
 
 type ComponentProps = {
-  content: DBComponent<"heading">;
+  content?: DBComponent<"heading">;
   //   cta: DBComponent<"button">;
 };
 
@@ -26,7 +26,8 @@ export const Hero: CMSComponent<"hero", ComponentProps> = {
       .lazy(() => DBComponentSchema)
       .refine((data) => data.type === "heading", {
         message: "Content must be of type 'heading'",
-      }) as z.ZodType<DBComponent<"heading">>,
+      })
+      .optional() as z.ZodType<DBComponent<"heading">>,
   }),
 };
 
@@ -34,7 +35,7 @@ export const Hero: CMSComponent<"hero", ComponentProps> = {
  * This is the client-side component that will be rendered in the application.
  */
 function HeroClientComponent({ data }: BlockProps<ComponentProps>) {
-  return <div>{data.content.data.text}</div>;
+  return <div>{data.content?.data.text}</div>;
 }
 
 /**
