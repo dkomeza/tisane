@@ -291,7 +291,6 @@ function parseBlocks(blocks: DBComponent[]): Block[] {
     const parsedBlock: Block = {
       ...block,
       id: nanoid(8),
-      children: block.children ? parseBlocks(block.children) : undefined,
     };
     return parsedBlock;
   });
@@ -343,7 +342,15 @@ export function PageForm({
   return (
     <Tabs
       value={activeTab}
-      onValueChange={(val) => setActiveTab(val as (typeof TABS)[number])}
+      onValueChange={(val) => {
+        setActiveTab(val as (typeof TABS)[number]);
+
+        if (val === "preview") {
+          setTimeout(() => {
+            broadcast(form.getValues("content") || []);
+          }, 100);
+        }
+      }}
       className="flex-1 overflow-hidden"
     >
       <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-0">
