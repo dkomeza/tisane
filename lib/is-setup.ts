@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import prisma from "./prisma";
 
 const globalForSetup = globalThis as typeof globalThis & {
@@ -5,6 +6,8 @@ const globalForSetup = globalThis as typeof globalThis & {
 };
 
 export async function isSetupComplete(): Promise<boolean> {
+  await connection();
+
   if (globalForSetup.__tisane_is_setup) {
     return true;
   }
