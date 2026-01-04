@@ -5,6 +5,8 @@ import { Heading } from "./typography/Typography";
 import { Hero } from "./layout/Hero";
 import { DBComponent, RegistryCategory } from "./types";
 
+export * from "./types";
+
 /**
  * The DBComponentSchema is a recursive Zod schema that validates
  * DBComponent structures, including nested children.
