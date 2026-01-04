@@ -26,14 +26,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
-import { DBComponent } from "@/components/registry";
+import { useEffect, useState } from "react";
+import {
+  AdminBlockProps,
+  Block,
+  BlockProps,
+  COMPONENT_REGISTRY,
+  DBComponent,
+  REGISTRY_CATEGORIES,
+} from "@/components/registry";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { create } from "zustand";
+import { CMSStore } from "@/components/registry/store";
+import { nanoid } from "nanoid";
 
 const slugify = (text: string) =>
   text
@@ -43,6 +58,17 @@ const slugify = (text: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^\w\-]+/g, "")
     .replace(/\-\-+/g, "-");
+
+const useContentStore = create<CMSStore>((set) => ({
+  blocks: [],
+  setBlocks: (blocks) => set({ blocks }),
+  updateBlock: (id, data) =>
+    set((state) => ({
+      blocks: state.blocks.map((block) =>
+        block.id === id ? { ...block, data: { ...block.data, ...data } } : block
+      ),
+    })),
+}));
 
 function MatadataForm({
   form,
@@ -169,21 +195,117 @@ function MatadataForm({
   );
 }
 
-function ContentForm({ form }: { form: UseFormReturn<CreatePageRequest> }) {
+function ContentForm() {
+  const { blocks } = useContentStore();
+
   return (
     <ScrollArea className="flex-1 flex p-6">
       <div className="flex-1 flex flex-col gap-4">
-        <button
-          type="button"
-          className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full"
-        >
-          <h2 className="flex items-center text-xl gap-2">
-            <PlusCircle /> Add new component
-          </h2>
-        </button>
+        {blocks.map((block) => {
+          const component = COMPONENT_REGISTRY[block.type];
+          if (!component) return null;
+
+          const AdminComponent = component.AdminComponent as React.FC<
+            AdminBlockProps<typeof block.data>
+          >;
+
+          return (
+            <div
+              key={block.id}
+              className="bg-secondary/20 rounded-md p-4 flex justify-center-safe"
+            >
+              <AdminComponent
+                id={block.id}
+                data={block.data}
+                useStore={useContentStore}
+              />
+            </div>
+          );
+        })}
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full"
+            >
+              <h2 className="flex items-center text-xl gap-2">
+                <PlusCircle /> Add new component
+              </h2>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent asChild>
+            <Card className="w-md">
+              <ScrollArea className="max-h-96">
+                {Object.values(REGISTRY_CATEGORIES).map((category) => (
+                  <div key={category.id} className="mb-4">
+                    <h3 className="mb-2">{category.label}</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                      {category.componentIds.map((componentId) => {
+                        const Preview =
+                          COMPONENT_REGISTRY[componentId].PreviewComponent;
+                        return (
+                          <button
+                            key={componentId}
+                            className="border border-border/50 rounded-md p-2"
+                          >
+                            <Preview />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </ScrollArea>
+            </Card>
+          </PopoverContent>
+        </Popover>
       </div>
     </ScrollArea>
   );
+}
+
+function ContentPreview({ form }: { form: UseFormReturn<CreatePageRequest> }) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="content"
+        render={() => (
+          <ContentBlocksPreview blocks={form.getValues("content")} />
+        )}
+      />
+    </>
+  );
+}
+
+function ContentBlocksPreview({ blocks }: { blocks?: DBComponent[] }) {
+  return (
+    <>
+      {blocks?.map((block) => {
+        const component = COMPONENT_REGISTRY[block.type];
+        if (!component) return null;
+
+        const ClientComponent = component.ClientComponent as React.FC<
+          BlockProps<typeof block.data>
+        >;
+
+        return (
+          <ClientComponent key={nanoid(8)} id={block.type} data={block.data} />
+        );
+      })}
+    </>
+  );
+}
+
+function parseBlocks(blocks: DBComponent[]): Block[] {
+  return blocks.map((block) => {
+    const parsedBlock: Block = {
+      ...block,
+      id: nanoid(8),
+      children: block.children ? parseBlocks(block.children) : undefined,
+    };
+    return parsedBlock;
+  });
 }
 
 export function PageForm({
@@ -195,6 +317,7 @@ export function PageForm({
   onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
+  const { blocks, setBlocks } = useContentStore();
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
     defaultValues: {
@@ -208,6 +331,22 @@ export function PageForm({
     },
   });
 
+  useEffect(() => {
+    if (defaultValues?.content) {
+      const parsedBlocks = parseBlocks(defaultValues.content);
+      setBlocks(parsedBlocks);
+    }
+  }, [defaultValues, setBlocks]);
+
+  useEffect(() => {
+    form.setValue(
+      "content",
+      blocks.map(({ id, ...rest }) => rest)
+    );
+  }, [blocks]);
+
+  const TABS = ["metadata", "content", "preview"] as const;
+
   return (
     <Tabs defaultValue="metadata" className="flex-1 overflow-hidden">
       <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-0">
@@ -218,26 +357,19 @@ export function PageForm({
           >
             <div className="border-b border-border/50 bg-muted/20 py-3 px-6 flex items-center justify-between">
               <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
-                <TabsTrigger
-                  value="metadata"
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                    "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
-                    "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
-                  )}
-                >
-                  Metadata
-                </TabsTrigger>
-                <TabsTrigger
-                  value="content"
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                    "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
-                    "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
-                  )}
-                >
-                  Content
-                </TabsTrigger>
+                {TABS.map((tab) => (
+                  <TabsTrigger
+                    key={tab}
+                    value={tab}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 capitalize",
+                      "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
+                      "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                    )}
+                  >
+                    {tab}
+                  </TabsTrigger>
+                ))}
               </TabsList>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Saving..." : "Save Page"}
@@ -251,7 +383,10 @@ export function PageForm({
                 value="content"
                 className="flex flex-1  overflow-hidden"
               >
-                <ContentForm form={form} />
+                <ContentForm />
+              </TabsContent>
+              <TabsContent value="preview" className="p-6">
+                <ContentPreview form={form} />
               </TabsContent>
             </div>
           </form>

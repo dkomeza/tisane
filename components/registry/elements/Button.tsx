@@ -116,6 +116,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
         <div className="flex flex-wrap gap-3">
           {colorOptions.map((option) => (
             <button
+              type="button"
               key={option.value}
               onClick={() => updateBlock(id, { color: option.value })}
               className={cn(
@@ -147,6 +148,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
           <div className="flex p-1 bg-gray-100 rounded-lg">
             {(["small", "large"] as const).map((variant) => (
               <button
+                type="button"
                 key={variant}
                 onClick={() => updateBlock(id, { variant })}
                 className={cn(

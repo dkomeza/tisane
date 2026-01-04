@@ -85,6 +85,23 @@ export const COMPONENT_REGISTRY = {
   [Heading.id]: Heading,
 } as const;
 
+/**
+ * RegistryCategory defines a category of components in the registry.
+ */
+export type RegistryCategory = {
+  id: string;
+  label: string;
+  componentIds: ComponentType[];
+};
+
+export const REGISTRY_CATEGORIES: RegistryCategory[] = [
+  {
+    id: "elements",
+    label: "Elements",
+    componentIds: [Button.id],
+  },
+];
+
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
 export type ComponentType = keyof ComponentRegistry;
 
