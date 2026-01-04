@@ -1,12 +1,18 @@
 "use server";
 
+import { preprocess } from "@/components/registry";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import prisma, { Prisma } from "@/lib/prisma";
-import { GetPageSchema, GetPageRequest } from "@/lib/schemas/PagesSchema";
+import {
+  GetPageSchema,
+  GetPageRequest,
+  GetPageResponse,
+} from "@/lib/schemas/PagesSchema";
 
-
-export async function getPage(request: GetPageRequest) {
+export async function getPage(
+  request: GetPageRequest
+): Promise<GetPageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.read")) {
@@ -40,7 +46,18 @@ export async function getPage(request: GetPageRequest) {
 
     const page = await prisma.page.findFirst(query);
 
-    return { success: true, page };
+    if (!page) {
+      throw new Error("Page not found");
+    }
+
+    const content = preprocess(page.content);
+
+    const res = {
+      ...page,
+      content,
+    };
+
+    return { success: true, data: { page: res } };
   } catch (error) {
     return {
       success: false,

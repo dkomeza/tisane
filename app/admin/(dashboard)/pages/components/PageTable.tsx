@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { PagesTableProps } from "../page";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -14,10 +14,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   GetPagesResponse,
   PageWithoutContent as Page,
-} from "@/app/actions/pages/get-pages";
+} from "@/lib/schemas/PagesSchema";
 import { ResultData } from "@/lib/types/Result";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Eye, SquarePen } from "lucide-react";
+import { Eye, SquarePen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import DeletePageDialog from "./DeletePageDialog";
@@ -197,7 +197,7 @@ function TableFooter(props: TableFooterProps) {
                 })}
                 className={cn(
                   props.page * props.perPage >= props.total &&
-                  "pointer-events-none opacity-50"
+                    "pointer-events-none opacity-50"
                 )}
               >
                 Next
@@ -296,7 +296,7 @@ function PageTable(props: PageTableProps) {
       return {
         page: parseInt(props.tableProps.page || "1"),
         perPage: parseInt(props.tableProps.perPage || "20"),
-        total: props.data.count,
+        total: props.data.total,
       };
     }
     return { page: 1, perPage: 20, total: 0 };
@@ -330,29 +330,29 @@ function PageTable(props: PageTableProps) {
           <tbody>
             {props.type === "data"
               ? props.data.pages.map((page) => (
-                <PageGroup key={page.id} page={page} />
-              ))
+                  <PageGroup key={page.id} page={page} />
+                ))
               : Array.from({
-                length: parseInt(searchParams.get("perPage") || "20"),
-              }).map((_, index) => (
-                <tr key={index} className="border-t">
-                  <td className="px-4 py-4">
-                    <Skeleton className="text-transparent inline">
-                      ██████████████
-                    </Skeleton>
-                  </td>
-                  <td className="px-4 py-4">
-                    <Skeleton className="text-transparent inline">
-                      █████████
-                    </Skeleton>
-                  </td>
-                  <td className="px-4 py-4">
-                    <Skeleton className="text-transparent inline">
-                      ████-██-██
-                    </Skeleton>
-                  </td>
-                </tr>
-              ))}
+                  length: parseInt(searchParams.get("perPage") || "20"),
+                }).map((_, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        ██████████████
+                      </Skeleton>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        █████████
+                      </Skeleton>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Skeleton className="text-transparent inline">
+                        ████-██-██
+                      </Skeleton>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
-import { getUsedSlugs, makePage, Page } from "./page";
+import { getUsedSlugs, makePage } from "./page";
 import { getUsedTags, makeTag } from "./tag";
+import { PageCreateManyInput } from "@/src/generated/prisma/models";
 
 faker.seed(43); // IMPORTANT: reproducible seeds
 
@@ -12,7 +13,7 @@ await getUsedTags();
 
 export const tags = Array.from({ length: TAG_COUNT }, makeTag);
 
-export const pages: Page[] = [];
+export const pages: PageCreateManyInput[] = [];
 
 for (let i = 0; i < PAGE_COUNT; i++) {
   const root = makePage({ parent_id: null, order: i });

@@ -2,11 +2,18 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import prisma from "@/lib/prisma";
+import prisma, { Prisma } from "@/lib/prisma";
 import { refresh, updateTag } from "next/cache";
-import { UpdatePageRequest, UpdatePageSchema } from "@/lib/schemas/PagesSchema";
+import {
+  UpdatePageRequest,
+  UpdatePageResponse,
+  UpdatePageSchema,
+} from "@/lib/schemas/PagesSchema";
+import { preprocess } from "@/components/registry";
 
-export async function updatePage(request: UpdatePageRequest) {
+export async function updatePage(
+  request: UpdatePageRequest
+): Promise<UpdatePageResponse> {
   const { session } = await authorize();
 
   if (!hasPermission(session, "content.create")) {
@@ -31,7 +38,7 @@ export async function updatePage(request: UpdatePageRequest) {
     }
 
     const updatedPage = await prisma.page.update({
-      data: { ...updateData },
+      data: updateData as Prisma.PageUpdateInput,
       where: { id: pageId },
     });
 
@@ -57,7 +64,14 @@ export async function updatePage(request: UpdatePageRequest) {
       updateTag(`page[${existingPage.slug}]`);
     }
 
-    return { success: true, page: updatedPage };
+    const content = preprocess(updatedPage.content);
+
+    const res = {
+      ...updatedPage,
+      content,
+    };
+
+    return { success: true, data: { page: res } };
   } catch (error) {
     return {
       success: false,

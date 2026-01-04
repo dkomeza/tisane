@@ -3,6 +3,8 @@ import { getCachedPageBySlug } from "@/lib/pages/lookup-service"; // Update path
 import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
+import { COMPONENT_REGISTRY } from "@/components/registry";
+import { nanoid } from "nanoid";
 
 interface PageProps {
   params: Promise<{
@@ -63,33 +65,22 @@ export default async function CMSPage({ params }: PageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <article className="prose lg:prose-xl max-w-none">
-        <header className="mb-8">
-          <div className="bg-red-500 text-white p-2 font-mono text-center">
-            Generated at: {new Date().toLocaleTimeString()}
-          </div>
-          <h1 className="text-4xl font-bold mb-2">{page.title}</h1>
-          <time className="text-gray-500 text-sm">
-            {new Date(page.updated_at).toLocaleDateString()}
-          </time>
-        </header>
+    <>
+      {page.content &&
+        page.content.map((content, index) => {
+          const CMSComponent = COMPONENT_REGISTRY[content.type];
 
-        <div dangerouslySetInnerHTML={{ __html: page.content ?? "" }} />
+          if (!CMSComponent) {
+            return null;
+          }
 
-        {page.tags.length > 0 && (
-          <div className="mt-8 flex gap-2">
-            {page.tags.map((tag) => (
-              <span
-                key={tag.name}
-                className="bg-gray-100 px-3 py-1 rounded-full text-sm"
-              >
-                {tag.name}
-              </span>
-            ))}
-          </div>
-        )}
-      </article>
-    </main>
+          const ClientComponent = CMSComponent.ClientComponent;
+
+          return (
+            // @ts-expect-error - We are sure that data matches the schema
+            <ClientComponent key={index} data={content.data} id={nanoid()} />
+          );
+        })}
+    </>
   );
 }

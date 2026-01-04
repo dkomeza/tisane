@@ -1,18 +1,21 @@
-import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import EditPageClient from "./EditPageClient";
+import { getPage } from "@/app/actions/pages/get-page";
 
 export default async function EditPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const params = await props.params;
-  const page = await prisma.page.findUnique({
-    where: { id: params.id },
+  const response = await getPage({
+    pageId: params.id,
   });
 
-  if (!page) {
+  if (!response.success) {
+    console.error("Failed to fetch page:", response.error);
     notFound();
   }
+
+  const { page } = response.data;
 
   return (
     <EditPageClient

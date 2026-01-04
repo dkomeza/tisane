@@ -1,6 +1,6 @@
 "use client";
 
-import { PageForm } from "@/app/components/PageForm";
+import { PageForm } from "@/app/admin/(dashboard)/pages/components/PageForm";
 import { createPage } from "@/app/actions/pages/create-page";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

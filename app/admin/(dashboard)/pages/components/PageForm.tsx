@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreatePageSchema,
@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { DBComponent } from "@/components/registry";
 
 const slugify = (text: string) =>
   text
@@ -47,14 +48,14 @@ export function PageForm({
   isSubmitting?: boolean;
 }) {
   const form = useForm<CreatePageRequest>({
-    resolver: zodResolver(CreatePageSchema),
+    resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
     defaultValues: {
       title: "",
       slug: "",
       status: "draft",
       seo_title: "",
       seo_description: "",
-      content: "",
+      content: [] as DBComponent[],
       ...defaultValues,
     },
   });
@@ -193,7 +194,10 @@ export function PageForm({
                     className="font-mono text-xs"
                     rows={10}
                     {...field}
-                    value={field.value || ""}
+                    value={JSON.stringify(field.value || [])}
+                    onChange={(e) => {
+                      field.onChange(JSON.parse(e.currentTarget.value));
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

@@ -3,15 +3,12 @@
 import { hasPermission } from "@/lib/permissions";
 import { authorize } from "@/lib/auth/authorize";
 
-import { GetPagesSchema, GetPagesRequest } from "@/lib/schemas/PagesSchema";
-import { Result } from "@/lib/types/Result";
-import prisma, { Page, Prisma } from "@/lib/prisma";
-
-export type PageWithoutContent = Omit<Page, "content">;
-export type GetPagesResponse = Result<
-  { pages: PageWithoutContent[]; count: number },
-  string
->;
+import {
+  GetPagesSchema,
+  GetPagesRequest,
+  GetPagesResponse,
+} from "@/lib/schemas/PagesSchema";
+import prisma, { Prisma } from "@/lib/prisma";
 
 /**
  * Get a list of pages. This function is meant to be used on the admin side.
@@ -52,9 +49,7 @@ export async function getPages(
     if (offset) query.skip = offset;
     if (lastId) query.cursor = { id: lastId };
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-      ];
+      where.OR = [{ title: { contains: search, mode: "insensitive" } }];
     }
     if (!returnAll) where.deleted_at = null;
     query.orderBy = [
@@ -75,7 +70,7 @@ export async function getPages(
     const pages = await prisma.page.findMany(query);
     const count = await prisma.page.count({ where });
 
-    return { success: true, data: { pages, count } };
+    return { success: true, data: { pages, total: count } };
   } catch (error) {
     return {
       success: false,
