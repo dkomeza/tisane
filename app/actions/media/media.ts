@@ -69,20 +69,23 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
 
 export async function deleteMedia(id: string) {
   const media = await prisma.media.findUnique({ where: { id } });
-  if (!media) throw new Error("Media not found");
+  if (!media) return { success: false, message: "Media not found" };
 
-  await s3Client.send(
-    new DeleteObjectCommand({
-      Bucket: media.bucket,
-      Key: media.key,
-    })
-  );
+  try {
+    await s3Client.send(
+      new DeleteObjectCommand({ Bucket: media.bucket, Key: media.key })
+    );
 
-  await prisma.media.delete({ where: { id } });
+    await prisma.media.delete({ where: { id } });
 
-  revalidatePath("/admin/media");
+    revalidatePath("/admin/media");
 
-  return { success: true, id };
+    return { success: true, id };
+  } catch (err) {
+    console.error("Failed to delete media:", err);
+    return { success: false, message: "Delete failed" };
+  }
 }
+
 
 
