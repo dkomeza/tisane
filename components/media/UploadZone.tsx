@@ -16,6 +16,19 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     accept: { "image/*": [] },
   });
 
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+  setIsUploading(true);
+  setError(null);
+
+  try {
+  } catch (err: any) {
+    setError(err.message || "Upload failed");
+  } finally {
+    setIsUploading(false);
+  }
+}, []);
+
+
   return (
     <div
       {...getRootProps()}
