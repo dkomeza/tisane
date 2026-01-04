@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { uploadMedia } from "@/app/actions/media/media";
 
 interface UploadZoneProps {
   onUploadComplete?: () => void;
@@ -16,18 +17,28 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     accept: { "image/*": [] },
   });
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-  setIsUploading(true);
-  setError(null);
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      setIsUploading(true);
+      setError(null);
 
-  try {
-  } catch (err: any) {
-    setError(err.message || "Upload failed");
-  } finally {
-    setIsUploading(false);
-  }
-}, []);
+      try {
+        for (const file of acceptedFiles) {
+          const formData = new FormData();
+          formData.append("file", file);
 
+          await uploadMedia(formData as any);
+        }
+
+        onUploadComplete?.();
+      } catch (err: any) {
+        setError(err.message || "Upload failed");
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [onUploadComplete]
+  );
 
   return (
     <div
