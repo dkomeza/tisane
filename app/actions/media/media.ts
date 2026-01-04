@@ -44,3 +44,25 @@ export async function uploadMedia(formData: FormData) {
 
   return media;
 }
+
+export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
+  const skip = (page - 1) * pageSize;
+
+  const [items, total] = await Promise.all([
+    prisma.media.findMany({
+      skip,
+      take: pageSize,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.media.count(),
+  ]);
+
+  return {
+    items,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
