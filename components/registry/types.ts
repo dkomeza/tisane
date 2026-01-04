@@ -68,6 +68,7 @@ export type RegistryCategory = {
   id: string;
   label: string;
   componentIds: ComponentType[];
+  isRootLevel?: boolean;
 };
 
 export type ReactClientComponent<T extends Block["data"]> = React.FC<

@@ -51,6 +51,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     id: "layout",
     label: "Layout",
     componentIds: [Hero.id],
+    isRootLevel: true,
   },
 ];
 

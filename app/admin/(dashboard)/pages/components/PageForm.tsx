@@ -244,39 +244,41 @@ function ContentForm() {
           <PopoverContent asChild>
             <Card className="w-md">
               <ScrollArea className="max-h-96">
-                {Object.values(REGISTRY_CATEGORIES).map((category) => (
-                  <div key={category.id} className="mb-4">
-                    <h3 className="mb-2">{category.label}</h3>
-                    <div className="grid grid-cols-3 gap-2">
-                      {category.componentIds.map((componentId) => {
-                        const Preview =
-                          COMPONENT_REGISTRY[componentId].PreviewComponent;
-                        return (
-                          <button
-                            key={componentId}
-                            className="border border-border/50 rounded-md p-2"
-                            onClick={() => {
-                              const newBlock: Block = {
-                                id: nanoid(8),
-                                type: componentId,
-                                data: {
-                                  ...COMPONENT_REGISTRY[
-                                    componentId
-                                  ].Schema.parse({}),
-                                },
-                              };
+                {Object.values(REGISTRY_CATEGORIES)
+                  .filter((category) => category.isRootLevel)
+                  .map((category) => (
+                    <div key={category.id} className="mb-4">
+                      <h3 className="mb-2">{category.label}</h3>
+                      <div className="grid grid-cols-3 gap-2">
+                        {category.componentIds.map((componentId) => {
+                          const Preview =
+                            COMPONENT_REGISTRY[componentId].PreviewComponent;
+                          return (
+                            <button
+                              key={componentId}
+                              className="border border-border/50 rounded-md p-2"
+                              onClick={() => {
+                                const newBlock: Block = {
+                                  id: nanoid(8),
+                                  type: componentId,
+                                  data: {
+                                    ...COMPONENT_REGISTRY[
+                                      componentId
+                                    ].Schema.parse({}),
+                                  },
+                                };
 
-                              if (!newBlock || !addBlock) return;
-                              addBlock(newBlock);
-                            }}
-                          >
-                            <Preview />
-                          </button>
-                        );
-                      })}
+                                if (!newBlock || !addBlock) return;
+                                addBlock(newBlock);
+                              }}
+                            >
+                              <Preview />
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </ScrollArea>
             </Card>
           </PopoverContent>
