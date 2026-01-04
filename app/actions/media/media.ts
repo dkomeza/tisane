@@ -1,0 +1,46 @@
+"use server";
+
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "@/lib/storage";
+import prisma from "@/lib/prisma";
+
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_PREFIX = "image/";
+
+export async function uploadMedia(formData: FormData) {
+  const file = formData.get("file") as File | null;
+  if (!file) throw new Error("No file provided");
+
+  if (!file.type.startsWith(ALLOWED_PREFIX)) {
+    throw new Error("Only image uploads are allowed");
+  }
+
+  if (file.size > MAX_SIZE) {
+    throw new Error("File exceeds 5MB limit");
+  }
+
+  const key = `${Date.now()}-${file.name}`;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: process.env.S3_BUCKET!,
+      Key: key,
+      Body: buffer,
+      ContentType: file.type,
+    })
+  );
+
+  const media = await prisma.media.create({
+    data: {
+      key,
+      url: `${process.env.S3_PUBLIC_BASE_URL}/${key}`,
+      mimeType: file.type,
+      size: file.size,
+      bucket: process.env.S3_BUCKET!,
+    },
+  });
+
+  return media;
+}
