@@ -66,3 +66,8 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
   };
 }
 
+export async function deleteMedia(id: string) {
+  const media = await prisma.media.findUnique({ where: { id } });
+  if (!media) throw new Error("Media not found");
+}
+
