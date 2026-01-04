@@ -50,11 +50,11 @@ export default function OnboardingWizard() {
   const form = useForm<OnboardingRequest>({
     resolver: zodResolver(OnboardingSchema),
     defaultValues: {
-      name: "d",
-      surname: "a",
-      email: "d@k.com",
-      password: "zaq1@WSX",
-      passwordConfirm: "zaq1@WSX",
+      name: "",
+      surname: "",
+      email: "",
+      password: "",
+      passwordConfirm: "",
       siteUrl: "",
     },
     mode: "onTouched",
