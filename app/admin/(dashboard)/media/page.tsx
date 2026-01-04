@@ -1,88 +1,115 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { UploadZone } from "@/components/media/UploadZone";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { getMediaList } from "@/app/actions/media/media";
+import { getMediaList, deleteMedia } from "@/app/actions/media/media";
 
 interface MediaItem {
   id: string;
-  key: string;
+  name: string;
   url: string;
-  mimeType: string;
+  alt?: string | null;
+  mimeType?: string;
+  size?: number;
+  bucket?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export default function MediaPage() {
+export default function AdminMediaPage() {
   const [media, setMedia] = useState<MediaItem[]>([]);
-  const [loadingMedia, setLoadingMedia] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const refreshMedia = async () => {
-    setLoadingMedia(true);
+  const fetchMedia = async () => {
+    setLoading(true);
     try {
-      const response = await getMediaList({ page: 1, pageSize: 50 });
-
-      setMedia(response.items as MediaItem[]);
+      const data = await getMediaList();
+      const mapped = data.items.map((item: any) => ({
+        id: item.id,
+        name: item.key,
+        url: item.url,
+        alt: item.alt,
+        mimeType: item.mimeType,
+        size: item.size,
+        bucket: item.bucket,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      }));
+      setMedia(mapped);
     } catch (err: any) {
-      console.error(err);
-      toast.error("Nie udało się pobrać listy plików.");
+      toast.error("Failed to load media.");
     } finally {
-      setLoadingMedia(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    refreshMedia();
+    fetchMedia();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this media?"
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteMedia(id);
+      setMedia((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Media deleted!");
+    } catch (err: any) {
+      toast.error("Failed to delete media.");
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-6">Biblioteka Mediów</h1>
+    <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold mb-6">Media Management</h1>
 
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Dodaj nowe media</CardTitle>
+          <CardTitle>Upload New Media</CardTitle>
         </CardHeader>
         <CardContent>
-          <UploadZone onUploadComplete={refreshMedia} />
+          <UploadZone onUploadComplete={fetchMedia} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Twoje pliki</CardTitle>
+          <CardTitle>Your Media</CardTitle>
         </CardHeader>
         <CardContent>
-          {loadingMedia ? (
-            <div className="flex justify-center py-8">
-              <p className="text-blue-500 animate-pulse">Ładowanie...</p>
-            </div>
+          {loading ? (
+            <p className="text-blue-500">Loading media...</p>
           ) : media.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">Brak plików.</p>
+            <p className="text-gray-500">No media uploaded yet.</p>
           ) : (
-            <ScrollArea className="h-96 pr-4">
+            <ScrollArea className="max-h-[60vh]">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {media.map((item) => (
-                  <div
+                  <Card
                     key={item.id}
-                    className="group border rounded-lg p-2 hover:shadow-md transition-all bg-white"
+                    className="border rounded-lg overflow-hidden"
                   >
-                    <div className="relative aspect-square mb-2 overflow-hidden rounded-md bg-gray-100">
-                      <img
-                        src={item.url}
-                        alt={item.key}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
+                    <img
+                      src={item.url}
+                      alt={item.alt || item.name}
+                      className="w-full h-32 object-cover"
+                    />
+                    <div className="p-2 flex justify-between items-center">
+                      <p className="text-sm truncate">{item.name}</p>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="text-red-500 text-sm hover:underline"
+                      >
+                        Delete
+                      </button>
                     </div>
-                    <p
-                      className="text-xs text-gray-500 truncate"
-                      title={item.key}
-                    >
-                      {item.key.split("-").slice(1).join("-")}
-                    </p>
-                  </div>
+                  </Card>
                 ))}
               </div>
             </ScrollArea>
