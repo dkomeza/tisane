@@ -27,14 +27,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
+import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import {
+  CMSStore,
+  DBComponent,
   AdminBlockProps,
   Block,
   BlockProps,
-  COMPONENT_REGISTRY,
-  DBComponent,
-  REGISTRY_CATEGORIES,
-} from "@/components/registry";
+} from "@/components/registry/types";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { Card } from "@/components/ui/card";
@@ -47,8 +47,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { create } from "zustand";
-import { CMSStore } from "@/components/registry/store";
 import { nanoid } from "nanoid";
+import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 
 const slugify = (text: string) =>
   text
@@ -318,6 +318,7 @@ export function PageForm({
   isSubmitting?: boolean;
 }) {
   const { blocks, setBlocks } = useContentStore();
+  const { broadcast } = usePreviewBroadcaster();
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
     defaultValues: {
@@ -343,7 +344,8 @@ export function PageForm({
       "content",
       blocks.map(({ id, ...rest }) => rest)
     );
-  }, [blocks]);
+    broadcast(form.getValues("content") || []);
+  }, [blocks, form, broadcast]);
 
   const TABS = ["metadata", "content", "preview"] as const;
 

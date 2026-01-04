@@ -3,7 +3,7 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-} from "@/components/registry";
+} from "@/components/registry/types";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
@@ -194,5 +194,5 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
 }
 
 function ButtonPreviewComponent() {
-  return <button disabled>Button Preview</button>;
+  return <div>Button Preview</div>;
 }

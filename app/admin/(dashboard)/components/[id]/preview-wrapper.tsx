@@ -5,15 +5,17 @@ import {
   COMPONENT_REGISTRY,
   ComponentRegistry,
   ComponentType,
+} from "@/components/registry";
+import {
   Block,
   BlockProps,
   AdminBlockProps,
-} from "@/components/registry";
+  CMSStore,
+} from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Monitor, Shield } from "lucide-react";
 import { create } from "zustand";
-import { CMSStore } from "@/components/registry/store";
 import { nanoid } from "nanoid";
 import {
   Breadcrumb,

@@ -3,7 +3,7 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-} from "@/components/registry";
+} from "@/components/registry/types";
 import z from "zod";
 
 type HeadingProps = {
