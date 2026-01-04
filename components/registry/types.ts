@@ -48,7 +48,6 @@ export type CMSComponent<Id extends string, Props> = {
 export interface DBComponent<T extends ComponentType = ComponentType> {
   type: T;
   data: z.infer<ComponentRegistry[T]["Schema"]>;
-  children?: DBComponent[];
 }
 
 /**
@@ -60,7 +59,6 @@ export interface Block<
   T extends ComponentType = ComponentType,
 > extends DBComponent<T> {
   id: string;
-  children?: Block[];
 }
 
 /**
