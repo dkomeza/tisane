@@ -1,8 +1,9 @@
 "use server";
 
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "@/lib/storage";
 import prisma from "@/lib/prisma";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { revalidatePath } from "next/cache";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_PREFIX = "image/";
@@ -69,5 +70,19 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
 export async function deleteMedia(id: string) {
   const media = await prisma.media.findUnique({ where: { id } });
   if (!media) throw new Error("Media not found");
+
+  await s3Client.send(
+    new DeleteObjectCommand({
+      Bucket: media.bucket,
+      Key: media.key,
+    })
+  );
+
+  await prisma.media.delete({ where: { id } });
+
+  revalidatePath("/admin/media");
+
+  return { success: true, id };
 }
+
 
