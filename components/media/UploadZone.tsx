@@ -16,5 +16,19 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     accept: { "image/*": [] },
   });
 
-  return <>Dropzone</>;
+  return (
+    <div
+      {...getRootProps()}
+      className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-gray-500"
+    >
+      <input {...getInputProps()} />
+      {isUploading && <p className="text-blue-500">Uploading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {isDragActive ? (
+        <p>Drop your files here...</p>
+      ) : (
+        <p>Drag & drop images here, or click to select files</p>
+      )}
+    </div>
+  );
 }
