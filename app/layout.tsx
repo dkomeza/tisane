@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import { ToasterProvider } from "@/app/components/ToasterProvider";
 
 import "@/styles/globals.css";
 import { Suspense } from "react";
@@ -73,7 +74,10 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
-          <Suspense>{children}</Suspense>
+          <Suspense>
+            {children}
+            <ToasterProvider />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

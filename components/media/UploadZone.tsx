@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { uploadMedia } from "@/app/actions/media/media";
+import { toast } from "sonner";
 
 interface UploadZoneProps {
   onUploadComplete?: () => void;
@@ -15,10 +16,18 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     multiple: true,
     accept: { "image/*": [] },
+    maxSize: 5 * 1024 * 1024, // 5MB
+    onDropRejected: (rejections) => {
+      const msg = rejections.map(r => r.errors.map(e => e.message).join(", ")).join("; ");
+      setError(msg);
+      toast.error(msg);
+    },
   });
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+
       setIsUploading(true);
       setError(null);
 
@@ -30,9 +39,11 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
           await uploadMedia(formData as any);
         }
 
+        toast.success("Upload successful!");
         onUploadComplete?.();
       } catch (err: any) {
         setError(err.message || "Upload failed");
+        toast.error(err.message || "Upload failed");
       } finally {
         setIsUploading(false);
       }
