@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   COMPONENT_REGISTRY,
   ComponentRegistry,
@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface Props<T extends ComponentType> {
   componentType: T;
@@ -47,7 +48,18 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   componentType,
 }: Props<T>) {
   const component = COMPONENT_REGISTRY[componentType] as ComponentRegistry[T];
+
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const defaultTab = searchParams.get("tab") || "client";
   const { blocks, setBlocks } = usePreviewStore();
+
+  const TABS = ["client", "admin"] as const;
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(
+    defaultTab as (typeof TABS)[number]
+  );
 
   useEffect(() => {
     const initialBlock: Block<T> = {
@@ -88,7 +100,18 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
           </span>
         </p>
       </div>
-      <Tabs defaultValue="client" className="flex-1">
+      <Tabs
+        className="flex-1"
+        value={activeTab}
+        onValueChange={(value) => {
+          setActiveTab(value as (typeof TABS)[number]);
+          const newParams = new URLSearchParams(searchParams.toString());
+          newParams.set("tab", value);
+          router.replace(`${pathname}?${newParams.toString()}`, {
+            scroll: false,
+          });
+        }}
+      >
         <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm py-0">
           <div className="border-b border-border/50 bg-muted/20 p-3 flex items-center justify-between">
             <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
