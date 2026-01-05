@@ -7,6 +7,7 @@ import {
   registerMediaInDb,
 } from "@/app/actions/media/media";
 import { toast } from "sonner";
+import { Loader2, UploadCloud } from "lucide-react";
 
 interface UploadZoneProps {
   onUploadComplete?: () => void;
@@ -14,6 +15,7 @@ interface UploadZoneProps {
 
 export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = useCallback(
@@ -22,41 +24,68 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
 
       setIsUploading(true);
       setError(null);
+      setProgress(0);
+
+      let completedFiles = 0;
+      const totalFiles = acceptedFiles.length;
 
       const processFile = async (file: File) => {
-        const presignedData = await getPresignedUploadUrl(file.name, file.type);
+        return new Promise<void>(async (resolve, reject) => {
+          try {
+            const presignedData = await getPresignedUploadUrl(file.name, file.type);
 
-        if (
-          !presignedData.success ||
-          !presignedData.url ||
-          !presignedData.fields
-        ) {
-          throw new Error(`Failed to get upload URL for ${file.name}`);
-        }
+            if (
+              !presignedData.success ||
+              !presignedData.url ||
+              !presignedData.fields
+            ) {
+              throw new Error(`Failed to get upload URL for ${file.name}`);
+            }
 
-        const formData = new FormData();
-        Object.entries(presignedData.fields).forEach(([key, value]) => {
-          formData.append(key, value as string);
+            const formData = new FormData();
+            Object.entries(presignedData.fields).forEach(([key, value]) => {
+              formData.append(key, value as string);
+            });
+            formData.append("file", file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", presignedData.url);
+
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const filePercent = event.loaded / event.total;
+                const totalProgress = Math.round(
+                  ((completedFiles + filePercent) / totalFiles) * 100
+                );
+                setProgress(totalProgress);
+              }
+            };
+
+            xhr.onload = async () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                await registerMediaInDb(presignedData.key!, file.type, file.size);
+                completedFiles++;
+                resolve();
+              } else {
+                reject(new Error(`Upload failed with status ${xhr.status}`));
+              }
+            };
+
+            xhr.onerror = () => reject(new Error("Network error during upload"));
+            
+            xhr.send(formData);
+          } catch (err) {
+            reject(err);
+          }
         });
-        formData.append("file", file);
-
-        const uploadResponse = await fetch(presignedData.url, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          console.error("S3 Error:", await uploadResponse.text());
-          throw new Error(`Upload failed for ${file.name}`);
-        }
-
-        await registerMediaInDb(presignedData.key!, file.type, file.size);
       };
 
       try {
-        await Promise.all(acceptedFiles.map(processFile));
+        for (const file of acceptedFiles) {
+          await processFile(file);
+        }
 
-        toast.success("Upload successful!");
+        toast.success("All uploads successful!");
         if (onUploadComplete) {
           onUploadComplete();
         }
@@ -67,6 +96,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         toast.error(msg);
       } finally {
         setIsUploading(false);
+        setProgress(0);
       }
     },
     [onUploadComplete]
@@ -77,6 +107,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     multiple: true,
     accept: { "image/*": [] },
     maxSize: 50 * 1024 * 1024, // 50MB
+    disabled: isUploading,
     onDropRejected: (rejections) => {
       const msg = rejections
         .map((r) => r.errors.map((e) => e.message).join(", "))
@@ -89,28 +120,50 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   return (
     <div
       {...getRootProps()}
-      className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-        isDragActive
-          ? "border-blue-500 bg-blue-50"
-          : "border-gray-300 hover:border-gray-500"
-      }`}
+      className={`relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ease-in-out
+        ${isDragActive ? "border-blue-500 bg-blue-50/50" : "border-gray-300 hover:border-gray-400 hover:bg-gray-50/50"}
+        ${isUploading ? "cursor-not-allowed opacity-90" : ""}
+      `}
     >
       <input {...getInputProps()} />
 
-      {isUploading ? (
-        <p className="text-blue-600 font-medium animate-pulse">
-          Uploading directly to S3...
-        </p>
-      ) : error ? (
-        <p className="text-red-500 mb-2">{error}</p>
-      ) : isDragActive ? (
-        <p className="text-blue-500 font-medium">Drop files here...</p>
-      ) : (
-        <div className="space-y-1">
-          <p className="text-gray-700 font-medium">Drag & drop images here</p>
-          <p className="text-gray-500 text-sm">or click to select files</p>
-        </div>
-      )}
+      <div className="flex flex-col items-center justify-center space-y-3">
+        {isUploading ? (
+          <div className="w-full max-w-xs space-y-4">
+            <div className="flex items-center justify-between text-sm text-blue-600 mb-1">
+              <span className="font-medium">Uploading...</span>
+              <span>{progress}%</span>
+            </div>
+            <div className="h-2 w-full bg-blue-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-600 transition-all duration-300 ease-out rounded-full"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-400">Please do not close this window</p>
+          </div>
+        ) : (
+          <>
+            <div className={`p-3 rounded-full ${isDragActive ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}>
+              <UploadCloud className="w-8 h-8" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-900">
+                {isDragActive ? "Drop files now" : "Click to upload or drag and drop"}
+              </p>
+              <p className="text-xs text-gray-500">
+                SVG, PNG, JPG or GIF (max. 50MB)
+              </p>
+            </div>
+          </>
+        )}
+
+        {error && !isUploading && (
+          <p className="text-sm text-red-500 bg-red-50 px-3 py-1 rounded-full mt-2">
+            {error}
+          </p>
+        )}
+      </div>
     </div>
   );
 }
