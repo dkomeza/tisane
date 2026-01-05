@@ -2,7 +2,7 @@ import { Button } from "./elements/Button";
 import z from "zod";
 
 import { Heading } from "./typography/Typography";
-import { Hero } from "./layout/Hero";
+import { Hero } from "./sections/Hero";
 import { DBComponent, RegistryCategory } from "./types";
 
 export * from "./types";
