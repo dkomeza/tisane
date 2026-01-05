@@ -3,8 +3,7 @@ import { getCachedPageBySlug } from "@/lib/pages/lookup-service"; // Update path
 import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import { COMPONENT_REGISTRY } from "@/components/registry";
-import { nanoid } from "nanoid";
+import { PageContentRenderer } from "@/components/cms/PageContentRenderer";
 
 interface PageProps {
   params: Promise<{
@@ -64,23 +63,5 @@ export default async function CMSPage({ params }: PageProps) {
     }
   }
 
-  return (
-    <>
-      {page.content &&
-        page.content.map((content, index) => {
-          const CMSComponent = COMPONENT_REGISTRY[content.type];
-
-          if (!CMSComponent) {
-            return null;
-          }
-
-          const ClientComponent = CMSComponent.ClientComponent;
-
-          return (
-            // @ts-expect-error - We are sure that data matches the schema
-            <ClientComponent key={index} data={content.data} id={nanoid()} />
-          );
-        })}
-    </>
-  );
+  return <PageContentRenderer blocks={page.content} />;
 }
