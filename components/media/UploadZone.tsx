@@ -2,7 +2,10 @@
 
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { uploadMedia } from "@/app/actions/media/media";
+import {
+  getPresignedUploadUrl,
+  registerMediaInDb,
+} from "@/app/actions/media/media";
 import { toast } from "sonner";
 
 interface UploadZoneProps {
@@ -20,17 +23,40 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       setIsUploading(true);
       setError(null);
 
-      try {
-        const uploadPromises = acceptedFiles.map((file) => {
-          const formData = new FormData();
-          formData.append("file", file);
-          return uploadMedia(formData);
+      const processFile = async (file: File) => {
+        const presignedData = await getPresignedUploadUrl(file.name, file.type);
+
+        if (
+          !presignedData.success ||
+          !presignedData.url ||
+          !presignedData.fields
+        ) {
+          throw new Error(`Failed to get upload URL for ${file.name}`);
+        }
+
+        const formData = new FormData();
+        Object.entries(presignedData.fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        formData.append("file", file);
+
+        const uploadResponse = await fetch(presignedData.url, {
+          method: "POST",
+          body: formData,
         });
 
-        await Promise.all(uploadPromises);
+        if (!uploadResponse.ok) {
+          console.error("S3 Error:", await uploadResponse.text());
+          throw new Error(`Upload failed for ${file.name}`);
+        }
+
+        await registerMediaInDb(presignedData.key!, file.type, file.size);
+      };
+
+      try {
+        await Promise.all(acceptedFiles.map(processFile));
 
         toast.success("Upload successful!");
-
         if (onUploadComplete) {
           onUploadComplete();
         }
@@ -50,7 +76,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     onDrop,
     multiple: true,
     accept: { "image/*": [] },
-    maxSize: 5 * 1024 * 1024 * 1024, // 5GB
+    maxSize: 50 * 1024 * 1024, // 50MB
     onDropRejected: (rejections) => {
       const msg = rejections
         .map((r) => r.errors.map((e) => e.message).join(", "))
@@ -72,7 +98,9 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       <input {...getInputProps()} />
 
       {isUploading ? (
-        <p className="text-blue-600 font-medium animate-pulse">Uploading...</p>
+        <p className="text-blue-600 font-medium animate-pulse">
+          Uploading directly to S3...
+        </p>
       ) : error ? (
         <p className="text-red-500 mb-2">{error}</p>
       ) : isDragActive ? (

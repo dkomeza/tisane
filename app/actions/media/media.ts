@@ -2,70 +2,67 @@
 
 import { s3Client } from "@/lib/storage";
 import prisma from "@/lib/prisma";
-import {
-  DeleteObjectCommand,
-  PutObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { refresh } from "next/cache";
-const MAX_SIZE = 5 * 1024 * 1024 * 1024; // 5GB
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { revalidatePath } from "next/cache";
+
 const ALLOWED_PREFIX = "image/";
+const MAX_SIZE = 50 * 1024 * 1024;
 const URL_EXPIRATION_SECONDS = 3600;
 
-export async function uploadMedia(formData: FormData) {
-  const file = formData.get("file") as File | null;
-  if (!file) throw new Error("No file provided");
-
-  if (!file.type.startsWith(ALLOWED_PREFIX)) {
+export async function getPresignedUploadUrl(filename: string, contentType: string) {
+  if (!contentType.startsWith(ALLOWED_PREFIX)) {
     throw new Error("Only image uploads are allowed");
   }
 
-  if (file.size > MAX_SIZE) {
-    throw new Error("File exceeds 5GB limit");
-  }
-
-  const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+  const sanitizedFileName = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
   const key = `${Date.now()}-${sanitizedFileName}`;
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-
   try {
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET!,
-        Key: key,
-        Body: buffer,
-        ContentType: file.type,
-      })
-    );
+    const { url, fields } = await createPresignedPost(s3Client, {
+      Bucket: process.env.S3_BUCKET!,
+      Key: key,
+      Conditions: [
+        ["content-length-range", 0, MAX_SIZE],
+        ["starts-with", "$Content-Type", contentType],
+      ],
+      Fields: {
+        "Content-Type": contentType,
+      },
+      Expires: 600,
+    });
 
+    let publicUrl = url;
+    if (process.env.S3_PUBLIC_BASE_URL && url.includes("minio")) {
+       publicUrl = url.replace("http://minio:9000", "http://localhost:9000");
+        // publicUrl = url.replace(process.env.S3_INTERNAL_ENDPOINT!, process.env.S3_PUBLIC_BASE_URL);
+    }
+
+    return { success: true, url: publicUrl, fields, key };
+  } catch (error: any) {
+    console.error("Presigned URL error:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function registerMediaInDb(key: string, type: string, size: number) {
+  try {
     const media = await prisma.media.create({
       data: {
         key,
         url: "",
-        mimeType: file.type,
-        size: file.size,
+        mimeType: type,
+        size: size,
         bucket: process.env.S3_BUCKET!,
       },
     });
 
-    const command = new GetObjectCommand({
-      Bucket: media.bucket,
-      Key: media.key,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, {
-      expiresIn: URL_EXPIRATION_SECONDS,
-    });
-
-    refresh();
-    return {
-      success: true,
-      data: { ...media, url: signedUrl },
-    };
-  } catch (error) {
-    console.error("Upload error:", error);
-    throw new Error("Failed to upload file");
+    revalidatePath("/admin/media");
+    return { success: true, data: media };
+  } catch (error: any) {
+    console.error("DB Register error:", error);
+    return { success: false, error: error.message };
   }
 }
 
@@ -84,19 +81,9 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
 
     const itemsWithSignedUrls = await Promise.all(
       items.map(async (item) => {
-        const command = new GetObjectCommand({
-          Bucket: item.bucket,
-          Key: item.key,
-        });
-
-        const signedUrl = await getSignedUrl(s3Client, command, {
-          expiresIn: URL_EXPIRATION_SECONDS,
-        });
-
-        return {
-          ...item,
-          url: signedUrl,
-        };
+        const command = new GetObjectCommand({ Bucket: item.bucket, Key: item.key });
+        const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: URL_EXPIRATION_SECONDS });
+        return { ...item, url: signedUrl };
       })
     );
 
@@ -118,14 +105,9 @@ export async function deleteMedia(id: string) {
   if (!media) return { success: false, message: "Media not found" };
 
   try {
-    await s3Client.send(
-      new DeleteObjectCommand({ Bucket: media.bucket, Key: media.key })
-    );
-
+    await s3Client.send(new DeleteObjectCommand({ Bucket: media.bucket, Key: media.key }));
     await prisma.media.delete({ where: { id } });
-
-    refresh();
-
+    revalidatePath("/admin/media");
     return { success: true, id };
   } catch (err) {
     console.error("Failed to delete media:", err);
