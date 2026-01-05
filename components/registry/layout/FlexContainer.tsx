@@ -1,70 +1,118 @@
 import {
-  AdminBlockProps,
   Block,
   BlockProps,
+  BlockSchema,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
+  COMPONENT_REGISTRY,
 } from "@/components/registry";
 import { cn } from "@/lib/utils";
+import { Layout } from "lucide-react";
+
 import z from "zod";
+import FlexContainerAdminComponent from "./flex/AdminComponent";
 
-type ComponentProps = {
+export type JustifyContent =
+  | "start"
+  | "end"
+  | "center"
+  | "between"
+  | "around"
+  | "evenly";
+export type AlignItems = "start" | "end" | "center" | "baseline" | "stretch";
+
+export type FlexContainerProps = {
   direction: "row" | "column";
-  children?: DBComponent[];
+  justify: JustifyContent;
+  align: AlignItems;
+  gap: number;
+  children?: Block[];
 };
 
-export const FlexContainer: CMSComponent<"flex-container", ComponentProps> = {
-  id: "flex-container" as const,
-  label: "Flex Container",
+export const FlexContainer: CMSComponent<"flex-container", FlexContainerProps> =
+  {
+    id: "flex-container" as const,
+    label: "Flex Container",
 
-  ClientComponent: ComponentClientComponent,
-  AdminComponent: ComponentAdminComponent,
-  PreviewComponent: ComponentPreviewComponent,
+    ClientComponent: ComponentClientComponent,
+    AdminComponent: FlexContainerAdminComponent,
+    PreviewComponent: ComponentPreviewComponent,
 
-  Schema: z.object({
-    direction: z.enum(["row", "column"]).default("row"),
-    children: z
-      .array(z.lazy(() => DBComponentSchema))
-      .optional()
-      .default([]),
-  }),
-};
+    Schema: z.object({
+      direction: z.enum(["row", "column"]).default("row"),
+      justify: z
+        .enum(["start", "end", "center", "between", "around", "evenly"])
+        .default("start"),
+      align: z
+        .enum(["start", "end", "center", "baseline", "stretch"])
+        .default("stretch"),
+      gap: z.number().min(0).max(12).default(4),
+      children: z
+        .array(z.lazy(() => BlockSchema))
+        .optional()
+        .default([]),
+    }),
+  };
 
 /**
- * This is the client-side component that will be rendered in the application.
+ * Client Component
  */
-function ComponentClientComponent({ data }: BlockProps<ComponentProps>) {
-  return <div>{data.children?.length}</div>;
-}
+function ComponentClientComponent({ data }: BlockProps<FlexContainerProps>) {
+  const directionClasses = {
+    row: "flex-row",
+    column: "flex-col",
+  };
 
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-function ComponentAdminComponent({
-  id,
-  useStore,
-}: AdminBlockProps<ComponentProps>) {
-  const { blocks, updateBlock } = useStore();
+  const justifyClasses: Record<JustifyContent, string> = {
+    start: "justify-start",
+    end: "justify-end",
+    center: "justify-center",
+    between: "justify-between",
+    around: "justify-around",
+    evenly: "justify-evenly",
+  };
 
-  const block = blocks.find((b) => b.id === id) as Block<"flex-container">;
+  const alignClasses: Record<AlignItems, string> = {
+    start: "items-start",
+    end: "items-end",
+    center: "items-center",
+    baseline: "items-baseline",
+    stretch: "items-stretch",
+  };
 
-  if (!block) return null;
+  // Gap is in rem units (multiples of 0.25rem in Tailwind)
+  // We can construct the class dynamically since we know the range is limited (0-12)
+  const gapClass = `gap-${data.gap}`;
 
   return (
     <div
       className={cn(
-        "flex border border-dashed border-border p-4 rounded-md",
-        `flex-${block.data.direction}`
+        "flex w-full",
+        directionClasses[data.direction],
+        justifyClasses[data.justify],
+        alignClasses[data.align],
+        gapClass
       )}
-    ></div>
+    >
+      {data.children?.map((child, index) => {
+        const ChildComponent =
+          COMPONENT_REGISTRY[child.type as keyof typeof COMPONENT_REGISTRY];
+        if (!ChildComponent) return null;
+        const ClientComp = ChildComponent.ClientComponent as React.FC<
+          BlockProps<typeof child.data>
+        >;
+        return (
+          <ClientComp key={index} id={`child-${index}`} data={child.data} />
+        );
+      })}
+    </div>
   );
 }
 
-/**
- * The preview component is used in the editor UI,
- * when displaying all available components.
- */
 function ComponentPreviewComponent() {
-  return <div>Flex</div>;
+  return (
+    <div className="flex flex-col items-center justify-center p-4 gap-2 text-muted-foreground">
+      <Layout className="w-8 h-8 opacity-50" />
+      <span className="text-xs font-medium">Flex Container</span>
+    </div>
+  );
 }

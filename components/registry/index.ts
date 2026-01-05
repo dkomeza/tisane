@@ -3,7 +3,7 @@ import z from "zod";
 
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
-import { DBComponent, RegistryCategory } from "./types";
+import { Block, DBComponent, RegistryCategory } from "./types";
 import { FlexContainer } from "./layout/FlexContainer";
 
 export * from "./types";
@@ -17,7 +17,6 @@ export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
     return z.object({
       type: z.literal(key),
       data: value.Schema,
-      children: z.array(DBComponentSchema).optional(),
     });
   });
 
@@ -26,6 +25,22 @@ export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
 });
 
 export const DBComponentsArraySchema = z.array(DBComponentSchema);
+
+export const BlockSchema: z.ZodType<Block> = z.lazy(() => {
+  const options = Object.entries(COMPONENT_REGISTRY).map(([key, value]) =>
+    z.object({
+      id: z.string(),
+      type: z.literal(key),
+      data: value.Schema,
+      children: z.array(BlockSchema).optional(),
+    })
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return z.discriminatedUnion("type", options as any);
+});
+
+export const BlocksArraySchema = z.array(BlockSchema);
 
 /**
  * The COMPONENT_REGISTRY is a centralized registry of all available CMS components.

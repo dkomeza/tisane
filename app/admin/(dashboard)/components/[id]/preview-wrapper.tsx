@@ -10,12 +10,10 @@ import {
   Block,
   BlockProps,
   AdminBlockProps,
-  CMSStore,
 } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Monitor, Shield } from "lucide-react";
-import { create } from "zustand";
 import { nanoid } from "nanoid";
 import {
   Breadcrumb,
@@ -28,21 +26,11 @@ import Link from "next/link";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCMSStore } from "@/components/registry/CMSStore";
 
 interface Props<T extends ComponentType> {
   componentType: T;
 }
-
-const usePreviewStore = create<CMSStore>((set) => ({
-  blocks: [],
-  setBlocks: (blocks) => set({ blocks }),
-  updateBlock: (id, data) =>
-    set((state) => ({
-      blocks: state.blocks.map((block) =>
-        block.id === id ? { ...block, data: { ...block.data, ...data } } : block
-      ),
-    })),
-}));
 
 export function ComponentPreviewWrapper<T extends ComponentType>({
   componentType,
@@ -54,12 +42,10 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   const router = useRouter();
 
   const defaultTab = searchParams.get("tab") || "client";
-  const { blocks, setBlocks } = usePreviewStore();
+  const { blocks, setBlocks } = useCMSStore();
 
-  const TABS = ["client", "admin"] as const;
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>(
-    defaultTab as (typeof TABS)[number]
-  );
+  type TABS = "client" | "admin";
+  const [activeTab, setActiveTab] = useState<TABS>(defaultTab as TABS);
 
   useEffect(() => {
     const initialBlock: Block<T> = {
@@ -104,7 +90,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
         className="flex-1"
         value={activeTab}
         onValueChange={(value) => {
-          setActiveTab(value as (typeof TABS)[number]);
+          setActiveTab(value as TABS);
           const newParams = new URLSearchParams(searchParams.toString());
           newParams.set("tab", value);
           router.replace(`${pathname}?${newParams.toString()}`, {
@@ -145,7 +131,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
               <AdminComponent
                 id={block.id}
                 data={block.data}
-                useStore={usePreviewStore}
+                useStore={useCMSStore}
               />
             </TabsContent>
           </div>
