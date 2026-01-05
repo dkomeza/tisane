@@ -3,7 +3,7 @@
 import { s3Client } from "@/lib/storage";
 import prisma from "@/lib/prisma";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_PREFIX = "image/";
@@ -45,7 +45,7 @@ export async function uploadMedia(formData: FormData) {
       },
     });
 
-    revalidatePath("/admin/media");
+    refresh();
 
     return { success: true, data: media };
   } catch (error) {
@@ -91,7 +91,7 @@ export async function deleteMedia(id: string) {
 
     await prisma.media.delete({ where: { id } });
 
-    revalidatePath("/admin/media");
+    refresh();
 
     return { success: true, id };
   } catch (err) {

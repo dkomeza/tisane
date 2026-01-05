@@ -20,7 +20,7 @@ export default async function AdminDashboardLayout({
       <Sidebar />
       <main className="py-8 px-12 w-full h-svh">{children}</main>
       <SidebarTrigger className="md:hidden fixed top-4 left-4" />
-      <Toaster richColors position="top-center" />
+      <Toaster richColors />
     </SidebarProvider>
   );
 }
