@@ -36,7 +36,7 @@ export default function AdminMediaPage() {
       })) as MediaItem[];
 
       setMedia(safeItems);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       toast.error("Failed to load media list.");
     } finally {
@@ -107,17 +107,6 @@ export default function AdminMediaPage() {
     <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8 space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">Media Management</h1>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchMedia}
-          disabled={loading}
-        >
-          <RefreshCw
-            className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
-          />
-          Refresh
-        </Button>
       </div>
 
       <Card>
