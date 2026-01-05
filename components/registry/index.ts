@@ -4,6 +4,7 @@ import z from "zod";
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { DBComponent, RegistryCategory } from "./types";
+import { FlexContainer } from "./layout/FlexContainer";
 
 export * from "./types";
 
@@ -38,6 +39,9 @@ export const COMPONENT_REGISTRY = {
   [Heading.id]: Heading,
 
   // Layout
+  [FlexContainer.id]: FlexContainer,
+
+  // Sections
   [Hero.id]: Hero,
 } as const;
 
@@ -51,6 +55,12 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     id: "layout",
     label: "Layout",
     componentIds: [Hero.id],
+    isRootLevel: true,
+  },
+  {
+    id: "sections",
+    label: "Sections",
+    componentIds: [FlexContainer.id],
     isRootLevel: true,
   },
 ];
