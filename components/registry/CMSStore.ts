@@ -6,7 +6,7 @@ import { Draft } from "immer";
 const findAndUpdate = (
   node: Draft<Block> | Draft<Block>[],
   targetId: string,
-  updateData: Partial<Block>
+  updateData: Partial<Block["data"]>
 ): boolean => {
   if (!node || typeof node !== "object") return false;
 
