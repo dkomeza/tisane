@@ -1,16 +1,18 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Block, CMSStore } from "./types";
+import { Draft } from "immer";
 
 const findAndUpdate = (
-  node: Block,
+  node: Draft<Block> | Draft<Block>[],
   targetId: string,
   updateData: Partial<Block>
 ): boolean => {
   if (!node || typeof node !== "object") return false;
 
-  if (node.id === targetId) {
-    Object.assign(node, updateData);
+  if (!Array.isArray(node) && node.id === targetId) {
+    if (!node.data) node.data = {};
+    Object.assign(node.data, updateData);
     return true;
   }
 
@@ -29,6 +31,34 @@ const findAndUpdate = (
   }
 
   return false;
+};
+
+export const findBlock = (
+  node: Block | Block[],
+  targetId: string
+): Block | null => {
+  if (!node || typeof node !== "object") return null;
+
+  if (Array.isArray(node)) {
+    for (const item of node) {
+      const result = findBlock(item, targetId);
+      if (result) return result;
+    }
+  } else {
+    if (node.id === targetId) {
+      return node;
+    }
+
+    for (const key in node.data) {
+      const property = node.data[key as keyof typeof node.data];
+      if (typeof property === "object") {
+        const result = findBlock(property, targetId);
+        if (result) return result;
+      }
+    }
+  }
+
+  return null;
 };
 
 export const useCMSStore = create<CMSStore>()(
@@ -82,7 +112,7 @@ export const useCMSStore = create<CMSStore>()(
           return;
         }
 
-        const findAndAdd = (node: Block): boolean => {
+        const findAndAdd = (node: Draft<Block>): boolean => {
           if (!node || typeof node !== "object") return false;
 
           if (node.id === parentId) {
@@ -107,7 +137,8 @@ export const useCMSStore = create<CMSStore>()(
           return false;
         };
 
-        findAndAdd(state.blocks);
+        for (const stateBlock of state.blocks)
+          if (findAndAdd(stateBlock)) break;
       }),
   }))
 );

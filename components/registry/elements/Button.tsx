@@ -13,6 +13,7 @@ import {
   BoxSelect,
 } from "lucide-react";
 import z from "zod";
+import { findBlock } from "../CMSStore";
 
 type Color = "primary" | "dark" | "white" | "violet" | "pink";
 
@@ -76,7 +77,7 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
 
 function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   const { blocks, updateBlock } = useStore();
-  const block = blocks.find((b) => b.id === id) as Block<"button">;
+  const block = findBlock(blocks, id) as Block<"button"> | null;
 
   if (!block) return null;
 

@@ -1,13 +1,18 @@
 "use client";
 
-import { AlignItems, ComponentProps, JustifyContent } from "../FlexContainer";
+import {
+  FlexContainerProps,
+  JustifyContent,
+  AlignItems,
+} from "../FlexContainer";
 
 import {
   AdminBlockProps,
   Block,
-  CMSStore,
   COMPONENT_REGISTRY,
 } from "@/components/registry";
+
+import { findBlock, useCMSStore } from "@/components/registry/CMSStore";
 
 import {
   AlignHorizontalDistributeCenter,
@@ -23,8 +28,7 @@ import {
 } from "lucide-react";
 
 import { nanoid } from "nanoid";
-import { useState } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
+import { useEffect, useState } from "react";
 
 import {
   Popover,
@@ -44,76 +48,21 @@ import { cn } from "@/lib/utils";
 export default function FlexContainerAdminComponent({
   id,
   useStore,
-}: AdminBlockProps<ComponentProps>) {
-  const { blocks, updateBlock } = useStore();
-  const block = blocks.find((b) => b.id === id) as Block<"flex-container">;
+}: AdminBlockProps<FlexContainerProps>) {
+  const { blocks, updateBlock, removeBlock, addBlock } = useStore();
+  const block = findBlock(blocks, id) as Block<"flex-container">;
+
   const [isExpanded, setIsExpanded] = useState(true);
 
+  useEffect(() => {
+    console.log(blocks);
+  }, [blocks]);
+
   if (!block) return null;
-
   const data = block.data;
-
-  // We construct a derived state for the children
-  const childState: CMSStore = {
-    blocks:
-      data.children?.map((child) => ({
-        ...child,
-        id: (child as Block).id || nanoid(), // Ensure ID exists for UI keys
-      })) || [],
-    setBlocks: (newBlocks) => {
-      updateBlock(id, { children: newBlocks });
-    },
-    updateBlock: (childId, patch) => {
-      const currentChildren = data.children || [];
-      const newChildren = currentChildren.map((child) => {
-        if ((child as Block).id === childId) {
-          return {
-            ...child,
-            data: { ...child.data, ...patch },
-          };
-        }
-        return child;
-      });
-      updateBlock(id, { children: newChildren });
-    },
-    addBlock: (newBlock) => {
-      const currentChildren = data.children || [];
-      updateBlock(id, { children: [...currentChildren, newBlock] });
-    },
-    removeBlock: (childId) => {
-      const currentChildren = data.children || [];
-      updateBlock(id, {
-        children: currentChildren.filter((c) => (c as Block).id !== childId),
-      });
-    },
-  };
-
-  // Create the adapter function
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const adapterImpl = (selector?: (state: CMSStore) => any) => {
-    return selector ? selector(childState) : childState;
-  };
-
-  // Attach store methods to mock a real Zustand store
-  adapterImpl.getState = () => childState;
-  adapterImpl.setState = () => {
-    console.warn("setState is not implemented for nested child store adapter");
-  };
-  adapterImpl.subscribe = () => {
-    return () => {}; // Unsubscribe mock
-  };
-  adapterImpl.destroy = () => {};
-
-  const childStoreAdapter = adapterImpl as unknown as UseBoundStore<
-    StoreApi<CMSStore>
-  >;
-
-  // Use the adapter to get functions for local use
-  const { addBlock: addChild } = childStoreAdapter((s) => s);
 
   return (
     <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm overflow-hidden">
-      {/* Header / Controls */}
       <div className="p-3 border-b bg-muted/30 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -155,7 +104,7 @@ export default function FlexContainerAdminComponent({
               </label>
               <div className="flex bg-muted rounded-md p-1 gap-1">
                 <button
-                type="button"
+                  type="button"
                   onClick={() => updateBlock(id, { direction: "row" })}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 text-xs py-1.5 rounded-sm transition-all",
@@ -167,7 +116,7 @@ export default function FlexContainerAdminComponent({
                   <ArrowRight className="w-3 h-3" /> Row
                 </button>
                 <button
-                type="button"
+                  type="button"
                   onClick={() => updateBlock(id, { direction: "column" })}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 text-xs py-1.5 rounded-sm transition-all",
@@ -271,7 +220,7 @@ export default function FlexContainerAdminComponent({
                 : "flex-row overflow-x-auto"
             )}
           >
-            {data.children?.map((child, index) => {
+            {block.data.children?.map((child, index) => {
               const childId = (child as Block).id || `temp-${index}`;
               const Component = COMPONENT_REGISTRY[child.type];
               if (!Component) return null;
@@ -280,23 +229,18 @@ export default function FlexContainerAdminComponent({
                 AdminBlockProps<typeof child.data>
               >;
 
-              // Ensure child has an ID property for the adapter to find it
-              if (!(child as Block).id) {
-                (child as Block).id = childId;
-              }
-
               return (
                 <div key={childId} className="relative group shrink-0">
                   <AdminComp
                     id={childId}
                     data={child.data}
-                    useStore={childStoreAdapter}
+                    useStore={useCMSStore}
                   />
                   {/* Quick remove for children */}
                   <button
-                  type="button"
+                    type="button"
                     onClick={() => {
-                      childStoreAdapter.getState().removeBlock?.(childId);
+                      removeBlock(childId);
                     }}
                     className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     title="Remove Item"
@@ -311,7 +255,7 @@ export default function FlexContainerAdminComponent({
             <Popover>
               <PopoverTrigger asChild>
                 <button
-                type="button"
+                  type="button"
                   className={cn(
                     "flex items-center justify-center border-2 border-dashed border-muted-foreground/20 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all group",
                     data.direction === "column"
@@ -328,7 +272,7 @@ export default function FlexContainerAdminComponent({
                   <div className="grid grid-cols-2 gap-2">
                     {Object.values(COMPONENT_REGISTRY).map((comp) => (
                       <button
-                      type="button"
+                        type="button"
                         key={comp.id}
                         onClick={() => {
                           const newBlock = {
@@ -336,7 +280,7 @@ export default function FlexContainerAdminComponent({
                             type: comp.id,
                             data: comp.Schema.parse({}),
                           };
-                          addChild?.(newBlock as Block);
+                          addBlock(newBlock, id, "children");
                         }}
                         className="text-xs flex flex-col items-center gap-2 p-2 rounded-md hover:bg-accent border border-transparent hover:border-border transition-all"
                       >

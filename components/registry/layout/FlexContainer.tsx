@@ -1,9 +1,9 @@
 import {
-  Block,
   BlockProps,
-  BlockSchema,
   CMSComponent,
   COMPONENT_REGISTRY,
+  DBComponent,
+  DBComponentSchema,
 } from "@/components/registry";
 import { cn } from "@/lib/utils";
 import { Layout } from "lucide-react";
@@ -25,7 +25,7 @@ export type FlexContainerProps = {
   justify: JustifyContent;
   align: AlignItems;
   gap: number;
-  children?: Block[];
+  children?: DBComponent[];
 };
 
 export const FlexContainer: CMSComponent<"flex-container", FlexContainerProps> =
@@ -47,7 +47,7 @@ export const FlexContainer: CMSComponent<"flex-container", FlexContainerProps> =
         .default("stretch"),
       gap: z.number().min(0).max(12).default(4),
       children: z
-        .array(z.lazy(() => BlockSchema))
+        .array(z.lazy(() => DBComponentSchema))
         .optional()
         .default([]),
     }),
