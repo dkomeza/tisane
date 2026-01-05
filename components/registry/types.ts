@@ -15,6 +15,7 @@ export type CMSStore = {
   ) => void;
   addBlock: (block: Block, parentId?: string, propertyName?: string) => void;
   removeBlock: (id: string) => void;
+  getBlock: (id: string) => Block | null;
 };
 
 /** DataStore defines the helper interface to allow nested stores */

@@ -12,7 +12,7 @@ import {
   COMPONENT_REGISTRY,
 } from "@/components/registry";
 
-import { findBlock, useCMSStore } from "@/components/registry/CMSStore";
+import { useCMSStore } from "@/components/registry/CMSStore";
 
 import {
   AlignHorizontalDistributeCenter,
@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Popover,
@@ -49,14 +49,10 @@ export default function FlexContainerAdminComponent({
   id,
   useStore,
 }: AdminBlockProps<FlexContainerProps>) {
-  const { blocks, updateBlock, removeBlock, addBlock } = useStore();
-  const block = findBlock(blocks, id) as Block<"flex-container">;
+  const { getBlock, updateBlock, removeBlock, addBlock } = useStore();
+  const block = getBlock(id) as Block<"flex-container">;
 
   const [isExpanded, setIsExpanded] = useState(true);
-
-  useEffect(() => {
-    console.log(blocks);
-  }, [blocks]);
 
   if (!block) return null;
   const data = block.data;
@@ -87,7 +83,7 @@ export default function FlexContainerAdminComponent({
               variant="ghost"
               size="icon"
               className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={() => useStore.getState().removeBlock?.(id)}
+              onClick={() => removeBlock(id)}
               type="button"
             >
               <Trash2 className="w-3.5 h-3.5" />

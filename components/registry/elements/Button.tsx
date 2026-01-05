@@ -4,6 +4,7 @@ import {
   BlockProps,
   CMSComponent,
 } from "@/components/registry/types";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
@@ -11,9 +12,9 @@ import {
   Palette,
   MousePointer2,
   BoxSelect,
+  Trash2,
 } from "lucide-react";
 import z from "zod";
-import { findBlock } from "../CMSStore";
 
 type Color = "primary" | "dark" | "white" | "violet" | "pink";
 
@@ -24,7 +25,7 @@ type ButtonProps = {
   isDisabled: boolean;
 };
 
-export const Button: CMSComponent<"button", ButtonProps> = {
+export const ButtonComponent: CMSComponent<"button", ButtonProps> = {
   id: "button" as const,
   label: "Button",
 
@@ -76,8 +77,8 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
 }
 
 function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
-  const { blocks, updateBlock } = useStore();
-  const block = findBlock(blocks, id) as Block<"button"> | null;
+  const { getBlock, updateBlock, removeBlock } = useStore();
+  const block = getBlock(id) as Block<"button"> | null;
 
   if (!block) return null;
 
@@ -94,7 +95,16 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   ];
 
   return (
-    <div className="flex flex-col gap-5 p-4 rounded-xl shadow-sm border border-gray-200">
+    <div className="flex flex-col gap-5 p-4 rounded-xl shadow-sm border border-gray-200 relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10 absolute top-2 right-2"
+        onClick={() => removeBlock(id)}
+        type="button"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </Button>
       <div className="space-y-2">
         <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
           <Type className="w-3 h-3" />

@@ -1,4 +1,4 @@
-import { Button } from "./elements/Button";
+import { ButtonComponent } from "./elements/Button";
 import z from "zod";
 
 import { Heading } from "./typography/Typography";
@@ -48,7 +48,7 @@ export const BlocksArraySchema = z.array(BlockSchema);
  */
 export const COMPONENT_REGISTRY = {
   // Elements
-  [Button.id]: Button,
+  [ButtonComponent.id]: ButtonComponent,
 
   // Typography
   [Heading.id]: Heading,
@@ -64,7 +64,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
   {
     id: "elements",
     label: "Elements",
-    componentIds: [Button.id],
+    componentIds: [ButtonComponent.id],
   },
   {
     id: "layout",

@@ -33,36 +33,8 @@ const findAndUpdate = (
   return false;
 };
 
-export const findBlock = (
-  node: Block | Block[],
-  targetId: string
-): Block | null => {
-  if (!node || typeof node !== "object") return null;
-
-  if (Array.isArray(node)) {
-    for (const item of node) {
-      const result = findBlock(item, targetId);
-      if (result) return result;
-    }
-  } else {
-    if (node.id === targetId) {
-      return node;
-    }
-
-    for (const key in node.data) {
-      const property = node.data[key as keyof typeof node.data];
-      if (typeof property === "object") {
-        const result = findBlock(property, targetId);
-        if (result) return result;
-      }
-    }
-  }
-
-  return null;
-};
-
 export const useCMSStore = create<CMSStore>()(
-  immer((set) => ({
+  immer((set, get) => ({
     blocks: [] as Block[],
 
     setBlocks: (blocks) =>
@@ -140,5 +112,39 @@ export const useCMSStore = create<CMSStore>()(
         for (const stateBlock of state.blocks)
           if (findAndAdd(stateBlock)) break;
       }),
+
+    getBlock: (id) => {
+      const state = get();
+
+      const findBlock = (
+        node: Block | Block[],
+        targetId: string
+      ): Block | null => {
+        if (!node || typeof node !== "object") return null;
+
+        if (Array.isArray(node)) {
+          for (const item of node) {
+            const result = findBlock(item, targetId);
+            if (result) return result;
+          }
+        } else {
+          if (node.id === targetId) {
+            return node;
+          }
+
+          for (const key in node.data) {
+            const property = node.data[key as keyof typeof node.data];
+            if (typeof property === "object") {
+              const result = findBlock(property, targetId);
+              if (result) return result;
+            }
+          }
+        }
+
+        return null;
+      };
+
+      return findBlock(state.blocks, id);
+    },
   }))
 );
