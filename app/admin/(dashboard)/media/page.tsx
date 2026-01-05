@@ -29,7 +29,13 @@ export default function AdminMediaPage() {
     setLoading(true);
     try {
       const response = await getMediaList({ page: 1, pageSize: 50 });
-      setMedia(response.items as unknown as MediaItem[]);
+
+      const safeItems = (response.items as any[]).map((item) => ({
+        ...item,
+        id: item.id || item._id,
+      })) as MediaItem[];
+
+      setMedia(safeItems);
     } catch (err: any) {
       console.error(err);
       toast.error("Failed to load media list.");
@@ -42,8 +48,15 @@ export default function AdminMediaPage() {
     fetchMedia();
   }, [fetchMedia]);
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this image?")) return;
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!id) {
+      toast.error("Error: Cannot delete, missing Image ID");
+      console.error("Attempted to delete item with null ID");
+      return;
+    }
 
     setIsDeleting(id);
     try {
@@ -52,16 +65,22 @@ export default function AdminMediaPage() {
         setMedia((prev) => prev.filter((item) => item.id !== id));
         toast.success("Image deleted successfully");
       } else {
-        toast.error("Failed to delete image");
+        toast.error(
+          "Failed to delete image: " + (result.error || "Unknown error")
+        );
       }
     } catch (err) {
+      console.error(err);
       toast.error("An error occurred while deleting");
     } finally {
       setIsDeleting(null);
     }
   };
 
-  const copyToClipboard = async (key: string) => {
+  const copyToClipboard = async (e: React.MouseEvent, key: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     try {
       const result = await getFileUrl(key);
 
@@ -160,7 +179,7 @@ export default function AdminMediaPage() {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
-                          onClick={() => copyToClipboard(item.key)}
+                          onClick={(e) => copyToClipboard(e, item.key)}
                           title="Copy Fresh URL"
                         >
                           <Copy className="h-4 w-4" />
@@ -170,7 +189,7 @@ export default function AdminMediaPage() {
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
-                          onClick={() => handleDelete(item.id)}
+                          onClick={(e) => handleDelete(e, item.id)}
                           disabled={isDeleting === item.id}
                           title="Delete Image"
                         >

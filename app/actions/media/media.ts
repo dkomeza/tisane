@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { refresh } from "next/cache";
+import { refresh, revalidatePath } from "next/cache";
 const ALLOWED_PREFIX = "image/";
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const URL_EXPIRATION_SECONDS = 3600; // 1 Hour
@@ -81,7 +81,6 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
 
     const itemsWithSignedUrls = await Promise.all(
       items.map(async (item) => {
-        // Use SIGNER for view URLs
         const command = new GetObjectCommand({
           Bucket: item.bucket,
           Key: item.key,
@@ -108,18 +107,29 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
 
 export async function deleteMedia(id: string) {
   const media = await prisma.media.findUnique({ where: { id } });
-  if (!media) return { success: false, message: "Media not found" };
+
+  if (!media) {
+    console.error(`[Delete Action] Media record not found for ID: ${id}`);
+    return { success: false, error: "Media record not found in database" };
+  }
 
   try {
     await s3Client.send(
-      new DeleteObjectCommand({ Bucket: media.bucket, Key: media.key })
+      new DeleteObjectCommand({
+        Bucket: media.bucket,
+        Key: media.key,
+      })
     );
 
     await prisma.media.delete({ where: { id } });
-    refresh();
+
     return { success: true, id };
-  } catch (err) {
-    console.error("Failed to delete media:", err);
-    return { success: false, message: "Delete failed" };
+  } catch (err: any) {
+    console.error("[Delete Action] CRITICAL FAILURE:", err);
+
+    return {
+      success: false,
+      error: err.message || "Delete operation failed",
+    };
   }
 }
