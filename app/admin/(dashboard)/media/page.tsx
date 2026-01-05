@@ -7,15 +7,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getMediaList, deleteMedia } from "@/app/actions/media/media";
-import { Trash2, Copy, RefreshCw, Loader2 } from "lucide-react";
+import { getFileUrl } from "@/app/actions/media/view-action";
+import { Trash2, Copy, RefreshCw, Loader2, FileImage } from "lucide-react";
 import Image from "next/image";
+
 interface MediaItem {
   id: string;
   key: string;
   url: string;
   mimeType: string;
   size: number;
-  createdAt: Date;
+  createdAt: string | Date;
 }
 
 export default function AdminMediaPage() {
@@ -41,16 +43,11 @@ export default function AdminMediaPage() {
   }, [fetchMedia]);
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this image? This action cannot be undone."
-    );
-    if (!confirmed) return;
+    if (!window.confirm("Are you sure you want to delete this image?")) return;
 
     setIsDeleting(id);
-
     try {
       const result = await deleteMedia(id);
-
       if (result.success) {
         setMedia((prev) => prev.filter((item) => item.id !== id));
         toast.success("Image deleted successfully");
@@ -64,9 +61,27 @@ export default function AdminMediaPage() {
     }
   };
 
-  const copyToClipboard = (url: string) => {
-    navigator.clipboard.writeText(url);
-    toast.success("URL copied to clipboard");
+  const copyToClipboard = async (key: string) => {
+    try {
+      const result = await getFileUrl(key);
+
+      if (result.success && result.url) {
+        await navigator.clipboard.writeText(result.url);
+        toast.success("Fresh URL copied to clipboard");
+      } else {
+        throw new Error("Could not generate URL");
+      }
+    } catch (err) {
+      toast.error("Failed to copy URL");
+    }
+  };
+
+  const formatFileName = (key: string) => {
+    const parts = key.split("-");
+    if (parts.length > 1) {
+      return parts.slice(1).join("-");
+    }
+    return key;
   };
 
   return (
@@ -116,39 +131,45 @@ export default function AdminMediaPage() {
                     key={item.id}
                     className="group relative border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-all"
                   >
-                    <div className="aspect-square bg-gray-100 relative">
-                      <Image
-                        src={item.url}
-                        alt={item.key}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
+                    <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                      {item.url ? (
+                        <Image
+                          src={item.url}
+                          alt={item.key}
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-gray-400">
+                          <FileImage className="w-8 h-8" />
+                        </div>
+                      )}
                     </div>
 
                     <div className="p-3">
                       <p
-                        className="text-xs font-medium truncate mb-2"
+                        className="text-xs font-medium truncate mb-2 text-gray-700"
                         title={item.key}
                       >
-                        {item.key.split("-").slice(1).join("-") || item.key}
+                        {formatFileName(item.key)}
                       </p>
 
-                      <div className="flex gap-2 justify-between">
+                      <div className="flex gap-1 justify-end">
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
-                          onClick={() => copyToClipboard(item.url)}
-                          title="Copy URL"
+                          className="h-8 w-8 text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                          onClick={() => copyToClipboard(item.key)}
+                          title="Copy Fresh URL"
                         >
                           <Copy className="h-4 w-4" />
                         </Button>
 
                         <Button
-                          variant="destructive"
+                          variant="ghost"
                           size="icon"
-                          className="h-8 w-8"
+                          className="h-8 w-8 text-gray-500 hover:text-red-600 hover:bg-red-50"
                           onClick={() => handleDelete(item.id)}
                           disabled={isDeleting === item.id}
                           title="Delete Image"

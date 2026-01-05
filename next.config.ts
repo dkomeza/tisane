@@ -1,26 +1,16 @@
 import type { NextConfig } from "next";
 
+const development = process.env.NODE_ENV !== "production";
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   output: "standalone",
-
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "5Gb",
-    },
-  },
-
   images: {
+    dangerouslyAllowLocalIP: development,
     remotePatterns: [
       {
         protocol: "http",
         hostname: "localhost",
-        port: "9000",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
         port: "9000",
         pathname: "/**",
       },

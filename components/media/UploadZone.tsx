@@ -7,7 +7,7 @@ import {
   registerMediaInDb,
 } from "@/app/actions/media/media";
 import { toast } from "sonner";
-import { Loader2, UploadCloud } from "lucide-react";
+import { UploadCloud } from "lucide-react";
 
 interface UploadZoneProps {
   onUploadComplete?: () => void;
@@ -32,7 +32,10 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       const processFile = async (file: File) => {
         return new Promise<void>(async (resolve, reject) => {
           try {
-            const presignedData = await getPresignedUploadUrl(file.name, file.type);
+            const presignedData = await getPresignedUploadUrl(
+              file.name,
+              file.type
+            );
 
             if (
               !presignedData.success ||
@@ -63,16 +66,21 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
 
             xhr.onload = async () => {
               if (xhr.status >= 200 && xhr.status < 300) {
-                await registerMediaInDb(presignedData.key!, file.type, file.size);
+                await registerMediaInDb(
+                  presignedData.key!,
+                  file.type,
+                  file.size
+                );
                 completedFiles++;
                 resolve();
               } else {
+                console.error("S3 Upload Error:", xhr.responseText);
                 reject(new Error(`Upload failed with status ${xhr.status}`));
               }
             };
 
-            xhr.onerror = () => reject(new Error("Network error during upload"));
-            
+            xhr.onerror = () =>
+              reject(new Error("Network error during upload"));
             xhr.send(formData);
           } catch (err) {
             reject(err);
@@ -84,16 +92,12 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         for (const file of acceptedFiles) {
           await processFile(file);
         }
-
-        toast.success("All uploads successful!");
-        if (onUploadComplete) {
-          onUploadComplete();
-        }
+        toast.success("Upload successful!");
+        if (onUploadComplete) onUploadComplete();
       } catch (err: any) {
         console.error(err);
-        const msg = err.message || "Upload failed";
-        setError(msg);
-        toast.error(msg);
+        setError(err.message || "Upload failed");
+        toast.error("Upload failed");
       } finally {
         setIsUploading(false);
         setProgress(0);
@@ -106,21 +110,14 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     onDrop,
     multiple: true,
     accept: { "image/*": [] },
-    maxSize: 50 * 1024 * 1024, // 50MB
+    maxSize: 50 * 1024 * 1024,
     disabled: isUploading,
-    onDropRejected: (rejections) => {
-      const msg = rejections
-        .map((r) => r.errors.map((e) => e.message).join(", "))
-        .join("; ");
-      setError(msg);
-      toast.error(msg);
-    },
   });
 
   return (
     <div
       {...getRootProps()}
-      className={`relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ease-in-out
+      className={`relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 
         ${isDragActive ? "border-blue-500 bg-blue-50/50" : "border-gray-300 hover:border-gray-400 hover:bg-gray-50/50"}
         ${isUploading ? "cursor-not-allowed opacity-90" : ""}
       `}
@@ -135,34 +132,26 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               <span>{progress}%</span>
             </div>
             <div className="h-2 w-full bg-blue-100 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-blue-600 transition-all duration-300 ease-out rounded-full"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="text-xs text-gray-400">Please do not close this window</p>
           </div>
         ) : (
           <>
-            <div className={`p-3 rounded-full ${isDragActive ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}>
+            <div className="p-3 rounded-full bg-gray-100 text-gray-600">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
               <p className="text-sm font-medium text-gray-900">
-                {isDragActive ? "Drop files now" : "Click to upload or drag and drop"}
+                {isDragActive ? "Drop files now" : "Click or drag to upload"}
               </p>
-              <p className="text-xs text-gray-500">
-                SVG, PNG, JPG or GIF (max. 50MB)
-              </p>
+              <p className="text-xs text-gray-500">Max 50MB</p>
             </div>
           </>
         )}
-
-        {error && !isUploading && (
-          <p className="text-sm text-red-500 bg-red-50 px-3 py-1 rounded-full mt-2">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
       </div>
     </div>
   );
