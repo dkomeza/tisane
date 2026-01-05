@@ -2,11 +2,16 @@
 
 import { s3Client } from "@/lib/storage";
 import prisma from "@/lib/prisma";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { refresh } from "next/cache";
-
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE = 5 * 1024 * 1024 * 1024; // 5GB
 const ALLOWED_PREFIX = "image/";
+const URL_EXPIRATION_SECONDS = 3600;
 
 export async function uploadMedia(formData: FormData) {
   const file = formData.get("file") as File | null;
@@ -17,7 +22,7 @@ export async function uploadMedia(formData: FormData) {
   }
 
   if (file.size > MAX_SIZE) {
-    throw new Error("File exceeds 5MB limit");
+    throw new Error("File exceeds 5GB limit");
   }
 
   const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
@@ -38,16 +43,26 @@ export async function uploadMedia(formData: FormData) {
     const media = await prisma.media.create({
       data: {
         key,
-        url: `${process.env.S3_PUBLIC_BASE_URL}/${key}`,
+        url: "",
         mimeType: file.type,
         size: file.size,
         bucket: process.env.S3_BUCKET!,
       },
     });
 
-    refresh();
+    const command = new GetObjectCommand({
+      Bucket: media.bucket,
+      Key: media.key,
+    });
+    const signedUrl = await getSignedUrl(s3Client, command, {
+      expiresIn: URL_EXPIRATION_SECONDS,
+    });
 
-    return { success: true, data: media };
+    refresh();
+    return {
+      success: true,
+      data: { ...media, url: signedUrl },
+    };
   } catch (error) {
     console.error("Upload error:", error);
     throw new Error("Failed to upload file");
@@ -67,8 +82,26 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
       prisma.media.count(),
     ]);
 
+    const itemsWithSignedUrls = await Promise.all(
+      items.map(async (item) => {
+        const command = new GetObjectCommand({
+          Bucket: item.bucket,
+          Key: item.key,
+        });
+
+        const signedUrl = await getSignedUrl(s3Client, command, {
+          expiresIn: URL_EXPIRATION_SECONDS,
+        });
+
+        return {
+          ...item,
+          url: signedUrl,
+        };
+      })
+    );
+
     return {
-      items,
+      items: itemsWithSignedUrls,
       total,
       page,
       pageSize,

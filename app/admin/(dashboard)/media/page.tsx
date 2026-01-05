@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getMediaList, deleteMedia } from "@/app/actions/media/media";
 import { Trash2, Copy, RefreshCw, Loader2 } from "lucide-react";
+import Image from "next/image";
 interface MediaItem {
   id: string;
   key: string;
@@ -116,11 +117,12 @@ export default function AdminMediaPage() {
                     className="group relative border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-all"
                   >
                     <div className="aspect-square bg-gray-100 relative">
-                      <img
+                      <Image
                         src={item.url}
                         alt={item.key}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
 

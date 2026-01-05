@@ -50,7 +50,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
     onDrop,
     multiple: true,
     accept: { "image/*": [] },
-    maxSize: 5 * 1024 * 1024, // 5MB
+    maxSize: 5 * 1024 * 1024 * 1024, // 5GB
     onDropRejected: (rejections) => {
       const msg = rejections
         .map((r) => r.errors.map((e) => e.message).join(", "))
