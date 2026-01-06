@@ -22,8 +22,8 @@ model Media {
   alt       String?
   mimeType  String
   size      Int
-  width     Int
-  height    Int
+  width     Int      @default(0)
+  height    Int      @default(0)
   bucket    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
