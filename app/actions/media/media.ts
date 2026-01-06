@@ -45,7 +45,9 @@ export async function getPresignedUploadUrl(
 export async function registerMediaInDb(
   key: string,
   type: string,
-  size: number
+  size: number,
+  width: number,
+  height: number
 ) {
   try {
     const media = await prisma.media.create({
@@ -54,6 +56,8 @@ export async function registerMediaInDb(
         url: "",
         mimeType: type,
         size: size,
+        width: width,
+        height: height,
         bucket: process.env.S3_BUCKET!,
       },
     });
