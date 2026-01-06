@@ -8,21 +8,28 @@ import {
   BlockProps,
   CreateComponent,
 } from "@/components/registry";
+import { cn } from "@/lib/utils";
 import z from "zod";
 
 export const Schema = z.object({
   text: z.string().default("Row Content"),
-  
+
   layout: z.enum(["flex", "grid"]).default("flex"),
-  direction: z.enum(["row", "row-reverse", "col", "col-reverse"]).default("row"),
-  justify: z.enum(["start", "center", "end", "between", "around"]).default("start"),
-  align: z.enum(["start", "center", "end", "stretch", "baseline"]).default("start"),
+  direction: z
+    .enum(["row", "row-reverse", "col", "col-reverse"])
+    .default("row"),
+  justify: z
+    .enum(["start", "center", "end", "between", "around"])
+    .default("start"),
+  align: z
+    .enum(["start", "center", "end", "stretch", "baseline"])
+    .default("start"),
   flexWrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
   gap: z.enum(["0", "1", "2", "4", "6", "8", "10"]).default("4"),
-  
+
   width: z.enum(["full", "container", "max-w-screen-md"]).default("full"),
   padding: z.enum(["0", "2", "4", "8", "12", "16"]).default("4"),
-  
+
   backgroundColor: z.string().optional(),
 });
 
@@ -38,22 +45,69 @@ export const Row = CreateComponent({
 
   Schema,
 });
-//
 
 /**
  * This is the client-side component that will be rendered in the application.
  */
 function RowClient({ data }: BlockProps<RowProps>) {
-  return <div>{data.example}</div>;
+  const map = {
+    justify: {
+      start: "justify-start",
+      center: "justify-center",
+      end: "justify-end",
+      between: "justify-between",
+      around: "justify-around",
+    },
+    align: {
+      start: "items-start",
+      center: "items-center",
+      end: "items-end",
+      stretch: "items-stretch",
+      baseline: "items-baseline",
+    },
+    gap: {
+      "0": "gap-0",
+      "1": "gap-1",
+      "2": "gap-2",
+      "4": "gap-4",
+      "6": "gap-6",
+      "8": "gap-8",
+      "10": "gap-10",
+    },
+    padding: {
+      "0": "p-0",
+      "2": "p-2",
+      "4": "p-4",
+      "8": "p-8",
+      "12": "p-12",
+      "16": "p-16",
+    },
+    width: {
+      full: "w-full",
+      container: "container mx-auto",
+      "max-w-screen-md": "max-w-screen-md mx-auto",
+    },
+  };
+
+  return cn(
+    data.layout === "flex" ? "flex" : "grid",
+    data.layout === "flex" &&
+      (data.direction === "col" ? "flex-col" : "flex-row"),
+    data.layout === "flex" &&
+      (data.flexWrap === "wrap" ? "flex-wrap" : "flex-nowrap"),
+    map.justify[data.justify],
+    map.align[data.align],
+    map.gap[data.gap],
+    map.padding[data.padding],
+    map.width[data.width],
+    data.backgroundColor && `bg-[${data.backgroundColor}]`
+  );
 }
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
-function RowAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<RowProps>) {
+function RowAdmin({ id, useStore }: AdminBlockProps<RowProps>) {
   const { getBlock, updateBlock, removeBlock } = useStore();
   const block = getBlock(id) as Block<"row">;
 
