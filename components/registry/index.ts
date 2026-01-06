@@ -3,7 +3,6 @@ import z from "zod";
 
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
-import { FlexContainer } from "./layout/FlexContainer";
 import { Row } from "@/components/registry/layout/row";
 // -- PLOP IMPORTS HERE --
 
@@ -46,7 +45,6 @@ export const DBComponentsArraySchema = z.array(DBComponentSchema);
 export const COMPONENT_REGISTRY = {
   [ButtonComponent.id]: ButtonComponent,
   [Heading.id]: Heading,
-  [FlexContainer.id]: FlexContainer,
   [Hero.id]: Hero,
   [Row.id]: Row,
   // -- PLOP REGISTRY HERE --

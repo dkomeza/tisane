@@ -18,7 +18,7 @@ import RowContainerAdminComponent from "@/components/registry/layout/row/AdminCo
 export type RowProps = {
   justify: "start" | "end" | "center" | "between" | "around" | "evenly";
   align: "start" | "end" | "center" | "baseline" | "stretch";
-  flexWrap: "nowrap" | "wrap" | "wrap-reverse";
+  wrap: "nowrap" | "wrap" | "wrap-reverse";
   gap: number;
   children?: DBComponent[];
 };
@@ -38,7 +38,7 @@ export const Row: CMSComponent<"row", RowProps> = {
     align: z
       .enum(["start", "end", "center", "baseline", "stretch"])
       .default("stretch"),
-    flexWrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
+    wrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
     gap: z.number().min(0).max(12).default(4),
     children: z.array(z.lazy(() => DBComponentSchema)).optional(),
   }),
@@ -52,10 +52,8 @@ function RowClient({ data }: BlockProps<RowProps>) {
     <div
       className={cn(
         "flex flex-row",
-        data.flexWrap === "wrap" ? "flex-wrap" : "flex-nowrap",
-        `justify-${data.justify}`,
-        `items-${data.align}`,
-        `gap-${data.gap}`
+        `flex-${data.wrap} gap-${data.gap}`,
+        `justify-${data.justify} items-${data.align}`
       )}
     >
       {data.children?.map((child, index) => {
