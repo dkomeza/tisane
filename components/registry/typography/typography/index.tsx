@@ -2,17 +2,15 @@
  * Component: Typography
  */
 
-import { BlockProps, CreateComponent } from "@/components/registry";
+import { BlockProps, CMSComponent } from "@/components/registry";
 import z from "zod";
 import { TypographyAdmin } from "./TypographyAdmin";
 
-export const Schema = z.object({
-  example: z.string().min(1).max(100).default("Example content"),
-});
+export type TypographyProps = {
+  example: string;
+};
 
-export type TypographyProps = z.infer<typeof Schema>;
-
-export const Typography = CreateComponent({
+export const Typography = {
   id: "typography" as const,
   label: "Typography",
 
@@ -20,8 +18,10 @@ export const Typography = CreateComponent({
   AdminComponent: TypographyAdmin,
   PreviewComponent: TypographyPreview,
 
-  Schema,
-});
+  Schema: z.object({
+    example: z.string().min(1).max(100).default("Example content"),
+  }),
+} as CMSComponent<"typography", TypographyProps>;
 
 /**
  * This is the client-side component that will be rendered in the application.

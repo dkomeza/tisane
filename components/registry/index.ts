@@ -3,7 +3,7 @@ import z from "zod";
 
 import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
-import { Typography } from "@/components/registry/typography";
+import { Typography } from "@/components/registry/typography/typography";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
