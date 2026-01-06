@@ -4,6 +4,7 @@ import z from "zod";
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { FlexContainer } from "./layout/FlexContainer";
+import { Column } from "@/components/registry/layout/column";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
@@ -70,19 +71,43 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
   {
     id: "elements",
     label: "Elements",
-    componentIds: [ButtonComponent.id],
+    componentIds: [
+      ButtonComponent.id,
+      // -- PLOP ELEMENTS HERE --
+    ],
+  },
+  {
+    id: "items",
+    label: "Items",
+    componentIds: [
+      // -- PLOP ITEMS HERE --
+    ],
   },
   {
     id: "layout",
     label: "Layout",
-    componentIds: [Hero.id],
+    componentIds: [
+      FlexContainer.id,
+      // -- PLOP LAYOUT HERE --
+    ],
     isRootLevel: true,
   },
   {
     id: "sections",
     label: "Sections",
-    componentIds: [FlexContainer.id],
+    componentIds: [
+      Hero.id,
+      // -- PLOP SECTIONS HERE --
+    ],
     isRootLevel: true,
+  },
+  {
+    id: "typography",
+    label: "Typography",
+    componentIds: [
+      Heading.id,
+      // -- PLOP TYPOGRAPHY HERE --
+    ],
   },
 ];
 
