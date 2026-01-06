@@ -1,14 +1,15 @@
-import { BlockSchema, DBComponentSchema } from "@/components/registry";
+import { DBComponentSchema } from "@/components/registry";
 import {
   AdminBlockProps,
   Block,
   BlockProps,
   CMSComponent,
+  DBComponent,
 } from "@/components/registry/types";
 import z from "zod";
 
 type HeroProps = {
-  content?: Block<"heading">;
+  content?: DBComponent<"heading">;
   //   cta: DBComponent<"button">;
 };
 
@@ -22,11 +23,11 @@ export const Hero: CMSComponent<"hero", HeroProps> = {
 
   Schema: z.object({
     content: z
-      .lazy(() => BlockSchema)
+      .lazy(() => DBComponentSchema)
       .refine((data) => data.type === "heading", {
         message: "Content must be of type 'heading'",
       })
-      .optional() as z.ZodType<Block<"heading">>,
+      .optional() as z.ZodType<DBComponent<"heading">>,
   }),
 };
 

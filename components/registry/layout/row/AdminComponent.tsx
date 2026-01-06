@@ -16,7 +16,6 @@ import {
   Layout,
   Plus,
   Trash2,
-  Columns,
 } from "lucide-react";
 
 import { nanoid } from "nanoid";
@@ -49,10 +48,6 @@ export default function RowAdminVisual({
   if (!block) return null;
 
   const data = block.data;
-
-  const patch = <K extends keyof RowProps>(key: K, value: RowProps[K]) => {
-    updateBlock(id, { ...data, [key]: value });
-  };
 
   return (
     <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm overflow-hidden mb-4">
@@ -89,48 +84,6 @@ export default function RowAdminVisual({
       {/* Controls */}
       {isExpanded && (
         <div className="p-3 grid grid-cols-2 gap-4">
-          {/* Width Control */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-              <Columns className="w-3 h-3" /> Width
-            </label>
-            <Select
-              value={data.width}
-              onValueChange={(v) => patch("width", v as RowProps["width"])}
-            >
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="full">Full Width</SelectItem>
-                <SelectItem value="container">Container</SelectItem>
-                <SelectItem value="max-w-screen-md">Medium</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Padding Control */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">
-              Padding
-            </label>
-            <Select
-              value={data.padding}
-              onValueChange={(v) => patch("padding", v as RowProps["padding"])}
-            >
-              <SelectTrigger className="h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">None</SelectItem>
-                <SelectItem value="2">Small (2)</SelectItem>
-                <SelectItem value="4">Medium (4)</SelectItem>
-                <SelectItem value="8">Large (8)</SelectItem>
-                <SelectItem value="12">X-Large (12)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Gap Slider */}
           <div className="space-y-3 col-span-2 bg-muted/30 p-2 rounded-md">
             <div className="flex justify-between">
@@ -147,7 +100,7 @@ export default function RowAdminVisual({
               min={0}
               max={12}
               step={1}
-              onChange={(e) => patch("gap", Number(e.target.value))}
+              onChange={(e) => updateBlock(id, { gap: Number(e.target.value) })}
               className="w-full accent-primary block h-2"
             />
           </div>
@@ -159,7 +112,9 @@ export default function RowAdminVisual({
             </label>
             <Select
               value={data.justify}
-              onValueChange={(v) => patch("justify", v as RowProps["justify"])}
+              onValueChange={(v) =>
+                updateBlock(id, { justify: v as RowProps["justify"] })
+              }
             >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
@@ -183,7 +138,9 @@ export default function RowAdminVisual({
             </label>
             <Select
               value={data.align}
-              onValueChange={(v) => patch("align", v as RowProps["align"])}
+              onValueChange={(v) =>
+                updateBlock(id, { align: v as RowProps["align"] })
+              }
             >
               <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
@@ -212,9 +169,9 @@ export default function RowAdminVisual({
               "flex-row overflow-x-auto items-start"
             )}
           >
-            {(data.children ?? []).map((child, index) => {
-              const childId = child.id || `temp-${index}`;
+            {block.data.children?.map((child, index) => {
               const Component = COMPONENT_REGISTRY[child.type];
+              const childId = (child as Block).id || nanoid();
 
               if (!Component) {
                 return (
@@ -225,7 +182,7 @@ export default function RowAdminVisual({
               }
 
               const AdminComp = Component.AdminComponent as React.FC<
-                AdminBlockProps<any>
+                AdminBlockProps<typeof child.data>
               >;
 
               return (
