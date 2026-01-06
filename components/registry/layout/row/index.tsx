@@ -167,10 +167,71 @@ function RowAdmin({ id, useStore }: AdminBlockProps<RowProps>) {
   );
 
   return (
-    <textarea
-      value={block.data.example}
-      onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
+    <div className="flex flex-col gap-4 p-4 bg-card rounded-md border">
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-muted-foreground uppercase">
+          Row Label / Content
+        </label>
+        <input
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          value={data.text || ""}
+          onChange={(e) => handleChange("text", e.target.value)}
+          placeholder="Label for empty row..."
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <SelectControl
+          label="Width"
+          field="width"
+          options={["full", "container", "max-w-screen-md"]}
+        />
+        <SelectControl
+          label="Gap"
+          field="gap"
+          options={["0", "2", "4", "8", "10"]}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <SelectControl
+          label="Align Items"
+          field="align"
+          options={["start", "center", "end", "stretch"]}
+        />
+        <SelectControl
+          label="Justify"
+          field="justify"
+          options={["start", "center", "end", "between"]}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <SelectControl
+          label="Padding"
+          field="padding"
+          options={["0", "2", "4", "8", "12"]}
+        />
+        <SelectControl
+          label="Wrap"
+          field="flexWrap"
+          options={["wrap", "nowrap"]}
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-muted-foreground uppercase">
+          Background Color (Hex/Name)
+        </label>
+        <input
+          type="text"
+          className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+          placeholder="#ffffff or red"
+          value={data.backgroundColor || ""}
+          onChange={(e) => handleChange("backgroundColor", e.target.value)}
+        />
+      </div>
+    </div>
   );
 }
 
