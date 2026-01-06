@@ -240,5 +240,13 @@ function RowAdmin({ id, useStore }: AdminBlockProps<RowProps>) {
  * when displaying all available components.
  */
 function RowPreview() {
-  return <div>Row Preview</div>;
+  return (
+    <div className="w-full p-4 border border-dashed rounded bg-muted/50 flex flex-col gap-2">
+      <div className="h-2 w-1/3 bg-muted-foreground/20 rounded"></div>
+      <div className="flex gap-2">
+        <div className="h-8 w-full bg-muted-foreground/10 rounded"></div>
+        <div className="h-8 w-full bg-muted-foreground/10 rounded"></div>
+      </div>
+    </div>
+  );
 }
