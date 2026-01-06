@@ -4,7 +4,6 @@ import z from "zod";
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { FlexContainer } from "./layout/FlexContainer";
-import { Column } from "@/components/registry/layout/column";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
