@@ -22,6 +22,7 @@ export async function getFileUrl(fileName: string) {
 }
 
 export async function getMedia(fileID: string) {
+  if (!fileID) return null;
   try {
     const media = await prisma.media.findUnique({
       where: { id: fileID },
