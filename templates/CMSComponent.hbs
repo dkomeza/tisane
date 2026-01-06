@@ -6,17 +6,15 @@ import {
   AdminBlockProps,
   Block,
   BlockProps,
-  CreateComponent,
+  CMSComponent,
 } from "@/components/registry";
 import z from "zod";
 
-export const Schema = z.object({
-  example: z.string().min(1).max(100).default("Example content"),
-});
+export type {{pascalCase name}}Props = {
+  example: string;
+};
 
-export type {{pascalCase name}}Props = z.infer<typeof Schema>;
-
-export const {{pascalCase name}} = CreateComponent({
+export const {{pascalCase name}}: CMSComponent<"{{kebabCase name}}", {{pascalCase name}}Props> = {
   id: "{{kebabCase name}}" as const,
   label: "{{titleCase name}}",
 
@@ -24,8 +22,10 @@ export const {{pascalCase name}} = CreateComponent({
   AdminComponent: {{pascalCase name}}Admin,
   PreviewComponent: {{pascalCase name}}Preview,
 
-  Schema,
-});
+  Schema: z.object({
+    example: z.string().min(1).max(500).default("Example text"),
+  }),
+};
 
 /**
  * This is the client-side component that will be rendered in the application.
