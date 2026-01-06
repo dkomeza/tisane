@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useState } from "react";
 import { getMedia } from "@/app/actions/media/view-action";
 import Image from "next/image";
 import { ImageProps } from ".";
@@ -11,7 +11,21 @@ import { BlockProps } from "@/components/registry";
  */
 
 export function ImageClient({ data }: BlockProps<ImageProps>) {
-  const media = use(getMedia(data.mediaId));
+  const [media, setMedia] = useState<any>(null);
+
+  useEffect(() => {
+    if (!data.mediaId) {
+      setMedia(null);
+      return;
+    }
+
+    let isMounted = true;
+    getMedia(data.mediaId).then((m) => {
+      if (isMounted) setMedia(m);
+    });
+
+    return () => { isMounted = false; };
+  }, [data.mediaId]);
 
   if (!media?.url) return null;
 
@@ -19,8 +33,8 @@ export function ImageClient({ data }: BlockProps<ImageProps>) {
     <Image
       src={media.url}
       alt={media.alt || ""}
-      width={media.width}
-      height={media.height}
+      width={media.width || 800} // Fallback if width 0
+      height={media.height || 600}
       className="w-full h-auto"
       priority={false}
     />

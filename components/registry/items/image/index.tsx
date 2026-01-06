@@ -22,7 +22,7 @@ export const ImageComponent: CMSComponent<"imageComponent", ImageProps> = {
   PreviewComponent: ImagePreview,
 
   Schema: z.object({
-    mediaId: z.string().min(1),
+    mediaId: z.string().default(""),
   }),
 };
 
