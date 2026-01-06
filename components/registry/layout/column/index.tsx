@@ -11,6 +11,7 @@ import {
   DBComponentSchema,
 } from "@/components/registry";
 import z from "zod";
+import ColumnAdmin from "@/components/registry/layout/column/AdminComponent";
 
 export type ColumnProps = {
   justify: "start" | "end" | "center" | "between" | "around" | "evenly";
@@ -46,26 +47,6 @@ export const Column: CMSComponent<"column", ColumnProps> = {
  */
 function ColumnClient({ data }: BlockProps<ColumnProps>) {
   return <div>aaaa</div>;
-}
-
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-function ColumnAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<ColumnProps>) {
-  const { getBlock, updateBlock } = useStore();
-  const block = getBlock(id) as Block<"column">;
-
-  if (!block) return null;
-
-  return (
-    <textarea
-      // value={block.data.example}
-      // onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
-  );
 }
 
 /**

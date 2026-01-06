@@ -1,10 +1,6 @@
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-
 "use client";
 
-import { RowProps } from "./index";
+import { ColumnProps } from "./index";
 import {
   AdminBlockProps,
   Block,
@@ -40,13 +36,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export default function RowAdminVisual({
+export default function ColumnAdmin({
   id,
   useStore,
-}: AdminBlockProps<RowProps>) {
+}: AdminBlockProps<ColumnProps>) {
   const { getBlock, updateBlock, removeBlock, addBlock } = useStore();
 
-  const block = getBlock(id) as Block<"row">;
+  const block = getBlock(id) as Block<"column">;
   const [isExpanded, setIsExpanded] = useState(true);
 
   useEffect(() => {
@@ -67,7 +63,7 @@ export default function RowAdminVisual({
       <div className="p-3 border-b bg-muted/30 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Layout className="w-4 h-4 text-muted-foreground" />
-          <span className="font-medium text-sm">Row Container</span>
+          <span className="font-medium text-sm">Column Container</span>
         </div>
         <div className="flex items-center gap-1">
           <Button
