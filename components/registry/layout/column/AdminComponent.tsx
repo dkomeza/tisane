@@ -121,7 +121,7 @@ export default function ColumnAdmin({
             <Select
               value={data.justify}
               onValueChange={(v) =>
-                updateBlock(id, { justify: v as RowProps["justify"] })
+                updateBlock(id, { justify: v as ColumnProps["justify"] })
               }
             >
               <SelectTrigger className="h-8 text-xs">
@@ -147,7 +147,7 @@ export default function ColumnAdmin({
             <Select
               value={data.align}
               onValueChange={(v) =>
-                updateBlock(id, { align: v as RowProps["align"] })
+                updateBlock(id, { align: v as ColumnProps["align"] })
               }
             >
               <SelectTrigger className="h-8 text-xs">
@@ -169,12 +169,12 @@ export default function ColumnAdmin({
       {isExpanded && (
         <div className="p-3 bg-muted/10 min-h-[100px] space-y-3 border-t">
           <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-            Row Items
+            Column Items
           </div>
           <div
             className={cn(
               "flex gap-4 p-2 min-h-[50px] border-2 border-dashed border-border/40 rounded-lg transition-all",
-              "flex-row overflow-x-auto items-start"
+              "flex-col overflow-x-auto items-start"
             )}
           >
             {block.data.children?.map((child, index) => {
