@@ -3,7 +3,7 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-} from "@/components/registry/types";
+} from "@/components/registry";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -15,7 +15,6 @@ import {
   Trash2,
 } from "lucide-react";
 import z from "zod";
-import { CreateComponent } from "..";
 
 const Schema = z.object({
   content: z.string().min(1).max(100).default("Click me"),
@@ -29,8 +28,8 @@ const Schema = z.object({
 type ButtonProps = z.infer<typeof Schema>;
 type Color = ButtonProps["color"];
 
-export const ButtonComponent = CreateComponent({
-  id: "button" as const,
+export const ButtonComponent = {
+  id: "button",
   label: "Button",
 
   ClientComponent: ButtonClientComponent,
@@ -38,7 +37,7 @@ export const ButtonComponent = CreateComponent({
   PreviewComponent: ButtonPreviewComponent,
 
   Schema,
-});
+} as CMSComponent<"button", ButtonProps>;
 
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
   const colorStyles = {

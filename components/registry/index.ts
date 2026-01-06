@@ -6,19 +6,8 @@ import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
 // -- PLOP IMPORTS HERE --
 
-import { CMSComponent, DBComponent, RegistryCategory } from "./types";
+import { DBComponent, RegistryCategory } from "./types";
 export * from "./types";
-
-/**
- * Utility function to create a CMS component configuration.
- * @param config - The configuration object for the CMS component.
- * @returns The correctly typed CMS component configuration.
- */
-export function CreateComponent<T extends string, D>(
-  config: CMSComponent<T, D>
-) {
-  return config;
-}
 
 /**
  * The DBComponentSchema is a recursive Zod schema that validates
