@@ -32,6 +32,24 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       const processFile = async (file: File) => {
         return new Promise<void>(async (resolve, reject) => {
           try {
+            // Get image dimensions
+            let width = 0;
+            let height = 0;
+            if (file.type.startsWith("image/")) {
+              const img = new Image();
+              const objectUrl = URL.createObjectURL(file);
+              img.src = objectUrl;
+              await new Promise<void>((r) => {
+                img.onload = () => {
+                  width = img.width;
+                  height = img.height;
+                  r();
+                };
+                img.onerror = () => r(); // proceed even if fails
+              });
+              URL.revokeObjectURL(objectUrl);
+            }
+
             const presignedData = await getPresignedUploadUrl(
               file.name,
               file.type
@@ -69,7 +87,9 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
                 await registerMediaInDb(
                   presignedData.key!,
                   file.type,
-                  file.size
+                  file.size,
+                  width,
+                  height
                 );
                 completedFiles++;
                 resolve();
