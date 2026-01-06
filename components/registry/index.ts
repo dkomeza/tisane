@@ -3,10 +3,22 @@ import z from "zod";
 
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
-import { Block, DBComponent, RegistryCategory } from "./types";
 import { FlexContainer } from "./layout/FlexContainer";
+// -- PLOP IMPORTS HERE --
 
+import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
 export * from "./types";
+
+/**
+ * Utility function to create a CMS component configuration.
+ * @param config - The configuration object for the CMS component.
+ * @returns The correctly typed CMS component configuration.
+ */
+export function CreateComponent<T extends string, D>(
+  config: CMSComponent<T, D>
+) {
+  return config;
+}
 
 /**
  * The DBComponentSchema is a recursive Zod schema that validates
@@ -47,17 +59,11 @@ export const BlocksArraySchema = z.array(BlockSchema);
  * Each component is defined with its unique ID, label, rendering components, and data schema.
  */
 export const COMPONENT_REGISTRY = {
-  // Elements
   [ButtonComponent.id]: ButtonComponent,
-
-  // Typography
   [Heading.id]: Heading,
-
-  // Layout
   [FlexContainer.id]: FlexContainer,
-
-  // Sections
   [Hero.id]: Hero,
+  // -- PLOP REGISTRY HERE --
 } as const;
 
 export const REGISTRY_CATEGORIES: RegistryCategory[] = [

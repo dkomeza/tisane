@@ -11,7 +11,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx seed/seed.ts",
-    "db:deploy": "prisma migrate deploy"
+    "db:deploy": "prisma migrate deploy",
+    "generate": "plop"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -67,6 +68,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "plop": "^4.0.4",
     "prisma": "^7.1.0",
     "tailwindcss": "^4.1.17",
     "tsx": "^4.21.0",

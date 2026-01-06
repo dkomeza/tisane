@@ -15,17 +15,21 @@ import {
   Trash2,
 } from "lucide-react";
 import z from "zod";
+import { CreateComponent } from "..";
 
-type Color = "primary" | "dark" | "white" | "violet" | "pink";
+const Schema = z.object({
+  content: z.string().min(1).max(100).default("Click me"),
+  variant: z.enum(["small", "large"]).default("large"),
+  color: z
+    .enum(["primary", "dark", "white", "violet", "pink"])
+    .default("primary"),
+  isDisabled: z.boolean().default(false),
+});
 
-type ButtonProps = {
-  content: string;
-  variant: "small" | "large";
-  color: Color;
-  isDisabled: boolean;
-};
+type ButtonProps = z.infer<typeof Schema>;
+type Color = ButtonProps["color"];
 
-export const ButtonComponent: CMSComponent<"button", ButtonProps> = {
+export const ButtonComponent = CreateComponent({
   id: "button" as const,
   label: "Button",
 
@@ -33,15 +37,8 @@ export const ButtonComponent: CMSComponent<"button", ButtonProps> = {
   AdminComponent: ButtonAdminComponent,
   PreviewComponent: ButtonPreviewComponent,
 
-  Schema: z.object({
-    content: z.string().min(1).max(100).default("Click me"),
-    variant: z.enum(["small", "large"]).default("large"),
-    color: z
-      .enum(["primary", "dark", "white", "violet", "pink"])
-      .default("primary"),
-    isDisabled: z.boolean().default(false),
-  }),
-};
+  Schema,
+});
 
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
   const colorStyles = {

@@ -8,18 +8,17 @@ import {
   AdminBlockProps,
   Block,
   BlockProps,
-  CMSComponent,
+  CreateComponent,
 } from "@/components/registry";
 import z from "zod";
 
-type ComponentProps = {
-  example: string;
-};
+const Schema = z.object({
+  example: z.string().min(1).max(100).default("Example content"),
+});
 
-export const ComponentTemplate: CMSComponent<
-  "component-template",
-  ComponentProps
-> = {
+type ComponentProps = z.infer<typeof Schema>;
+
+export const ComponentTemplate = CreateComponent({
   id: "component-template" as const,
   label: "Component Template",
 
@@ -27,10 +26,8 @@ export const ComponentTemplate: CMSComponent<
   AdminComponent: ComponentAdminComponent,
   PreviewComponent: ComponentPreviewComponent,
 
-  Schema: z.object({
-    example: z.string().min(1).max(100).default("Example content"),
-  }),
-};
+  Schema,
+});
 
 /**
  * This is the client-side component that will be rendered in the application.
