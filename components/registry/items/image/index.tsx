@@ -9,9 +9,7 @@ import {
   CMSComponent,
 } from "@/components/registry";
 import z from "zod";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { getFileUrl } from "@/app/actions/media/view-action";
+import { ImageClient } from "./ImageClient";
 
 export type ImageProps = {
   mediaId: string;
@@ -29,7 +27,6 @@ export const ImageComponent: CMSComponent<"imageComponent", ImageProps> = {
     mediaId: z.string().min(1),
   }),
 };
-
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
