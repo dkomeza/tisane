@@ -1,9 +1,9 @@
 import { ButtonComponent } from "./elements/Button";
 import z from "zod";
 
-import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { FlexContainer } from "./layout/FlexContainer";
+import { Typography } from "@/components/registry/typography/typography";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
@@ -60,9 +60,9 @@ export const BlocksArraySchema = z.array(BlockSchema);
  */
 export const COMPONENT_REGISTRY = {
   [ButtonComponent.id]: ButtonComponent,
-  [Heading.id]: Heading,
   [FlexContainer.id]: FlexContainer,
   [Hero.id]: Hero,
+  [Typography.id]: Typography,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -104,7 +104,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     id: "typography",
     label: "Typography",
     componentIds: [
-      Heading.id,
+      Typography.id,
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },
