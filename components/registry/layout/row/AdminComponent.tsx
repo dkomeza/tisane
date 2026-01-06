@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Popover,
@@ -44,6 +44,14 @@ export default function RowAdminVisual({
 
   const block = getBlock(id) as Block<"row">;
   const [isExpanded, setIsExpanded] = useState(true);
+
+  useEffect(() => {
+    if (!block) return;
+
+    if (block.data.children === undefined) {
+      updateBlock(id, { children: [] });
+    }
+  }, [block, id, updateBlock]);
 
   if (!block) return null;
 

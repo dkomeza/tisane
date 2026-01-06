@@ -40,10 +40,7 @@ export const Row: CMSComponent<"row", RowProps> = {
       .default("stretch"),
     flexWrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
     gap: z.number().min(0).max(12).default(4),
-    children: z
-      .array(z.lazy(() => DBComponentSchema))
-      .optional()
-      .default([]),
+    children: z.array(z.lazy(() => DBComponentSchema)).optional(),
   }),
 };
 

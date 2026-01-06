@@ -23,10 +23,7 @@ const findAndUpdate = (
   } else {
     for (const key in node.data) {
       const property = node.data[key as keyof typeof node.data];
-
-      if (typeof property === "object" && property["id"] !== undefined) {
-        if (findAndUpdate(property, targetId, updateData)) return true;
-      }
+      if (findAndUpdate(property, targetId, updateData)) return true;
     }
   }
 
@@ -84,10 +81,10 @@ export const useCMSStore = create<CMSStore>()(
           return;
         }
 
-        const findAndAdd = (node: Draft<Block>): boolean => {
+        const findAndAdd = (node: Draft<Block> | Draft<Block>[]): boolean => {
           if (!node || typeof node !== "object") return false;
 
-          if (node.id === parentId) {
+          if (!Array.isArray(node) && node.id === parentId) {
             const key = propertyName as keyof typeof node.data;
             if (Array.isArray(node.data[key])) {
               // @ts-expect-error We can't be sure of the type here
@@ -99,18 +96,20 @@ export const useCMSStore = create<CMSStore>()(
             return true;
           }
 
-          // Recurse
-          for (const key in node.data) {
-            const property = node.data[key as keyof typeof node.data];
-            if (typeof property === "object") {
+          if (Array.isArray(node)) {
+            for (const item of node) {
+              if (findAndAdd(item)) return true;
+            }
+          } else {
+            for (const key in node.data) {
+              const property = node.data[key as keyof typeof node.data];
               if (findAndAdd(property)) return true;
             }
           }
           return false;
         };
 
-        for (const stateBlock of state.blocks)
-          if (findAndAdd(stateBlock)) break;
+        findAndAdd(state.blocks);
       }),
 
     getBlock: (id) => {
