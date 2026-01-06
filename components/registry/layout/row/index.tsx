@@ -49,7 +49,7 @@ export const Row = CreateComponent({
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function RowClient({ data }: BlockProps<RowProps>) {
+const getLayoutClasses = (data: RowProps) => {
   const map = {
     justify: {
       start: "justify-start",
@@ -101,6 +101,26 @@ function RowClient({ data }: BlockProps<RowProps>) {
     map.padding[data.padding],
     map.width[data.width],
     data.backgroundColor && `bg-[${data.backgroundColor}]`
+  );
+};
+
+function RowClient({
+  data,
+  children,
+}: BlockProps<RowProps> & { children?: React.ReactNode }) {
+  return (
+    <div
+      className={getLayoutClasses(data)}
+      style={{ backgroundColor: data.backgroundColor }}
+    >
+      {children ? (
+        children
+      ) : (
+        <div className="w-full min-h-[50px] border border-dashed border-gray-300 rounded p-4 text-muted-foreground">
+          {data.text}
+        </div>
+      )}
+    </div>
   );
 }
 
