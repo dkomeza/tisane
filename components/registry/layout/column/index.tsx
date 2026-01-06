@@ -3,8 +3,6 @@
  */
 
 import {
-  AdminBlockProps,
-  Block,
   BlockProps,
   CMSComponent,
   DBComponent,

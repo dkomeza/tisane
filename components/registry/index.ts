@@ -5,6 +5,7 @@ import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
 import { Column } from "@/components/registry/layout/column";
+import { Image } from "@/components/registry/items/image";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -38,6 +39,7 @@ export const COMPONENT_REGISTRY = {
   [Hero.id]: Hero,
   [Row.id]: Row,
   [Column.id]: Column,
+  [Image.id]: Image,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -54,6 +56,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     id: "items",
     label: "Items",
     componentIds: [
+      Image.id,
       // -- PLOP ITEMS HERE --
     ],
   },
