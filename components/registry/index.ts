@@ -4,6 +4,7 @@ import z from "zod";
 import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { FlexContainer } from "./layout/FlexContainer";
+import { Row } from "@/components/registry/layout/row";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
@@ -63,6 +64,7 @@ export const COMPONENT_REGISTRY = {
   [Heading.id]: Heading,
   [FlexContainer.id]: FlexContainer,
   [Hero.id]: Hero,
+  [Row.id]: Row,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -87,6 +89,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Layout",
     componentIds: [
       FlexContainer.id,
+      Row.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
