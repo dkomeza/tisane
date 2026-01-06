@@ -11,7 +11,19 @@ import {
 import z from "zod";
 
 export const Schema = z.object({
-  example: z.string().min(1).max(100).default("Example content"),
+  text: z.string().default("Row Content"),
+  
+  layout: z.enum(["flex", "grid"]).default("flex"),
+  direction: z.enum(["row", "row-reverse", "col", "col-reverse"]).default("row"),
+  justify: z.enum(["start", "center", "end", "between", "around"]).default("start"),
+  align: z.enum(["start", "center", "end", "stretch", "baseline"]).default("start"),
+  flexWrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
+  gap: z.enum(["0", "1", "2", "4", "6", "8", "10"]).default("4"),
+  
+  width: z.enum(["full", "container", "max-w-screen-md"]).default("full"),
+  padding: z.enum(["0", "2", "4", "8", "12", "16"]).default("4"),
+  
+  backgroundColor: z.string().optional(),
 });
 
 export type RowProps = z.infer<typeof Schema>;
