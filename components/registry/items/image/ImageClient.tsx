@@ -1,11 +1,10 @@
 "use client";
 
 import { use } from "react";
-import { getFileUrl, getMedia } from "@/app/actions/media/view-action";
+import { getMedia } from "@/app/actions/media/view-action";
 import Image from "next/image";
 import { ImageProps } from ".";
 import { BlockProps } from "@/components/registry";
-import { Medal } from "lucide-react";
 
 /**
  * This is the client-side component that will be rendered in the application.

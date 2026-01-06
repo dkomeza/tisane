@@ -3,13 +3,11 @@
  */
 
 import {
-  AdminBlockProps,
-  Block,
-  BlockProps,
   CMSComponent,
 } from "@/components/registry";
 import z from "zod";
 import { ImageClient } from "./ImageClient";
+import { ImageAdmin } from "./ImageAdmin";
 
 export type ImageProps = {
   mediaId: string;
@@ -27,23 +25,6 @@ export const ImageComponent: CMSComponent<"imageComponent", ImageProps> = {
     mediaId: z.string().min(1),
   }),
 };
-
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-function ImageAdmin({ id, useStore }: AdminBlockProps<ImageProps>) {
-  const { getBlock, updateBlock } = useStore();
-  // const block = getBlock(id) as Block<"image">;
-
-  // if (!block) return null;
-
-  return (
-    <textarea
-    // value={block.data.example}
-    // onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
-  );
-}
 
 /**
  * The preview component is used in the editor UI,
