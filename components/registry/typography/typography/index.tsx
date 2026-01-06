@@ -2,13 +2,9 @@
  * Component: Typography
  */
 
-import {
-  AdminBlockProps,
-  Block,
-  BlockProps,
-  CreateComponent,
-} from "@/components/registry";
+import { BlockProps, CreateComponent } from "@/components/registry";
 import z from "zod";
+import { TypographyAdmin } from "./TypographyAdmin";
 
 export const Schema = z.object({
   example: z.string().min(1).max(100).default("Example content"),
@@ -32,26 +28,6 @@ export const Typography = CreateComponent({
  */
 function TypographyClient({ data }: BlockProps<TypographyProps>) {
   return <div>{data.example}</div>;
-}
-
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-function TypographyAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<TypographyProps>) {
-  const { getBlock, updateBlock } = useStore();
-  const block = getBlock(id) as Block<"typography">;
-
-  if (!block) return null;
-
-  return (
-    <textarea
-      value={block.data.example}
-      onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
-  );
 }
 
 /**
