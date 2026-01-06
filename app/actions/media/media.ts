@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { refresh, revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 const ALLOWED_PREFIX = "image/";
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const URL_EXPIRATION_SECONDS = 3600; // 1 Hour
