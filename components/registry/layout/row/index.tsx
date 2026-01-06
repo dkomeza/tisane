@@ -133,6 +133,39 @@ function RowAdmin({ id, useStore }: AdminBlockProps<RowProps>) {
 
   if (!block) return null;
 
+  const { data } = block;
+
+  const handleChange = (key: keyof RowProps, value: string) => {
+    updateBlock(id, { ...data, [key]: value });
+  };
+
+  const SelectControl = ({
+    label,
+    field,
+    options,
+  }: {
+    label: string;
+    field: keyof RowProps;
+    options: string[];
+  }) => (
+    <div className="space-y-1">
+      <label className="text-xs font-medium text-muted-foreground uppercase">
+        {label}
+      </label>
+      <select
+        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        value={String(data[field])}
+        onChange={(e) => handleChange(field, e.target.value)}
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt.charAt(0).toUpperCase() + opt.slice(1)}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
   return (
     <textarea
       value={block.data.example}
