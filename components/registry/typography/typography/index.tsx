@@ -8,6 +8,7 @@ import { TypographyAdmin } from "./TypographyAdmin";
 import { useMemo } from "react";
 import { Heading } from "../heading";
 import { Span } from "../span";
+import { Paragraph } from "../paragraph";
 
 export type TypographyProps = {
   content: string;
@@ -128,25 +129,22 @@ function RenderParagraph(props: { block: unknown }) {
     content?: { type: string; text?: string }[];
   };
 
-  const content =
-    block.content
-      ?.map((child) => {
-        if (child.type === "text" && child.text) {
-          return child.text;
-        }
-        return "";
-      })
-      .join("") || "";
   const textAlign = block.attrs?.textAlign || "left";
+  const parse = Paragraph.Schema.safeParse({ textAlign });
+
+  if (!parse.success) {
+    return null;
+  }
 
   return (
-    <p
-      style={{
-        textAlign: textAlign as "left" | "center" | "right" | "justify",
-      }}
-    >
-      {content}
-    </p>
+    // @ts-expect-error TS2322
+    <Paragraph.ClientComponent id="paragraph" data={parse.data}>
+      {Array.isArray(block.content)
+        ? block.content.map((child, index: number) => (
+            <RenderSpan key={index} block={child} />
+          ))
+        : null}
+    </Paragraph.ClientComponent>
   );
 }
 

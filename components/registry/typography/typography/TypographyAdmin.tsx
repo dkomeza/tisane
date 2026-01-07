@@ -3,8 +3,18 @@
 import { AdminBlockProps, Block } from "@/components/registry/types";
 import { TypographyProps } from ".";
 
-import { useEditor, EditorContent, Editor } from "@tiptap/react";
+import {
+  useEditor,
+  EditorContent,
+  Editor,
+  NodeViewWrapper,
+  NodeViewContent,
+  ReactNodeViewRenderer,
+  NodeViewProps,
+} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Heading from "@tiptap/extension-heading";
+import Paragraph from "@tiptap/extension-paragraph";
 import TextAlign from "@tiptap/extension-text-align";
 import {
   Tooltip,
@@ -38,6 +48,36 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import { Heading as CMSHeading } from "../heading";
+import { Paragraph as CMSParagraph } from "../paragraph";
+import { nanoid } from "nanoid";
+
+export const EditableHeading = (props: NodeViewProps) => {
+  const { level, textAlign } = props.node.attrs;
+
+  const data = { level, textAlign };
+
+  return (
+    <NodeViewWrapper className="heading-node-view">
+      <CMSHeading.ClientComponent id={nanoid(8)} data={data}>
+        <NodeViewContent />
+      </CMSHeading.ClientComponent>
+    </NodeViewWrapper>
+  );
+};
+
+const ParagraphNodeView = (props: NodeViewProps) => {
+  const textAlign = props.node.attrs.textAlign || "left";
+
+  return (
+    <NodeViewWrapper className="paragraph-wrapper">
+      <CMSParagraph.ClientComponent id={nanoid(8)} data={{ textAlign }}>
+        <NodeViewContent />
+      </CMSParagraph.ClientComponent>
+    </NodeViewWrapper>
+  );
+};
 
 function HistoryButtons({ editor }: { editor: Editor }) {
   return (
@@ -283,7 +323,20 @@ export function TypographyAdmin({
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        paragraph: false,
+        heading: false,
+      }),
+      Heading.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(EditableHeading);
+        },
+      }),
+      Paragraph.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(ParagraphNodeView);
+        },
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
     content: JSON.parse(initialContent),

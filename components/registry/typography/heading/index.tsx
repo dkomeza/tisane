@@ -47,7 +47,11 @@ function HeadingClient({
   const { text, level, textAlign } = data;
 
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
-  return <Tag style={{ textAlign: textAlign }}>{text ? text : children}</Tag>;
+  return (
+    <Tag className="text-4xl" style={{ textAlign: textAlign }}>
+      {text ? text : children}
+    </Tag>
+  );
 }
 
 /**

@@ -11,7 +11,8 @@ import {
 import z from "zod";
 
 export type ParagraphProps = {
-  example: string;
+  text?: string;
+  textAlign?: "left" | "center" | "right" | "justify";
 };
 
 export const Paragraph: CMSComponent<"paragraph", ParagraphProps> = {
@@ -23,24 +24,32 @@ export const Paragraph: CMSComponent<"paragraph", ParagraphProps> = {
   PreviewComponent: ParagraphPreview,
 
   Schema: z.object({
-    example: z.string().min(1).max(500).default("Example text"),
+    text: z.string().optional(),
+    textAlign: z
+      .enum(["left", "center", "right", "justify"])
+      .optional()
+      .default("left"),
   }),
 };
 
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function ParagraphClient({ data }: BlockProps<ParagraphProps>) {
-  return <div>{data.example}</div>;
+function ParagraphClient({
+  data,
+  children,
+}: BlockProps<ParagraphProps> & { children?: React.ReactNode }) {
+  return (
+    <div className="text-xl" style={{ textAlign: data.textAlign }}>
+      {data.text ? data.text : children}
+    </div>
+  );
 }
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
-function ParagraphAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<ParagraphProps>) {
+function ParagraphAdmin({ id, useStore }: AdminBlockProps<ParagraphProps>) {
   const { getBlock, updateBlock } = useStore();
   const block = getBlock(id) as Block<"paragraph">;
 
@@ -48,8 +57,8 @@ function ParagraphAdmin({
 
   return (
     <textarea
-      value={block.data.example}
-      onChange={(e) => updateBlock(id, { example: e.target.value })}
+      value={block.data.text}
+      onChange={(e) => updateBlock(id, { text: e.target.value })}
     ></textarea>
   );
 }

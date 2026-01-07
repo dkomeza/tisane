@@ -33,6 +33,7 @@ type ZustandStore = UseBoundStore<StoreApi<CMSStore>>;
 export type BlockProps<P> = {
   id: string;
   data: P;
+  children?: React.ReactNode;
 };
 
 export type AdminBlockProps<P> = BlockProps<P> & {
