@@ -1,10 +1,16 @@
-import { Button } from "./elements/Button";
+import { ButtonComponent } from "./elements/button";
 import z from "zod";
 
 import { Heading } from "./typography/Typography";
-import { Hero } from "./layout/Hero";
-import { DBComponent, RegistryCategory } from "./types";
+import { Hero } from "./sections/Hero";
+import { Row } from "@/components/registry/layout/row";
+import { Column } from "@/components/registry/layout/column";
+import { ImageComponent } from "@/components/registry/items/image";
+import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
+import { Icon } from "@/components/registry/items/icon";
+// -- PLOP IMPORTS HERE --
 
+import { DBComponent, RegistryCategory } from "./types";
 export * from "./types";
 
 /**
@@ -16,7 +22,6 @@ export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
     return z.object({
       type: z.literal(key),
       data: value.Schema,
-      children: z.array(DBComponentSchema).optional(),
     });
   });
 
@@ -31,27 +36,62 @@ export const DBComponentsArraySchema = z.array(DBComponentSchema);
  * Each component is defined with its unique ID, label, rendering components, and data schema.
  */
 export const COMPONENT_REGISTRY = {
-  // Elements
-  [Button.id]: Button,
-
-  // Typography
+  [ButtonComponent.id]: ButtonComponent,
   [Heading.id]: Heading,
-
-  // Layout
   [Hero.id]: Hero,
+  [Row.id]: Row,
+  [Column.id]: Column,
+  [ImageComponent.id]: ImageComponent,
+  [UnderlinedCard.id]: UnderlinedCard,
+  [Icon.id]: Icon,
+  // -- PLOP REGISTRY HERE --
 } as const;
 
 export const REGISTRY_CATEGORIES: RegistryCategory[] = [
   {
     id: "elements",
     label: "Elements",
-    componentIds: [Button.id],
+    componentIds: [
+      ButtonComponent.id,
+      UnderlinedCard.id,
+      // -- PLOP ELEMENTS HERE --
+    ],
+  },
+  {
+    id: "imageComponent",
+    label: "Items",
+    componentIds: [
+      ImageComponent.id,
+      Icon.id,
+      // -- PLOP ITEMS HERE --
+    ],
   },
   {
     id: "layout",
     label: "Layout",
-    componentIds: [Hero.id],
+    componentIds: [
+      Row.id,
+      Column.id,
+      // -- PLOP LAYOUT HERE --
+    ],
     isRootLevel: true,
+  },
+  {
+    id: "sections",
+    label: "Sections",
+    componentIds: [
+      Hero.id,
+      // -- PLOP SECTIONS HERE --
+    ],
+    isRootLevel: true,
+  },
+  {
+    id: "typography",
+    label: "Typography",
+    componentIds: [
+      Heading.id,
+      // -- PLOP TYPOGRAPHY HERE --
+    ],
   },
 ];
 

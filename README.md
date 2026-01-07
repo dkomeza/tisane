@@ -78,3 +78,12 @@ npm start
 - `components/`: Reusable UI components (buttons, inputs, etc.).
 - `scripts/`: Utility scripts, including the `roadmap_manager.py` for syncing the roadmap with GitHub Issues.
 - `public/`: Static assets.
+
+### Adding new CMS Components
+
+To add a new CMS component, use the provided Handlebars template located at `templates/CMSComponent.hbs`. This template ensures that all necessary parts of the component (client, admin, preview) are created consistently.
+
+```bash
+npm run generate
+```
+This command will prompt you for the component name, category and generate the required files in the appropriate directories. It will also update the component registry automatically.

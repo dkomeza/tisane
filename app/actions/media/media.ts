@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-import { refresh, revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 const ALLOWED_PREFIX = "image/";
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const URL_EXPIRATION_SECONDS = 3600; // 1 Hour
@@ -45,7 +45,9 @@ export async function getPresignedUploadUrl(
 export async function registerMediaInDb(
   key: string,
   type: string,
-  size: number
+  size: number,
+  width: number,
+  height: number
 ) {
   try {
     const media = await prisma.media.create({
@@ -54,6 +56,8 @@ export async function registerMediaInDb(
         url: "",
         mimeType: type,
         size: size,
+        width: width,
+        height: height,
         bucket: process.env.S3_BUCKET!,
       },
     });

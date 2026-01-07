@@ -9,19 +9,11 @@ import { toast } from "sonner";
 import { getMediaList, deleteMedia } from "@/app/actions/media/media";
 import { getFileUrl } from "@/app/actions/media/view-action";
 import { Trash2, Copy, RefreshCw, Loader2, FileImage } from "lucide-react";
+import { Media } from "@/lib/prisma";
 import Image from "next/image";
 
-interface MediaItem {
-  id: string;
-  key: string;
-  url: string;
-  mimeType: string;
-  size: number;
-  createdAt: string | Date;
-}
-
 export default function AdminMediaPage() {
-  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [media, setMedia] = useState<Media[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -33,7 +25,7 @@ export default function AdminMediaPage() {
       const safeItems = (response.items as any[]).map((item) => ({
         ...item,
         id: item.id || item._id,
-      })) as MediaItem[];
+      })) as Media[];
 
       setMedia(safeItems);
     } catch (err) {
