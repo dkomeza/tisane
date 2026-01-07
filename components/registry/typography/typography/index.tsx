@@ -7,7 +7,7 @@ import z from "zod";
 import { TypographyAdmin } from "./TypographyAdmin";
 
 export type TypographyProps = {
-  example: string;
+  content: string;
 };
 
 export const Typography = {
@@ -19,7 +19,7 @@ export const Typography = {
   PreviewComponent: TypographyPreview,
 
   Schema: z.object({
-    example: z.string().min(1).max(100).default("Example content"),
+    content: z.string().default("<p>Start typing...</p>"),
   }),
 } as CMSComponent<"typography", TypographyProps>;
 
@@ -27,7 +27,7 @@ export const Typography = {
  * This is the client-side component that will be rendered in the application.
  */
 function TypographyClient({ data }: BlockProps<TypographyProps>) {
-  return <div>{data.example}</div>;
+  return <div dangerouslySetInnerHTML={{ __html: data.content }} />;
 }
 
 /**
