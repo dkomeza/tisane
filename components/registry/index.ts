@@ -7,6 +7,9 @@ import { Typography } from "@/components/registry/typography/typography";
 import { Column } from "@/components/registry/layout/column";
 import { ImageComponent } from "@/components/registry/items/image";
 import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
+import { Heading } from "@/components/registry/typography/heading";
+import { Paragraph } from "@/components/registry/typography/paragraph";
+import { Span } from "@/components/registry/typography/span";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -42,6 +45,9 @@ export const COMPONENT_REGISTRY = {
   [Column.id]: Column,
   [ImageComponent.id]: ImageComponent,
   [UnderlinedCard.id]: UnderlinedCard,
+  [Heading.id]: Heading,
+  [Paragraph.id]: Paragraph,
+  [Span.id]: Span,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -87,6 +93,9 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Typography",
     componentIds: [
       Typography.id,
+      Heading.id,
+      Paragraph.id,
+      Span.id,
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },

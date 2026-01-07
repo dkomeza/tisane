@@ -286,7 +286,7 @@ export function TypographyAdmin({
       StarterKit,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
     ],
-    content: initialContent,
+    content: JSON.parse(initialContent),
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       updateBlock(id, {
