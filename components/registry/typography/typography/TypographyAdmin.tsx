@@ -5,6 +5,7 @@ import { TypographyProps } from ".";
 
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
 import {
   Tooltip,
   TooltipContent,
@@ -22,13 +23,21 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   ChevronDownIcon,
-  ChevronsDownIcon,
   Redo2Icon,
   Undo2Icon,
 } from "lucide-react";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 function HistoryButtons({ editor }: { editor: Editor }) {
   return (
@@ -113,7 +122,7 @@ function TextTypeSelector({ editor }: { editor: Editor }) {
         }}
       >
         <TooltipTrigger asChild>
-          <SelectTrigger className="[&>svg]:hidden h-8!">
+          <SelectTrigger className="h-8!">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
         </TooltipTrigger>
@@ -175,20 +184,88 @@ function ColorSelector({ editor }: { editor: Editor }) {
   return (
     <div className="flex item-center gap-2">
       {colors.map((colorGroup) => (
-        <button
-          key={colorGroup.name}
-          className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
-          style={{
-            backgroundColor: `var(${colorToBrandName(
-              colorGroup.name,
-              colorGroup.values[colorGroup.primary]
-            )})`,
-          }}
-        >
-          <ChevronDownIcon className="mt-0.5 size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
+        <Popover key={colorGroup.name}>
+          <PopoverTrigger asChild>
+            <button
+              key={colorGroup.name}
+              className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
+              style={{
+                backgroundColor: `var(${colorToBrandName(
+                  colorGroup.name,
+                  colorGroup.values[colorGroup.primary]
+                )})`,
+              }}
+            >
+              <ChevronDownIcon className="mt-0.5 size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="grid grid-cols-3 gap-2 p-2">
+              {colorGroup.values.map((variant) => (
+                <button
+                  key={variant}
+                  className="w-6 h-6 rounded-full border-2 border-border"
+                  style={{
+                    backgroundColor: `var(${colorToBrandName(
+                      colorGroup.name,
+                      variant
+                    )})`,
+                  }}
+                />
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
       ))}
+      <button className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group">
+        <ChevronDownIcon className="mt-0.5 size-4" />
+      </button>
     </div>
+  );
+}
+
+function AlignmentSelector({ editor }: { editor: Editor }) {
+  return (
+    <ButtonGroup>
+      <Button
+        size="sm"
+        variant={editor.isActive({ textAlign: "left" }) ? "default" : "outline"}
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+      >
+        <AlignLeftIcon />
+        <span className="sr-only">Align Left</span>
+      </Button>
+      <Button
+        size="sm"
+        variant={
+          editor.isActive({ textAlign: "center" }) ? "default" : "outline"
+        }
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+      >
+        <AlignCenterIcon />
+        <span className="sr-only">Align Center</span>
+      </Button>
+      <Button
+        size="sm"
+        variant={
+          editor.isActive({ textAlign: "right" }) ? "default" : "outline"
+        }
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+      >
+        <AlignRightIcon />
+        <span className="sr-only">Align Right</span>
+      </Button>
+      <Button
+        size="sm"
+        variant={
+          editor.isActive({ textAlign: "justify" }) ? "default" : "outline"
+        }
+        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+      >
+        <AlignJustifyIcon />
+        <span className="sr-only">Justify</span>
+      </Button>
+    </ButtonGroup>
   );
 }
 
@@ -205,11 +282,17 @@ export function TypographyAdmin({
   const initialContent = block?.data?.content || "<p>Hello World!</p>";
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+    ],
     content: initialContent,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      updateBlock(id, { ...block.data, content: editor.getHTML() });
+      updateBlock(id, {
+        ...block.data,
+        content: JSON.stringify(editor.getJSON()),
+      });
     },
     editorProps: {
       attributes: {
@@ -223,14 +306,15 @@ export function TypographyAdmin({
   return (
     <div className="flex-1 flex flex-col">
       {editor && (
-        <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4">
+        <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4 justify-evenly">
           <HistoryButtons editor={editor} />
           <Separator orientation="vertical" className="h-7!" />
           <TextTypeSelector editor={editor} />
           <Separator orientation="vertical" className="h-7!" />
           <TextStyleButtons editor={editor} />
           <Separator orientation="vertical" className="h-7!" />
-          <ColorSelector editor={editor} />
+          <AlignmentSelector editor={editor} />
+          {/* <ColorSelector editor={editor} /> */}
         </div>
       )}
       <EditorContent
