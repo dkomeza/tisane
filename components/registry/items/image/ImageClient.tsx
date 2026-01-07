@@ -5,13 +5,14 @@ import { getMedia } from "@/app/actions/media/view-action";
 import Image from "next/image";
 import { ImageProps } from ".";
 import { BlockProps } from "@/components/registry";
+import { Media } from "@/lib/prisma";
 
 /**
  * This is the client-side component that will be rendered in the application.
  */
 
 export function ImageClient({ data }: BlockProps<ImageProps>) {
-  const [media, setMedia] = useState<any>(null);
+  const [media, setMedia] = useState<Media | null>();
 
   useEffect(() => {
     if (!data.mediaId) {
@@ -33,7 +34,7 @@ export function ImageClient({ data }: BlockProps<ImageProps>) {
     <Image
       src={media.url}
       alt={media.alt || ""}
-      width={media.width || 800} // Fallback if width 0
+      width={media.width || 800}
       height={media.height || 600}
       className="w-full h-auto"
       priority={false}

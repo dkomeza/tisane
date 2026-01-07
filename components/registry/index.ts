@@ -6,6 +6,7 @@ import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
 import { Column } from "@/components/registry/layout/column";
 import { ImageComponent } from "@/components/registry/items/image";
+import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -40,6 +41,7 @@ export const COMPONENT_REGISTRY = {
   [Row.id]: Row,
   [Column.id]: Column,
   [ImageComponent.id]: ImageComponent,
+  [UnderlinedCard.id]: UnderlinedCard,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -49,6 +51,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Elements",
     componentIds: [
       ButtonComponent.id,
+      UnderlinedCard.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },
