@@ -1,4 +1,4 @@
-import { ButtonComponent } from "./elements/Button";
+import { ButtonComponent } from "./elements/button";
 import z from "zod";
 
 import { Heading } from "./typography/Typography";

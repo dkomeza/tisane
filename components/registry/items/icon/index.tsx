@@ -9,9 +9,57 @@ import {
   CMSComponent,
 } from "@/components/registry";
 import z from "zod";
+import {
+  LucideIcon,
+  Menu,
+  X,
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  LogIn,
+  CircleChevronDown,
+  CircleChevronUp,
+  CircleArrowDown,
+  Check,
+  ArrowUpRight,
+  ArrowDown,
+  List,
+  LayoutGrid,
+  Download,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+export type IconName =
+  | "menu"
+  | "close"
+  | "arrowLeft"
+  | "arrowRight"
+  | "chevronLeft"
+  | "chevronRight"
+  | "logIn"
+  | "circleChevronDown"
+  | "circleChevronUp"
+  | "circleArrowDown"
+  | "check"
+  | "arrowUpRight"
+  | "arrowDown"
+  | "listAlt"
+  | "cards"
+  | "download";
 
 export type IconProps = {
-  example: string;
+  name: IconName;
+  size?: number;
+  className?: string;
 };
 
 export const Icon: CMSComponent<"icon", IconProps> = {
@@ -23,34 +71,102 @@ export const Icon: CMSComponent<"icon", IconProps> = {
   PreviewComponent: IconPreview,
 
   Schema: z.object({
-    example: z.string().min(1).max(500).default("Example text"),
+    name: z
+      .enum([
+        "menu",
+        "close",
+        "arrowLeft",
+        "arrowRight",
+        "chevronLeft",
+        "chevronRight",
+        "logIn",
+        "circleChevronDown",
+        "circleChevronUp",
+        "circleArrowDown",
+        "check",
+        "arrowUpRight",
+        "arrowDown",
+        "listAlt",
+        "cards",
+        "download",
+      ])
+      .default("arrowRight"),
   }),
+};
+
+const iconMap: Record<IconName, LucideIcon> = {
+  menu: Menu,
+  close: X,
+  arrowLeft: ArrowLeft,
+  arrowRight: ArrowRight,
+  chevronLeft: ChevronLeft,
+  chevronRight: ChevronRight,
+  logIn: LogIn,
+  circleChevronDown: CircleChevronDown,
+  circleChevronUp: CircleChevronUp,
+  circleArrowDown: CircleArrowDown,
+  check: Check,
+  arrowUpRight: ArrowUpRight,
+  arrowDown: ArrowDown,
+  listAlt: List,
+  cards: LayoutGrid,
+  download: Download,
 };
 
 /**
  * This is the client-side component that will be rendered in the application.
  */
 function IconClient({ data }: BlockProps<IconProps>) {
-  return <div>{data.example}</div>;
+  const IconComponent = iconMap[data.name] || ArrowRight;
+
+  return <IconComponent className="h-6" />;
 }
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
-function IconAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<IconProps>) {
+function IconAdmin({ id, useStore }: AdminBlockProps<IconProps>) {
   const { getBlock, updateBlock } = useStore();
   const block = getBlock(id) as Block<"icon">;
 
   if (!block) return null;
 
+  const { name } = block.data;
+
   return (
-    <textarea
-      value={block.data.example}
-      onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label>Icon Type</Label>
+        <Select
+          value={name}
+          onValueChange={(value) =>
+            updateBlock(id, { name: value as IconName })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select an icon" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="arrowRight"> <ArrowRight/> Arrow Right </SelectItem>
+            <SelectItem value="arrowLeft"> <ArrowLeft/> Arrow Left </SelectItem>
+            <SelectItem value="chevronRight"> <ChevronRight/> Chevron Right </SelectItem>
+            <SelectItem value="chevronLeft"> <ChevronLeft/> Chevron Left </SelectItem>
+            <SelectItem value="logIn"> <LogIn/> Log In </SelectItem>
+            <SelectItem value="circleChevronDown">
+              <CircleChevronDown/>  Circle Chevron Down 
+            </SelectItem>
+            <SelectItem value="circleChevronUp"> <CircleChevronUp/> Circle Chevron Up </SelectItem>
+            <SelectItem value="circleArrowDown"> <CircleArrowDown/> Circle Arrow Down </SelectItem>
+            <SelectItem value="check"> <Check/> Check </SelectItem>
+            <SelectItem value="arrowUpRight"> <ArrowUpRight/> Arrow Up Right </SelectItem>
+            <SelectItem value="arrowDown"> <ArrowDown/> Arrow Down </SelectItem>
+            <SelectItem value="listAlt"> <List/> List Alt </SelectItem>
+            <SelectItem value="cards"> <LayoutGrid/> Cards </SelectItem>
+            <SelectItem value="download"> <Download/> Download </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
   );
 }
 
@@ -59,5 +175,9 @@ function IconAdmin({
  * when displaying all available components.
  */
 function IconPreview() {
-  return <div>Icon Preview</div>;
+  return (
+    <div className="flex items-center gap-2 p-2 border rounded-md bg-muted/50 text-muted-foreground w-full justify-center">
+      <span className="text-xs font-medium">Icon</span>
+    </div>
+  );
 }
