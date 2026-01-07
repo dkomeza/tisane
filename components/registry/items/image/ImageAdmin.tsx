@@ -55,7 +55,7 @@ export function ImageAdmin({
       </div>
 
       {data.mediaId && selectedMedia ? (
-        <div className="relative group rounded-md overflow-hidden border bg-gray-50">
+        <div className="relative group rounded-md overflow-hidden border">
           <div className="aspect-video relative">
             <Image
               src={selectedMedia.url || ""}
@@ -81,12 +81,12 @@ export function ImageAdmin({
           </div>
         </div>
       ) : (
-        <div className="border-2 border-dashed rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors">
+        <div className="border-2 border-dashed rounded-lg p-20 text-center transition-colors">
           <div className="flex flex-col items-center gap-2">
             <div className="p-3 bg-white rounded-full shadow-sm">
               <ImageIcon className="w-6 h-6 text-gray-400" />
             </div>
-            <div className="text-sm text-gray-500 mb-2">No image selected</div>
+            <div className="text-sm text-gray-300 mb-2">No image selected</div>
             <MediaSelector
               trigger={
                 <Button

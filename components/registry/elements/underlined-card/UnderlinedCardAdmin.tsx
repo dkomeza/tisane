@@ -57,7 +57,7 @@ export function UnderlinedCardAdmin({
         <div className="space-y-4">
           <Label>Card Image</Label>
           {data.mediaId && selectedMedia ? (
-            <div className="relative group rounded-md overflow-hidden border bg-gray-50 max-w-xs">
+            <div className="relative group rounded-md overflow-hidden border max-w-xs">
               <div className="aspect-video relative">
                 <Image
                   src={selectedMedia.url || ""}
@@ -91,18 +91,11 @@ export function UnderlinedCardAdmin({
                 <div className="p-3 bg-white rounded-full shadow-sm">
                   <ImageIcon className="w-6 h-6 text-gray-400" />
                 </div>
-                <div className="text-sm text-gray-500 mb-2">
+                <div className="text-sm text-gray-400 mb-2">
                   No image selected
                 </div>
                 <MediaSelector
-                  trigger={
-                    <Button
-                      variant="outline"
-                      className="text-black hover:text-gray-600"
-                    >
-                      Select Image
-                    </Button>
-                  }
+                  trigger={<Button variant="outline">Select Image</Button>}
                   onSelect={handleSelectMedia}
                 />
               </div>
