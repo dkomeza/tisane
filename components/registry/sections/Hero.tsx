@@ -8,12 +8,12 @@ import {
 } from "@/components/registry/types";
 import z from "zod";
 
-type ComponentProps = {
+type HeroProps = {
   content?: DBComponent<"heading">;
   //   cta: DBComponent<"button">;
 };
 
-export const Hero: CMSComponent<"hero", ComponentProps> = {
+export const Hero: CMSComponent<"hero", HeroProps> = {
   id: "hero" as const,
   label: "Hero",
 
@@ -34,14 +34,14 @@ export const Hero: CMSComponent<"hero", ComponentProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function HeroClientComponent({ data }: BlockProps<ComponentProps>) {
+function HeroClientComponent({ data }: BlockProps<HeroProps>) {
   return <div>{data.content?.data.text}</div>;
 }
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
-function HeroAdminComponent({ id, useStore }: AdminBlockProps<ComponentProps>) {
+function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
   const { blocks, updateBlock } = useStore();
 
   const block = blocks.find((b) => b.id === id) as Block<"hero">;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   COMPONENT_REGISTRY,
   ComponentRegistry,
@@ -10,12 +10,10 @@ import {
   Block,
   BlockProps,
   AdminBlockProps,
-  CMSStore,
 } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Monitor, Shield } from "lucide-react";
-import { create } from "zustand";
 import { nanoid } from "nanoid";
 import {
   Breadcrumb,
@@ -27,27 +25,27 @@ import {
 import Link from "next/link";
 import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCMSStore } from "@/components/registry/CMSStore";
 
 interface Props<T extends ComponentType> {
   componentType: T;
 }
 
-const usePreviewStore = create<CMSStore>((set) => ({
-  blocks: [],
-  setBlocks: (blocks) => set({ blocks }),
-  updateBlock: (id, data) =>
-    set((state) => ({
-      blocks: state.blocks.map((block) =>
-        block.id === id ? { ...block, data: { ...block.data, ...data } } : block
-      ),
-    })),
-}));
-
 export function ComponentPreviewWrapper<T extends ComponentType>({
   componentType,
 }: Props<T>) {
   const component = COMPONENT_REGISTRY[componentType] as ComponentRegistry[T];
-  const { blocks, setBlocks } = usePreviewStore();
+
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const defaultTab = searchParams.get("tab") || "client";
+  const { blocks, setBlocks } = useCMSStore();
+
+  type TABS = "client" | "admin";
+  const [activeTab, setActiveTab] = useState<TABS>(defaultTab as TABS);
 
   useEffect(() => {
     const initialBlock: Block<T> = {
@@ -88,7 +86,18 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
           </span>
         </p>
       </div>
-      <Tabs defaultValue="client" className="flex-1">
+      <Tabs
+        className="flex-1"
+        value={activeTab}
+        onValueChange={(value) => {
+          setActiveTab(value as TABS);
+          const newParams = new URLSearchParams(searchParams.toString());
+          newParams.set("tab", value);
+          router.replace(`${pathname}?${newParams.toString()}`, {
+            scroll: false,
+          });
+        }}
+      >
         <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm py-0">
           <div className="border-b border-border/50 bg-muted/20 p-3 flex items-center justify-between">
             <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
@@ -118,11 +127,14 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
             <TabsContent value="client">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>
-            <TabsContent value="admin">
+            <TabsContent
+              value="admin"
+              className="w-xl h-3/4 overflow-hidden flex flex-col"
+            >
               <AdminComponent
                 id={block.id}
                 data={block.data}
-                useStore={usePreviewStore}
+                useStore={useCMSStore}
               />
             </TabsContent>
           </div>

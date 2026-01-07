@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Resolver, UseFormReturn } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreatePageSchema,
@@ -49,6 +49,7 @@ import { create } from "zustand";
 import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 import { ContentPreview } from "./ContentPreview";
+import { useCMSStore } from "@/components/registry/CMSStore";
 
 const slugify = (text: string) =>
   text
@@ -58,25 +59,6 @@ const slugify = (text: string) =>
     .replace(/\s+/g, "-")
     .replace(/[^\w\-]+/g, "")
     .replace(/\-\-+/g, "-");
-
-const useContentStore = create<CMSStore>((set) => ({
-  blocks: [],
-  setBlocks: (blocks) => set({ blocks }),
-  updateBlock: (id, data) =>
-    set((state) => ({
-      blocks: state.blocks.map((block) =>
-        block.id === id ? { ...block, data: { ...block.data, ...data } } : block
-      ),
-    })),
-  addBlock: (block) =>
-    set((state) => ({
-      blocks: [...state.blocks, block],
-    })),
-  removeBlock: (id) =>
-    set((state) => ({
-      blocks: state.blocks.filter((block) => block.id !== id),
-    })),
-}));
 
 function MatadataForm({
   form,
@@ -204,7 +186,7 @@ function MatadataForm({
 }
 
 function ContentForm() {
-  const { blocks, addBlock } = useContentStore();
+  const { blocks, addBlock } = useCMSStore();
 
   return (
     <ScrollArea className="flex-1 flex p-6">
@@ -225,7 +207,7 @@ function ContentForm() {
               <AdminComponent
                 id={block.id}
                 data={block.data}
-                useStore={useContentStore}
+                useStore={useCMSStore}
               />
             </div>
           );
@@ -307,7 +289,7 @@ export function PageForm({
   onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
-  const { blocks, setBlocks } = useContentStore();
+  const { blocks, setBlocks } = useCMSStore();
   const { broadcast } = usePreviewBroadcaster(defaultValues?.slug);
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
