@@ -1,4 +1,4 @@
-import { ButtonComponent } from "./elements/Button";
+import { ButtonComponent } from "./elements/button";
 import z from "zod";
 
 import { Hero } from "./sections/Hero";
@@ -10,6 +10,7 @@ import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
 import { Heading } from "@/components/registry/typography/heading";
 import { Paragraph } from "@/components/registry/typography/paragraph";
 import { Span } from "@/components/registry/typography/span";
+import { Icon } from "@/components/registry/items/icon";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -48,6 +49,7 @@ export const COMPONENT_REGISTRY = {
   [Heading.id]: Heading,
   [Paragraph.id]: Paragraph,
   [Span.id]: Span,
+  [Icon.id]: Icon,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -66,6 +68,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Items",
     componentIds: [
       ImageComponent.id,
+      Icon.id,
       // -- PLOP ITEMS HERE --
     ],
   },
