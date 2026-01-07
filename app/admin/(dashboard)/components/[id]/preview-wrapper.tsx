@@ -127,7 +127,10 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
             <TabsContent value="client">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>
-            <TabsContent value="admin">
+            <TabsContent
+              value="admin"
+              className="w-xl h-3/4 overflow-hidden flex flex-col"
+            >
               <AdminComponent
                 id={block.id}
                 data={block.data}
