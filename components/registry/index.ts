@@ -4,6 +4,9 @@ import z from "zod";
 import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
 import { Typography } from "@/components/registry/typography/typography";
+import { Column } from "@/components/registry/layout/column";
+import { ImageComponent } from "@/components/registry/items/image";
+import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -36,6 +39,9 @@ export const COMPONENT_REGISTRY = {
   [Hero.id]: Hero,
   [Typography.id]: Typography,
   [Row.id]: Row,
+  [Column.id]: Column,
+  [ImageComponent.id]: ImageComponent,
+  [UnderlinedCard.id]: UnderlinedCard,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -45,13 +51,15 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Elements",
     componentIds: [
       ButtonComponent.id,
+      UnderlinedCard.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },
   {
-    id: "items",
+    id: "imageComponent",
     label: "Items",
     componentIds: [
+      ImageComponent.id,
       // -- PLOP ITEMS HERE --
     ],
   },
@@ -60,6 +68,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Layout",
     componentIds: [
       Row.id,
+      Column.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
