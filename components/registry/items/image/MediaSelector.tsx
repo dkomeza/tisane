@@ -76,18 +76,18 @@ export function MediaSelector({
   return (
     <Dialog open={show} onOpenChange={setShow}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0 gap-0 bg-white">
-        <div className="p-6 pb-2 border-b">
+      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0 gap-0">
+        <div className="text-center p-6">
           <DialogTitle>Media Library</DialogTitle>
         </div>
 
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
-          className="flex-1 flex flex-col min-h-0"
+          className="flex-1 flex flex-col w-full"
         >
-          <div className="px-6 border-b">
-            <TabsList className="mb-0 bg-transparent h-12 p-0 space-x-6 w-full justify-start text-gray-500 rounded-none border-b border-transparent">
+          <div className="border-b">
+            <TabsList className="bg-transparent h-12 p-0 w-full justify-start text-gray-500 rounded-none border-b border-transparent">
               <TabsTrigger
                 value="library"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary pb-3 pt-3 px-1 data-[state=active]:bg-transparent shadow-none"
@@ -130,7 +130,7 @@ export function MediaSelector({
                           fill
                           className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <div className="absolute inset-0 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                           <Button
                             variant="secondary"
                             size="sm"

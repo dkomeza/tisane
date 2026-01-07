@@ -32,7 +32,6 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       const processFile = async (file: File) => {
         return new Promise<void>(async (resolve, reject) => {
           try {
-            // Get image dimensions
             let width = 0;
             let height = 0;
             if (file.type.startsWith("image/")) {
@@ -45,7 +44,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
                   height = img.height;
                   r();
                 };
-                img.onerror = () => r(); // proceed even if fails
+                img.onerror = () => r();
               });
               URL.revokeObjectURL(objectUrl);
             }
@@ -160,14 +159,14 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
           </div>
         ) : (
           <>
-            <div className="p-3 rounded-full bg-gray-100 text-gray-600">
+            <div className="p-3 rounded-full text-white text-gray-600">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium">
                 {isDragActive ? "Drop files now" : "Click or drag to upload"}
               </p>
-              <p className="text-xs text-gray-500">Max 50MB</p>
+              <p className="text-xs">Max 50MB</p>
             </div>
           </>
         )}

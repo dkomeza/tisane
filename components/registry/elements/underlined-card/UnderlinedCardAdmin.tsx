@@ -121,7 +121,7 @@ export function UnderlinedCardAdmin({
           <Input
             id={`text-${id}`}
             type="text"
-            value={data.text}
+            value={data.text || ""}
             onChange={(e) => updateBlock(id, { text: e.target.value })}
             placeholder="Enter card text"
           />
@@ -133,7 +133,7 @@ export function UnderlinedCardAdmin({
           <Input
             id={`description-${id}`}
             type="text"
-            value={data.description}
+            value={data.description || ""}
             onChange={(e) => updateBlock(id, { description: e.target.value })}
             placeholder="Enter description"
           />
@@ -180,7 +180,7 @@ export function UnderlinedCardAdmin({
             <Input
               id={`color-${id}`}
               type="color"
-              value={data.underlineColor}
+              value={data.underlineColor || "#372773"}
               onChange={(e) =>
                 updateBlock(id, { underlineColor: e.target.value })
               }
@@ -188,7 +188,7 @@ export function UnderlinedCardAdmin({
             />
             <Input
               type="text"
-              value={data.underlineColor}
+              value={data.underlineColor || ""}
               onChange={(e) =>
                 updateBlock(id, { underlineColor: e.target.value })
               }
