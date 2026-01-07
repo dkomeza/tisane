@@ -7,13 +7,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  ArrowRight,
   Type,
   Palette,
   MousePointer2,
   BoxSelect,
   Trash2,
+  Smile,
 } from "lucide-react";
+import { iconMap, IconName } from "@/components/registry/items/icon";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import z from "zod";
 
 const Schema = z.object({
@@ -23,6 +31,8 @@ const Schema = z.object({
     .enum(["primary", "dark", "white", "violet", "pink"])
     .default("primary"),
   isDisabled: z.boolean().default(false),
+  iconLeft: z.string().optional(),
+  iconRight: z.string().optional(),
 });
 
 type ButtonProps = z.infer<typeof Schema>;
@@ -42,19 +52,22 @@ export const ButtonComponent = {
 function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
   const colorStyles = {
     primary:
-      "bg-[#9061F5] text-white hover:bg-[#6B2AF6] disabled:bg-[#A7A49F] disabled:text-[#F1EFEC]",
-    dark: "bg-[#FF2B97] text-white hover:bg-[#8C1858] disabled:bg-[#64635F] disabled:text-[#D2CFCB]",
+      "bg-brand-purple-300 text-brand-grey-100 hover:bg-brand-purple-400 focus:bg-brand-purple-300 pressed:bg-brand-purple-400 disabled:bg-brand-gray-400 disabled:text-brand-gray-200",
+    dark: "bg-brand-pink-400 text-brand-grey-100 hover:bg-brand-pink-500 focus:bg-brand-pink-400 pressed:bg-brand-pink-500 disabled:bg-brand-gray-200 disabled:text-brand-gray-400",
     white:
-      "bg-transparent text-[#F8F8F8] border border-[#F8F8F8] disabled:bg-[#D2CFCB] disabled:border-none",
+      "bg-transparent text-brand-grey-100 border border-b border-brand-gray-100 hover:border-b-2 focus:border-2 pressed:border-none pressed:bg-brand-gray-100 pressed:text-brand-grey-100 disabled:text-brand-gray-300 disabled:border-none",
     violet:
-      "bg-transparent text-[#B499F5] border border-[#B499F5] hover:text-[#6B2AF6] hover:border-[#6B2AF6] disabled:text-[#A7A49F] disabled:border-[#A7A49F]",
-    pink: "text-[#F2599F] border border-[#F2599F] hover:text-[#8C1858] hover:border-[#8C1858] disabled:text-[#D2CFCB] disabled:border-[#D2CFCB]",
+      "bg-transparent text-brand-purple-200 border border-brand-purple-200 hover:text-brand-purple-400 hover:border-brand-purple-400 focus:border-2 focus:border-brand-purple-400 focus:text-brand-purple-200 pressed:bg-brand-purple-400 pressed:border-none pressed:text-brand-grey-100 disabled:text-brand-gray-400 disabled:border-brand-gray-400",
+    pink: "text-brand-pink-300 border border-brand-pink-300 hover:text-brand-pink-500 hover:border-brand-pink-500 focus:border-2 focus:border-brand-pink-500 focus:text-brand-pink-300 pressed:bg-brand-pink-400 pressed:border-none pressed:text-brand-grey-100 disabled:text-brand-gray-300 disabled:border-brand-gray-300",
   };
 
   const sizeStyles = {
     small: "px-4 py-2 text-sm",
     large: "px-6 py-3 text-lg",
   };
+
+  const IconLeft = data.iconLeft ? iconMap[data.iconLeft as IconName] : null;
+  const IconRight = data.iconRight ? iconMap[data.iconRight as IconName] : null;
 
   return (
     <button
@@ -65,9 +78,9 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
         sizeStyles[data.variant]
       )}
     >
-      <ArrowRight className="size-7" />
+      {IconLeft && <IconLeft className="size-5" />}
       <span className="flex-1 text-center">{data.content}</span>
-      <ArrowRight className="size-7" />
+      {IconRight && <IconRight className="size-5" />}
     </button>
   );
 }
@@ -79,23 +92,31 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
   if (!block) return null;
 
   const colorOptions: { value: Color; bgClass: string; label: string }[] = [
-    { value: "primary", bgClass: "bg-[#9061F5]", label: "Primary" },
-    { value: "dark", bgClass: "bg-[#FF2B97]", label: "Dark" },
+    { value: "primary", bgClass: "bg-brand-purple-200", label: "Primary" },
+    { value: "dark", bgClass: "bg-brand-pink-400", label: "Dark" },
     {
       value: "white",
-      bgClass: "bg-gray-100 border border-gray-300",
+      bgClass: "border-4 border-brand-gray-100",
       label: "White",
     },
-    { value: "violet", bgClass: "bg-[#B499F5]", label: "Violet" },
-    { value: "pink", bgClass: "bg-[#F2599F]", label: "Pink" },
+    {
+      value: "violet",
+      bgClass: "border-4 border-brand-purple-200",
+      label: "Violet",
+    },
+    {
+      value: "pink",
+      bgClass: " border-4 border-brand-pink-400",
+      label: "Pink",
+    },
   ];
 
   return (
-    <div className="flex flex-col gap-5 p-4 rounded-xl shadow-sm border border-gray-200 relative">
+    <div className="flex flex-col gap-5 p-4 rounded-xl relative text-">
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10 absolute top-2 right-2"
+        className="size-7 text-destructive hover:text-destructive hover:bg-destructive/10 absolute top-2 right-2"
         onClick={() => removeBlock(id)}
         type="button"
       >
@@ -115,6 +136,74 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
         />
       </div>
 
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
+            <Smile className="w-3 h-3" />
+            Left Icon
+          </label>
+          <Select
+            value={block.data.iconLeft || "none"}
+            onValueChange={(value) =>
+              updateBlock(id, {
+                iconLeft: value === "none" ? undefined : (value as IconName),
+              })
+            }
+          >
+            <SelectTrigger className="w-full bg-transparent text-white border-gray-300">
+              <SelectValue placeholder="None" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              {Object.keys(iconMap).map((iconName) => {
+                const Icon = iconMap[iconName as IconName];
+                return (
+                  <SelectItem key={iconName} value={iconName}>
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{iconName}</span>
+                    </div>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
+            <Smile className="w-3 h-3" />
+            Right Icon
+          </label>
+          <Select
+            value={block.data.iconRight || "none"}
+            onValueChange={(value) =>
+              updateBlock(id, {
+                iconRight: value === "none" ? undefined : (value as IconName),
+              })
+            }
+          >
+            <SelectTrigger className="w-full bg-transparent text-white border-gray-300">
+              <SelectValue placeholder="None" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              {Object.keys(iconMap).map((iconName) => {
+                const Icon = iconMap[iconName as IconName];
+                return (
+                  <SelectItem key={iconName} value={iconName}>
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{iconName}</span>
+                    </div>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
           <Palette className="w-3 h-3" />
@@ -127,10 +216,10 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
               key={option.value}
               onClick={() => updateBlock(id, { color: option.value })}
               className={cn(
-                "group relative w-10 h-10 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400",
+                "group relative size-10 rounded-full transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-offset-1",
                 option.bgClass,
                 block.data.color === option.value
-                  ? "ring-2 ring-offset-2 ring-gray-900 scale-110"
+                  ? "ring-2 scale-110"
                   : "hover:scale-105 hover:opacity-90"
               )}
               title={option.label}
@@ -138,7 +227,7 @@ function ButtonAdminComponent({ id, useStore }: AdminBlockProps<ButtonProps>) {
             >
               {block.data.color === option.value && (
                 <span className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
+                  <div className="size-2.5 bg-white rounded-full" />
                 </span>
               )}
             </button>

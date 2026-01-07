@@ -94,7 +94,7 @@ export const Icon: CMSComponent<"icon", IconProps> = {
   }),
 };
 
-const iconMap: Record<IconName, LucideIcon> = {
+export const iconMap: Record<IconName, LucideIcon> = {
   menu: Menu,
   close: X,
   arrowLeft: ArrowLeft,
@@ -147,22 +147,22 @@ function IconAdmin({ id, useStore }: AdminBlockProps<IconProps>) {
             <SelectValue placeholder="Select an icon" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="arrowRight"> <ArrowRight/> Arrow Right </SelectItem>
-            <SelectItem value="arrowLeft"> <ArrowLeft/> Arrow Left </SelectItem>
-            <SelectItem value="chevronRight"> <ChevronRight/> Chevron Right </SelectItem>
-            <SelectItem value="chevronLeft"> <ChevronLeft/> Chevron Left </SelectItem>
-            <SelectItem value="logIn"> <LogIn/> Log In </SelectItem>
+            <SelectItem value="arrowRight"> <ArrowRight /> Arrow Right </SelectItem>
+            <SelectItem value="arrowLeft"> <ArrowLeft /> Arrow Left </SelectItem>
+            <SelectItem value="chevronRight"> <ChevronRight /> Chevron Right </SelectItem>
+            <SelectItem value="chevronLeft"> <ChevronLeft /> Chevron Left </SelectItem>
+            <SelectItem value="logIn"> <LogIn /> Log In </SelectItem>
             <SelectItem value="circleChevronDown">
-              <CircleChevronDown/>  Circle Chevron Down 
+              <CircleChevronDown />  Circle Chevron Down
             </SelectItem>
-            <SelectItem value="circleChevronUp"> <CircleChevronUp/> Circle Chevron Up </SelectItem>
-            <SelectItem value="circleArrowDown"> <CircleArrowDown/> Circle Arrow Down </SelectItem>
-            <SelectItem value="check"> <Check/> Check </SelectItem>
-            <SelectItem value="arrowUpRight"> <ArrowUpRight/> Arrow Up Right </SelectItem>
-            <SelectItem value="arrowDown"> <ArrowDown/> Arrow Down </SelectItem>
-            <SelectItem value="listAlt"> <List/> List Alt </SelectItem>
-            <SelectItem value="cards"> <LayoutGrid/> Cards </SelectItem>
-            <SelectItem value="download"> <Download/> Download </SelectItem>
+            <SelectItem value="circleChevronUp"> <CircleChevronUp /> Circle Chevron Up </SelectItem>
+            <SelectItem value="circleArrowDown"> <CircleArrowDown /> Circle Arrow Down </SelectItem>
+            <SelectItem value="check"> <Check /> Check </SelectItem>
+            <SelectItem value="arrowUpRight"> <ArrowUpRight /> Arrow Up Right </SelectItem>
+            <SelectItem value="arrowDown"> <ArrowDown /> Arrow Down </SelectItem>
+            <SelectItem value="listAlt"> <List /> List Alt </SelectItem>
+            <SelectItem value="cards"> <LayoutGrid /> Cards </SelectItem>
+            <SelectItem value="download"> <Download /> Download </SelectItem>
           </SelectContent>
         </Select>
       </div>
