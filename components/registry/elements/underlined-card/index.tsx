@@ -2,19 +2,24 @@
  * Component: Underlined Card
  */
 
-import {
-  AdminBlockProps,
-  Block,
-  BlockProps,
-  CMSComponent,
-} from "@/components/registry";
+import { CMSComponent } from "@/components/registry";
 import z from "zod";
+import { UnderlinedCardClient } from "./UnderlinedCardClient";
+import { UnderlinedCardAdmin } from "./UnderlinedCardAdmin";
 
 export type UnderlinedCardProps = {
-  example: string;
+  mediaId: string;
+  text: string;
+  description: string;
+  underlineColor: string;
+  width?: number;
+  height?: number;
 };
 
-export const UnderlinedCard: CMSComponent<"underlined-card", UnderlinedCardProps> = {
+export const UnderlinedCard: CMSComponent<
+  "underlined-card",
+  UnderlinedCardProps
+> = {
   id: "underlined-card" as const,
   label: "Underlined Card",
 
@@ -23,41 +28,25 @@ export const UnderlinedCard: CMSComponent<"underlined-card", UnderlinedCardProps
   PreviewComponent: UnderlinedCardPreview,
 
   Schema: z.object({
-    example: z.string().min(1).max(500).default("Example text"),
+    mediaId: z.string().default(""),
+    text: z.string().min(1).default("Card Title"),
+    description: z.string().min(1).default("Card Description"),
+    underlineColor: z.string().default("#372773"),
+    width: z.number().min(1).optional(),
+    height: z.number().min(1).optional(),
   }),
 };
-
-/**
- * This is the client-side component that will be rendered in the application.
- */
-function UnderlinedCardClient({ data }: BlockProps<UnderlinedCardProps>) {
-  return <div>{data.example}</div>;
-}
-
-/**
- * This is the admin component used to edit the component's data in the CMS.
- */
-function UnderlinedCardAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<UnderlinedCardProps>) {
-  const { getBlock, updateBlock } = useStore();
-  const block = getBlock(id) as Block<"underlined-card">;
-
-  if (!block) return null;
-
-  return (
-    <textarea
-      value={block.data.example}
-      onChange={(e) => updateBlock(id, { example: e.target.value })}
-    ></textarea>
-  );
-}
 
 /**
  * The preview component is used in the editor UI,
  * when displaying all available components.
  */
 function UnderlinedCardPreview() {
-  return <div>Underlined Card Preview</div>;
+  return (
+    <div className="flex flex-col items-center gap-2 p-4 border rounded-md">
+      <div className="w-12 h-12 bg-gray-200 rounded-md"></div>
+      <div className="w-16 h-2 bg-gray-200 rounded-full"></div>
+      <div className="w-full h-1 bg-black rounded-full mt-1"></div>
+    </div>
+  );
 }
