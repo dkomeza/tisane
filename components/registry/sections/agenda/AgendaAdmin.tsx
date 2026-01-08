@@ -309,6 +309,83 @@ function AgendaItemAdmin({
                 className="w-full bg-zinc-800 text-white border border-zinc-700 rounded-lg px-3 py-2 text-xs outline-none focus:border-brand-purple-300"
               />
             </div>
+            {/* Speakers Management */}
+            <div className="space-y-3 pt-4 border-t border-zinc-800">
+              <div className="flex justify-between items-center">
+                <label className="text-[9px] font-bold text-zinc-500 uppercase">
+                  Prowadzący
+                </label>
+                <button
+                  onClick={() => {
+                    const newSpeakers = [
+                      ...item.speakers,
+                      { name: "", role: "" },
+                    ];
+                    onUpdate({ speakers: newSpeakers });
+                  }}
+                  className="text-[9px] font-bold text-brand-purple-300 hover:text-brand-purple-400 uppercase"
+                >
+                  + Dodaj prowadzącego
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {item.speakers.map((speaker, sIdx) => (
+                  <div
+                    key={sIdx}
+                    className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700 space-y-2 relative group/speaker"
+                  >
+                    <button
+                      onClick={() => {
+                        const newSpeakers = [...item.speakers];
+                        newSpeakers.splice(sIdx, 1);
+                        onUpdate({ speakers: newSpeakers });
+                      }}
+                      className="absolute top-2 right-2 text-zinc-600 hover:text-red-500 opacity-0 group-hover/speaker:opacity-100 transition-opacity"
+                    >
+                      <X className="size-3" />
+                    </button>
+
+                    <div className="space-y-1">
+                      <label className="text-[8px] font-bold text-zinc-500 uppercase">
+                        Imię i Nazwisko
+                      </label>
+                      <input
+                        type="text"
+                        value={speaker.name}
+                        onChange={(e) => {
+                          const newSpeakers = [...item.speakers];
+                          newSpeakers[sIdx] = {
+                            ...newSpeakers[sIdx],
+                            name: e.target.value,
+                          };
+                          onUpdate({ speakers: newSpeakers });
+                        }}
+                        className="w-full bg-zinc-900 text-white border border-zinc-700 rounded px-2 py-1 text-[11px] outline-none focus:border-brand-purple-300"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[8px] font-bold text-zinc-500 uppercase">
+                        Stanowisko (kim jest)
+                      </label>
+                      <input
+                        type="text"
+                        value={speaker.role}
+                        onChange={(e) => {
+                          const newSpeakers = [...item.speakers];
+                          newSpeakers[sIdx] = {
+                            ...newSpeakers[sIdx],
+                            role: e.target.value,
+                          };
+                          onUpdate({ speakers: newSpeakers });
+                        }}
+                        className="w-full bg-zinc-900 text-white border border-zinc-700 rounded px-2 py-1 text-[11px] outline-none focus:border-brand-purple-300"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
             <div className="space-y-1">
               <label className="text-[9px] font-bold text-zinc-500 uppercase">
                 Description
