@@ -30,7 +30,11 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
 
   return (
     <section className="w-full py-10 px-4 md:px-8 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto text-brand-purple-300">
+        <div className="border-b border-brand-purple-300 mb-6 text-right text-2xl">
+          Agenda
+        </div>
+
         {/* Toggle Switch */}
         <div className="flex justify-start mb-12">
           <div className="inline-flex p-1 rounded-md border border-brand-purple-200">
