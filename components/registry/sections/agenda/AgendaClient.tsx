@@ -39,6 +39,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
         <div className="flex justify-start mb-12">
           <div className="inline-flex p-1 rounded-md border border-brand-purple-200">
             <button
+              type="button"
               onClick={() => setLayout("standard")}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-sm transition-all text-sm font-semibold uppercase tracking-wider",
@@ -51,6 +52,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
               <span>Standard</span>
             </button>
             <button
+              type="button"
               onClick={() => setLayout("list")}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-sm transition-all text-sm font-semibold uppercase tracking-wider",
@@ -162,6 +164,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
             {/* Standard Nav */}
             <div className="flex justify-end gap-1 mt-12">
               <button
+                type="button"
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
                 className={cn(
@@ -174,6 +177,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                 <ChevronLeft size={24} />
               </button>
               <button
+                type="button"
                 onClick={handleNext}
                 disabled={currentIndex >= maxIndex}
                 className={cn(

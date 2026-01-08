@@ -133,6 +133,7 @@ function AgendaItemAdmin({
           Item #{index + 1} - {item.type}
         </span>
         <button
+          type="button"
           onClick={onRemove}
           className="text-zinc-600 hover:text-red-500 transition-colors"
         >
@@ -341,6 +342,7 @@ function AgendaItemAdmin({
                     className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700 space-y-2 relative group/speaker"
                   >
                     <button
+                      type="button"
                       onClick={() => {
                         const newSpeakers = [...item.speakers];
                         newSpeakers.splice(sIdx, 1);

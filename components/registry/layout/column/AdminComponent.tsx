@@ -242,7 +242,10 @@ export default function ColumnAdmin({
             {/* Add Button */}
             <Popover>
               <PopoverTrigger asChild>
-                <button className="w-12 h-12 shrink-0 border-2 border-dashed rounded-lg flex items-center justify-center hover:border-primary/50 hover:bg-primary/5 transition-all">
+                <button
+                  type="button"
+                  className="w-12 h-12 shrink-0 border-2 border-dashed rounded-lg flex items-center justify-center hover:border-primary/50 hover:bg-primary/5 transition-all"
+                >
                   <Plus className="w-5 h-5 text-muted-foreground" />
                 </button>
               </PopoverTrigger>

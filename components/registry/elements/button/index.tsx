@@ -71,6 +71,7 @@ function ButtonClientComponent({ data }: BlockProps<ButtonProps>) {
 
   return (
     <button
+      type="button"
       disabled={data.isDisabled}
       className={cn(
         "flex items-center justify-center gap-3 font-medium transition-colors duration-200 disabled:pointer-events-none",
