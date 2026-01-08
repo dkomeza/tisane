@@ -6,10 +6,16 @@ import {
   CMSComponent,
   DBComponent,
   ReactClientComponent,
+  ReactAdminComponent,
 } from "@/components/registry/types";
 import z from "zod";
 import { Typography } from "../typography/typography";
 import { nanoid } from "nanoid";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type HeroProps = {
   content?: DBComponent<"typography">;
@@ -53,29 +59,29 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
   const typographyData = data.content?.data;
 
   const ctaData = data.cta?.data;
-  const CTAComponent = (
+  const CTAComponent =
     data.cta && ctaData
-      ? COMPONENT_REGISTRY[data.cta.type].ClientComponent
-      : null
-  ) as ReactClientComponent<any> | null;
+      ? (COMPONENT_REGISTRY[data.cta.type]
+          .ClientComponent as ReactClientComponent<typeof ctaData>)
+      : null;
 
   return (
-    <section className="relative">
+    <section className="relative h-screen">
       {imageData && (
-        <div className="absolute inset-0 -z-10">
-          {/* Render background image component */}
+        <div className="absolute inset-0 -z-10 overflow-hidden">
           <ImageComponent id="hero-background" data={imageData} />
         </div>
       )}
-      <div className="container mx-auto py-20 text-center text-white">
+      <div className="h-full flex flex-col md:flex-row justify-end md:justify-between items-end md:items-center gap-20 md:gap-0 py-8">
         {typographyData && (
-          <div className="mb-6">
-            {/* Render typography component */}
+          <div className="max-w-4xl mx-6 sm:mx-12 md:mr-0 md:ml-16 lg:ml-20 xl:ml-24 2xl:ml-32">
             <TypographyComponent id="hero-content" data={typographyData} />
           </div>
         )}
         {CTAComponent && ctaData && (
-          <CTAComponent id="hero-cta" data={ctaData} />
+          <div className="shrink-0 md:self-end md:pb-8">
+            <CTAComponent id="hero-cta" data={ctaData} />
+          </div>
         )}
       </div>
     </section>
@@ -110,6 +116,7 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
           ) : (
             <div className="text-sm text-muted-foreground">
               <button
+                type="button"
                 className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
                 onClick={() => {
                   addBlock(
@@ -131,15 +138,53 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
         <div className="bg-muted/30 p-3 rounded-lg">
           <p className="mb-2">CTA:</p>
           {block.data.cta ? (
-            <div></div>
+            (() => {
+              const ctaBlock = block.data.cta as Block;
+              const CTAAdminComponent = COMPONENT_REGISTRY[ctaBlock.type]
+                .AdminComponent as ReactAdminComponent<typeof ctaBlock.data>;
+
+              return (
+                <CTAAdminComponent
+                  id={ctaBlock.id}
+                  data={ctaBlock.data}
+                  useStore={useStore}
+                />
+              );
+            })()
           ) : (
             <div className="text-sm text-muted-foreground">
-              <button
-                className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
-                onClick={() => {}}
-              >
-                Add CTA Component
-              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
+                    onClick={() => {}}
+                  >
+                    Add CTA Component
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="grid grid-cols-2 gap-3 w-[300px] max-h-96 overflow-y-auto">
+                  {Object.values(COMPONENT_REGISTRY).map((component) => (
+                    <div
+                      key={component.id}
+                      className="p-2 border border-transparent hover:border-primary rounded-lg cursor-pointer text-center bg-muted/50 hover:bg-muted transition overflow-hidden"
+                      onClick={() => {
+                        addBlock(
+                          {
+                            id: nanoid(),
+                            type: component.id,
+                            data: component.Schema.parse({}),
+                          },
+                          id,
+                          "cta"
+                        );
+                      }}
+                    >
+                      <component.PreviewComponent />
+                    </div>
+                  ))}
+                </PopoverContent>
+              </Popover>
             </div>
           )}
         </div>
@@ -154,6 +199,7 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
           ) : (
             <div className="text-sm text-muted-foreground">
               <button
+                type="button"
                 className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
                 onClick={() => {
                   addBlock(
