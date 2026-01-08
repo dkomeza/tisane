@@ -12,6 +12,7 @@ import { Paragraph } from "@/components/registry/typography/paragraph";
 import { Span } from "@/components/registry/typography/span";
 import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
+import { CmsLink } from "@/components/registry/elements/cms-link";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -52,6 +53,7 @@ export const COMPONENT_REGISTRY = {
   [Span.id]: Span,
   [Icon.id]: Icon,
   [Agenda.id]: Agenda,
+  [CmsLink.id]: CmsLink,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -62,6 +64,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     componentIds: [
       ButtonComponent.id,
       UnderlinedCard.id,
+      CmsLink.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },

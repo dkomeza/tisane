@@ -1,0 +1,11 @@
+model Menu {
+    id        String   @id @default(uuid(7))
+    title     String
+    slug      String   @unique
+    content   Json?
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    
+    @@map("menus")
+}
