@@ -20,6 +20,7 @@ import {
   Layout,
   Plus,
   Trash2,
+  WrapText,
 } from "lucide-react";
 
 import { nanoid } from "nanoid";
@@ -159,6 +160,30 @@ export default function RowAdminVisual({
               </SelectTrigger>
               <SelectContent>
                 {["start", "center", "end", "stretch", "baseline"].map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {v.charAt(0).toUpperCase() + v.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* wrap */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+              <WrapText className="w-3 h-3" /> Wrap
+            </label>
+            <Select
+              value={data.wrap}
+              onValueChange={(v) =>
+                updateBlock(id, { wrap: v as RowProps["wrap"] })
+              }
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {["nowrap", "wrap", "wrap-reverse"].map((v) => (
                   <SelectItem key={v} value={v}>
                     {v.charAt(0).toUpperCase() + v.slice(1)}
                   </SelectItem>
