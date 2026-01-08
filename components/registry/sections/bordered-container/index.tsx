@@ -68,23 +68,31 @@ export const BorderedContainer: CMSComponent<
  */
 function BorderedContainerClient({ data }: BlockProps<BorderedContainerProps>) {
   return (
-    <div className="w-full h-full flex flex-col justify-between p-8 md:p-12 text-white gap-8 relative overflow-hidden group hover:border-[#A27BF6] transition-colors duration-300">
-      <div className="space-y-6">
-        <div className="text-white">
+    <table className="">
+      <tr>
+        <th className="pr-8 border-b border-brand-purple-400 pb-2 text-nowrap">
           <Heading.ClientComponent id="heading" data={data.heading.data} />
-        </div>
-        <div className="text-gray-300 font-light leading-relaxed">
-          <Typography.ClientComponent
-            id="typography"
-            data={data.typography.data}
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-end pt-4">
-        <ButtonComponent.ClientComponent id="button" data={data.button.data} />
-      </div>
-    </div>
+        </th>
+        <th className="border-b border-brand-purple-400 pb-2 hidden md:table-cell"></th>
+      </tr>
+      <tr>
+        <td className="hidden md:table-cell"></td>
+        <td className="pt-8">
+          <div className="flex flex-col gap-6 md:gap-8">
+            <Typography.ClientComponent
+              id="typography"
+              data={data.typography.data}
+            />
+            <div className="self-end">
+              <ButtonComponent.ClientComponent
+                id="button"
+                data={data.button.data}
+              />
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
   );
 }
 
