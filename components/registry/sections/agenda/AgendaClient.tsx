@@ -37,7 +37,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
       <div className="max-w-7xl mx-auto">
         {/* Toggle Switch */}
         <div className="flex justify-start mb-12">
-          <div className="inline-flex p-1 bg-white rounded-md border border-brand-purple-200">
+          <div className="inline-flex p-1 rounded-md border border-brand-purple-200">
             <button
               onClick={() => setLayout("standard")}
               className={cn(
@@ -80,33 +80,33 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                     className="shrink-0 w-[calc((100%-96px)/3)] flex flex-col group"
                   >
                     {/* Time*/}
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3 text-brand-grey-400 w-full font-medium whitespace-nowrap">
-                        <span className="text-xl tracking-tight leading-none">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="flex items-center gap-3 w-full font-medium whitespace-nowrap">
+                        <span className="text-[26px] text-brand-grey-100 tracking-tight leading-none">
                           {item.startTime}
                         </span>
                         <div className="h-px w-full min-w-[30px] bg-brand-grey-100 relative">
                           <div className="absolute -left-[3px] -top-[2.5px] size-1.5 rounded-full bg-brand-grey-300"></div>
                           <div className="absolute -right-[3px] -top-[2.5px] size-1.5 rounded-full bg-brand-grey-300"></div>
                         </div>
-                        <span className="text-sm text-brand-grey-300 leading-none">
+                        <span className="text-[16px] text-brand-grey-300 leading-none">
                           {item.endTime}
                         </span>
                       </div>
                     </div>
 
                     {/* Tag */}
-                    <div className="flex items-center mb-4">
-                      <span className="text-brand-purple-100 uppercase text-[12px] font-extrabold">
+                    <div className="flex justify-end mb-4">
+                      <span className="text-brand-purple-100 uppercase text-[12px] ">
                         {item.tag}
                       </span>
                     </div>
 
                     {/* Title and Subtitle */}
-                    <h3 className="text-4xl font-bold text-brand-grey-600 mb-2 leading-tight group-hover:text-brand-purple-300 transition-colors">
+                    <p className="text-[26px] font-bold text-brand-grey-100 mb-2 leading-tight group-hover:text-brand-purple-300 transition-colors">
                       {item.title}
-                    </h3>
-                    <p className="text-brand-grey-400 mb-8 font-medium">
+                    </p>
+                    <p className="text-brand-grey-300 mb-11 text-[14px">
                       {item.subtitle}
                     </p>
 
@@ -126,33 +126,28 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                       )}
                     </div>
 
-                    {/* Location */}
-                    <div className="mb-6">
-                      <div className="text-[10px] font-black text-brand-grey-300 uppercase tracking-[0.2em] mb-2">
-                        Miejsce
-                      </div>
-                      <p className="text-sm font-bold text-brand-grey-500">
-                        {item.location}
-                      </p>
-                    </div>
-
                     {/* Description */}
-                    <p className="text-[14px] text-brand-grey-400 mb-11 italic">
+                    <p className="text-[14px] text-brand-grey-400 mb-4 italic">
                       {item.description}
                     </p>
 
+                    {/* Location */}
+                    <p className="text-[14px] font-bold text-brand-grey-300 mb-11">
+                      {item.location}
+                    </p>
+
                     {/* Speakers */}
-                    <div className="mt-auto border-t border-brand-grey-200 pt-6">
-                      <div className="text-[9px] font-black text-brand-grey-300 uppercase tracking-[0.3em] mb-4">
+                    <div className="flex justify-between text-[14px">
+                      <div className="font-black text-brand-grey-100 uppercase mb-4">
                         PROWADZĄCY
                       </div>
                       <div className="space-y-4">
                         {item.speakers.map((speaker, sIdx) => (
-                          <div key={sIdx} className="flex flex-col text-right">
-                            <span className="text-sm font-bold text-brand-grey-500 uppercase tracking-tight">
+                          <div key={sIdx} className="flex flex-col items-start">
+                            <span className="text-brand-grey-100 tracking-tight">
                               {speaker.name}
                             </span>
-                            <span className="text-[11px] text-brand-grey-400 font-medium italic">
+                            <span className=" text-brand-grey-400">
                               {speaker.role}
                             </span>
                           </div>
