@@ -52,12 +52,12 @@ export function UnderlinedCardAdmin({
 
   return (
     <Card className="bg-transparent border-none shadow-none">
-      <CardContent className="space-y-6 p-0">
+      <CardContent className="space-y-6 p-0 w-full">
         {/* Image Selection */}
         <div className="space-y-4">
           <Label>Card Image</Label>
           {data.mediaId && selectedMedia ? (
-            <div className="relative group rounded-md overflow-hidden border max-w-xs">
+            <div className="relative group rounded-md overflow-hidden border w-full">
               <div className="aspect-video relative">
                 <Image
                   src={selectedMedia.url || ""}
@@ -86,7 +86,7 @@ export function UnderlinedCardAdmin({
               </div>
             </div>
           ) : (
-            <div className="border-2 border-dashed rounded-lg p-8 text-cente transition-colors max-w-xs">
+            <div className="border-2 border-dashed rounded-lg p-8 text-cente transition-colors w-full">
               <div className="flex flex-col items-center gap-2">
                 <div className="p-3 bg-white rounded-full shadow-sm">
                   <ImageIcon className="w-6 h-6 text-gray-400" />

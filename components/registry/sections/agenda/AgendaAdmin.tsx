@@ -209,13 +209,13 @@ function AgendaItemAdmin({
 
         {item.type === "session" && (
           <div className="space-y-3 pt-2 border-t border-zinc-800">
-            {/* Image Selection - Similar to UnderlinedCard */}
+            {/* Image Selection*/}
             <div className="space-y-2">
               <label className="text-[9px] font-bold text-zinc-500 uppercase">
                 Session Image
               </label>
               {item.mediaId && selectedMedia ? (
-                <div className="relative group/img rounded-md overflow-hidden border border-zinc-700 max-w-[200px]">
+                <div className="relative group/img rounded-md overflow-hidden border border-zinc-700 w-full">
                   <div className="aspect-video relative">
                     <Image
                       src={selectedMedia.url || ""}
