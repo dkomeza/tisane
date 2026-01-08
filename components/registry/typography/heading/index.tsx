@@ -7,11 +7,19 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
 } from "@/components/registry";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { JSX } from "react";
 import z from "zod";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 
 export type HeadingProps = {
   level: number;
@@ -44,8 +52,9 @@ function HeadingClient({
   data,
   children,
 }: BlockProps<HeadingProps> & { children?: React.ReactNode }) {
-  const { text, level, textAlign } = data;
+  const { text, textAlign } = data;
 
+  const level = data.level >= 1 && data.level <= 6 ? data.level : 1;
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
   return (
     <Tag className="text-4xl" style={{ textAlign: textAlign }}>
@@ -64,10 +73,69 @@ function HeadingAdmin({ id, useStore }: AdminBlockProps<HeadingProps>) {
   if (!block) return null;
 
   return (
-    <textarea
-      value={block.data.text}
-      onChange={(e) => updateBlock(id, { text: e.target.value })}
-    ></textarea>
+    <Card className="p-4 grid grid-cols-2">
+      <div className="space-y-2 col-span-2">
+        <label className="text-sm font-medium">Text</label>
+        <Input
+          placeholder="Heading text…"
+          value={block.data.text || ""}
+          onChange={(e) => {
+            updateBlock(id, { ...block.data, text: e.target.value });
+          }}
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Level</label>
+        <Select
+          value={`${block.data.level}`}
+          onValueChange={(value) => {
+            const level = parseInt(value, 10);
+            updateBlock(id, { ...block.data, level });
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select heading level" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1">H1</SelectItem>
+            <SelectItem value="2">H2</SelectItem>
+            <SelectItem value="3">H3</SelectItem>
+            <SelectItem value="4">H4</SelectItem>
+            <SelectItem value="5">H5</SelectItem>
+            <SelectItem value="6">H6</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="space-y-1">
+        <label className="text-sm font-medium">Alignment</label>
+        <ToggleGroup
+          type="single"
+          className="justify-start"
+          value={block.data.textAlign}
+          onValueChange={(value) => {
+            if (value) {
+              updateBlock(id, {
+                ...block.data,
+                textAlign: value as HeadingProps["textAlign"],
+              });
+            }
+          }}
+        >
+          <ToggleGroupItem value="left" variant="outline">
+            Left
+          </ToggleGroupItem>
+          <ToggleGroupItem value="center" variant="outline">
+            Center
+          </ToggleGroupItem>
+          <ToggleGroupItem value="right" variant="outline">
+            Right
+          </ToggleGroupItem>
+          <ToggleGroupItem value="justify" variant="outline">
+            Justify
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+    </Card>
   );
 }
 
