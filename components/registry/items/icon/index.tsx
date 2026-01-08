@@ -113,13 +113,16 @@ export const iconMap: Record<IconName, LucideIcon> = {
   download: Download,
 };
 
+export function IconComponent({ name, size, className }: IconProps) {
+  const LucideIcon = iconMap[name] || ArrowRight;
+  return <LucideIcon size={size} className={className} />;
+}
+
 /**
  * This is the client-side component that will be rendered in the application.
  */
 function IconClient({ data }: BlockProps<IconProps>) {
-  const IconComponent = iconMap[data.name] || ArrowRight;
-
-  return <IconComponent className="h-6" />;
+  return <IconComponent name={data.name} className="h-6" />;
 }
 
 /**

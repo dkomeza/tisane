@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  LayoutGrid,
-  List as ListIcon,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+
+import { IconComponent } from "@/components/registry/items/icon";
 import { cn } from "@/lib/utils";
 import { BlockProps } from "@/components/registry";
 import { AgendaProps } from ".";
@@ -48,7 +44,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                   : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100"
               )}
             >
-              <LayoutGrid size={16} />
+              <IconComponent name="cards" size={16} />
               <span>Standard</span>
             </button>
             <button
@@ -61,7 +57,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                   : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100"
               )}
             >
-              <ListIcon size={16} />
+              <IconComponent name="listAlt" size={16} />
               <span>Lista</span>
             </button>
           </div>
@@ -174,7 +170,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                     : "bg-brand-grey-200 text-brand-grey-400 hover:bg-brand-grey-300"
                 )}
               >
-                <ChevronLeft size={24} />
+                <IconComponent name="chevronLeft" size={24} />
               </button>
               <button
                 type="button"
@@ -187,7 +183,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                     : "bg-brand-purple-300 text-white hover:bg-brand-purple-400"
                 )}
               >
-                <ChevronRight size={24} />
+                <IconComponent name="chevronRight" size={24} />
               </button>
             </div>
           </div>
