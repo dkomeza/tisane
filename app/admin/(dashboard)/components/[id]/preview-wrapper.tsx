@@ -123,13 +123,13 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
               </TabsTrigger>
             </TabsList>
           </div>
-          <div className="flex-1 p-8 min-h-[400px] flex items-center justify-center relative">
+          <div className="flex-1 p-8 min-h-[400px] relative">
             <TabsContent value="client">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>
             <TabsContent
               value="admin"
-              className="w-xl h-3/4 overflow-hidden flex flex-col"
+              className="w-xl mx-auto flex flex-col"
             >
               <AdminComponent
                 id={block.id}

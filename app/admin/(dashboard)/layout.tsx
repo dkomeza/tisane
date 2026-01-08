@@ -18,7 +18,7 @@ export default async function AdminDashboardLayout({
   return (
     <SidebarProvider>
       <Sidebar />
-      <main className="flex flex-col py-8 px-12 w-full h-svh overflow-x-hidden">
+      <main className="flex flex-col py-8 px-12 w-full min-h-svh">
         {children}
       </main>
       <SidebarTrigger className="md:hidden fixed top-4 left-4" />
