@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { Block, CMSStore } from "./types";
+import { Block, CMSStore, DBComponent } from "./types";
 import { Draft } from "immer";
+import { nanoid } from "nanoid";
 
 const findAndUpdate = (
   node: Draft<Block> | Draft<Block>[],
@@ -37,6 +38,28 @@ export const useCMSStore = create<CMSStore>()(
     setBlocks: (blocks) =>
       set((state) => {
         state.blocks = blocks;
+      }),
+
+    build: (dbBlocks) =>
+      set((state) => {
+        state.blocks = dbBlocks as Block[];
+
+        const updateIDs = (node: Block[] | Block) => {
+          if (!node || typeof node !== "object") return;
+
+          if (Array.isArray(node)) {
+            node.forEach((item) => updateIDs(item));
+          } else {
+            node.id = nanoid(12);
+
+            for (const key in node.data) {
+              const property = node.data[key as keyof typeof node.data];
+              updateIDs(property);
+            }
+          }
+        };
+
+        updateIDs(state.blocks);
       }),
 
     updateBlock: (id, data) =>

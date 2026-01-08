@@ -29,7 +29,6 @@ import {
 import { useEffect, useState } from "react";
 import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import {
-  CMSStore,
   DBComponent,
   AdminBlockProps,
   Block,
@@ -45,7 +44,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { create } from "zustand";
 import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 import { ContentPreview } from "./ContentPreview";
@@ -270,16 +268,6 @@ function ContentForm() {
   );
 }
 
-function parseBlocks(blocks: DBComponent[]): Block[] {
-  return blocks.map((block) => {
-    const parsedBlock: Block = {
-      ...block,
-      id: nanoid(8),
-    };
-    return parsedBlock;
-  });
-}
-
 export function PageForm({
   defaultValues,
   onSubmit,
@@ -289,7 +277,7 @@ export function PageForm({
   onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
-  const { blocks, setBlocks } = useCMSStore();
+  const { blocks, setBlocks, build } = useCMSStore();
   const { broadcast } = usePreviewBroadcaster(defaultValues?.slug);
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
@@ -306,10 +294,9 @@ export function PageForm({
 
   useEffect(() => {
     if (defaultValues?.content) {
-      const parsedBlocks = parseBlocks(defaultValues.content);
-      setBlocks(parsedBlocks);
+      build(defaultValues.content);
     }
-  }, [defaultValues, setBlocks]);
+  }, [defaultValues, build]);
 
   useEffect(() => {
     form.setValue(

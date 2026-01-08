@@ -314,12 +314,17 @@ function AlignmentSelector({ editor }: { editor: Editor }) {
  */
 export function TypographyAdmin({
   id,
+  data,
   useStore,
 }: AdminBlockProps<TypographyProps>) {
   const { getBlock, updateBlock } = useStore();
   const block = getBlock(id) as Block<"typography">;
 
-  const initialContent = block?.data?.content || "<p>Hello World!</p>";
+  const initialContent =
+    block?.data?.content ||
+    '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":"left"},"content":[{"type":"text","text":"Start writing your text here..."}]}]}';
+
+  console.log(initialContent);
 
   const editor = useEditor({
     extensions: [
