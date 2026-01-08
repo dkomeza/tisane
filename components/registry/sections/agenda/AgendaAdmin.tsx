@@ -73,6 +73,7 @@ export function AgendaAdmin({ id, useStore }: AdminBlockProps<AgendaProps>) {
         </div>
 
         <button
+          type="button"
           onClick={addItem}
           className="w-full py-3 border-2 border-dashed border-zinc-800 rounded-xl text-zinc-500 hover:text-brand-purple-300 hover:border-brand-purple-300/50 transition-all text-[10px] font-black uppercase tracking-widest"
         >
@@ -126,7 +127,7 @@ function AgendaItemAdmin({
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden group">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden group w-full">
       <div className="bg-zinc-800/50 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
         <span className="text-[10px] font-black text-zinc-500 uppercase">
           Item #{index + 1} - {item.type}
@@ -229,6 +230,7 @@ function AgendaItemAdmin({
                     <MediaSelector
                       trigger={
                         <Button
+                          type="button"
                           size="icon"
                           variant="secondary"
                           className="size-6"
@@ -239,6 +241,7 @@ function AgendaItemAdmin({
                       onSelect={handleSelectMedia}
                     />
                     <Button
+                      type="button"
                       size="icon"
                       variant="destructive"
                       className="size-6"
@@ -257,6 +260,7 @@ function AgendaItemAdmin({
                     <MediaSelector
                       trigger={
                         <Button
+                          type="button"
                           variant="outline"
                           size="sm"
                           className="h-7 text-[10px] bg-zinc-900 border-zinc-700 text-zinc-400"
@@ -316,6 +320,7 @@ function AgendaItemAdmin({
                   Prowadzący
                 </label>
                 <button
+                  type="button"
                   onClick={() => {
                     const newSpeakers = [
                       ...item.speakers,

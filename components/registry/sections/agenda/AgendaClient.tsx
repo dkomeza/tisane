@@ -33,7 +33,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
   };
 
   return (
-    <section className="w-full py-20 px-4 md:px-8 overflow-hidden">
+    <section className="w-full py-10 px-4 md:px-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Toggle Switch */}
         <div className="flex justify-start mb-12">
@@ -188,78 +188,75 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
             </div>
           </div>
         ) : (
-          <div className="space-y-0 border-b border-brand-grey-300">
+          <div className="">
             {data.items.map((item, index) => (
               <div key={index}>
                 {item.type === "break" ? (
-                  <div className="w-full border-x border-t border-brand-grey-300 bg-brand-grey-200/40 py-3 text-center transition-colors hover:bg-brand-grey-200/60">
+                  <div className="w-full border-x border-t border-brand-grey-300 bg-brand-grey-200/40 py-3 text-center transition-colors">
                     <span className="text-[10px] font-black text-brand-grey-500 tracking-[0.4em] uppercase">
                       {item.breakLabel}
                     </span>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-[100px_1.5fr_1fr_1fr_1.5fr] gap-x-12 py-10 border-t border-brand-grey-300 group hover:bg-white transition-all duration-300 px-4 -mx-4">
-                    {/* Time Column with vertical line and dots */}
+                  <div className="grid grid-cols-[100px_1.5fr_1fr_1fr_1.5fr] gap-x-12 py-10 transition-all duration-300 px-4 -mx-4">
+                    {/* time and line with dots */}
                     <div className="flex flex-col items-start relative pl-6">
-                      {/* Vertical Line with Dots */}
-                      <div className="absolute left-1 top-1 bottom-1 w-[1.5px] bg-brand-grey-200">
-                        <div className="absolute -top-1 -left-[2.5px] size-[6px] rounded-full bg-brand-grey-300"></div>
-                        <div className="absolute -bottom-1 -left-[2.5px] size-[6px] rounded-full bg-brand-grey-300"></div>
-                      </div>
-
-                      <span className="text-sm font-bold text-brand-grey-400 leading-none mb-auto">
+                      <span className="text-[14px] text-brand-grey-300 leading-none mb-auto">
                         {item.startTime}
                       </span>
-                      <span className="text-sm font-bold text-brand-grey-300 leading-none mt-auto">
+                      <span className="text-[14px] text-brand-grey-300 leading-none mt-auto">
                         {item.endTime}
                       </span>
+
+                      <div className="absolute right-1 top-1 bottom-1 w-[1.5px] bg-brand-grey-200">
+                        <div className="absolute -top-1 -left-[2.5px] size-1.5 rounded-full bg-brand-grey-300"></div>
+                        <div className="absolute -bottom-1 -left-[2.5px] size-1.5 rounded-full bg-brand-grey-300"></div>
+                      </div>
                     </div>
 
                     {/* Title & Sub */}
                     <div>
-                      <h3 className="text-4xl font-bold text-brand-grey-600 mb-2 leading-tight group-hover:text-brand-purple-300 transition-colors">
+                      <h3 className="text-[26px] text-brand-grey-100 mb-1 leading-tight group-hover:text-brand-purple-300 transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-sm text-brand-grey-400 font-medium">
+                      <p className="text-[14px] text-brand-grey-400">
                         {item.subtitle}
                       </p>
                     </div>
 
                     {/* Speakers */}
-                    <div>
-                      <div className="text-[9px] font-black text-brand-grey-300 uppercase tracking-[0.2em] mb-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="text-[14px] text-brand-grey-100 tracking-[0.2em] font-medium">
                         Prowadzący
                       </div>
-                      <div className="space-y-4">
-                        {item.speakers.map((s, i) => (
-                          <div key={i}>
-                            <p className="text-xs font-bold text-brand-grey-500 uppercase">
-                              {s.name}
-                            </p>
-                            <p className="text-[10px] text-brand-grey-400 font-medium italic">
-                              {s.role}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                      {item.speakers.map((s, i) => (
+                        <div key={i}>
+                          <p className="text-brand-grey-400 font-medium mb-2">
+                            {s.name}
+                          </p>
+                          <p className="text-brand-grey-400 font-light">
+                            {s.role}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
                     {/* Location */}
                     <div>
-                      <div className="text-[9px] font-black text-brand-grey-300 uppercase tracking-[0.2em] mb-4">
+                      <div className="text-[14px] text-brand-grey-100 mb-2 font-medium">
                         Miejsce
                       </div>
-                      <p className="text-xs font-bold text-brand-grey-500">
+                      <p className="text-[14px] font-light text-brand-grey-400">
                         {item.location}
                       </p>
                     </div>
 
                     {/* Description & Tag */}
-                    <div className="relative flex flex-col pt-6">
-                      <span className="absolute top-0 right-0 text-brand-purple-200 uppercase text-[10px] font-black tracking-[0.3em]">
+                    <div className="flex flex-col text-[14px] gap-2">
+                      <span className="text-right text-brand-purple-100 uppercase font-medium">
                         {item.tag}
                       </span>
-                      <p className="text-[13px] text-brand-grey-500 leading-relaxed italic">
+                      <p className=" text-brand-grey-400 leading-relaxed italic">
                         {item.description}
                       </p>
                     </div>
