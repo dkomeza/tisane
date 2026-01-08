@@ -251,7 +251,7 @@ function AgendaItemAdmin({
                   </div>
                 </div>
               ) : (
-                <div className="border border-zinc-700 border-dashed rounded-lg p-4 text-center transition-colors max-w-[200px] bg-zinc-800/30">
+                <div className="border border-zinc-700 border-dashed rounded-lg p-4 text-center transition-colors w-full bg-zinc-800/30">
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-2 bg-zinc-800 rounded-full shadow-sm">
                       <ImageIcon className="w-4 h-4 text-zinc-500" />

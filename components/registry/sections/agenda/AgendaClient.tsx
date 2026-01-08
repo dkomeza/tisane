@@ -192,8 +192,8 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
             {data.items.map((item, index) => (
               <div key={index}>
                 {item.type === "break" ? (
-                  <div className="w-full border-x border-t border-brand-grey-300 bg-brand-grey-200/40 py-3 text-center transition-colors">
-                    <span className="text-[10px] font-black text-brand-grey-500 tracking-[0.4em] uppercase">
+                  <div className="w-full border border-brand-grey-500py-3 text-center transition-colors">
+                    <span className="text-xs font-black text-brand-grey-500 uppercase">
                       {item.breakLabel}
                     </span>
                   </div>

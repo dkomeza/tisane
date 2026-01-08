@@ -12,6 +12,7 @@ import { Paragraph } from "@/components/registry/typography/paragraph";
 import { Span } from "@/components/registry/typography/span";
 import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
+import { BorderedContainer } from "@/components/registry/sections/bordered-container";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -52,6 +53,7 @@ export const COMPONENT_REGISTRY = {
   [Span.id]: Span,
   [Icon.id]: Icon,
   [Agenda.id]: Agenda,
+  [BorderedContainer.id]: BorderedContainer,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -90,6 +92,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     componentIds: [
       Hero.id,
       Agenda.id,
+      BorderedContainer.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
