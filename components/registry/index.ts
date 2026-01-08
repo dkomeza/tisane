@@ -8,6 +8,7 @@ import { Column } from "@/components/registry/layout/column";
 import { ImageComponent } from "@/components/registry/items/image";
 import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
 import { Icon } from "@/components/registry/items/icon";
+import { Agenda } from "@/components/registry/sections/agenda";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -44,6 +45,7 @@ export const COMPONENT_REGISTRY = {
   [ImageComponent.id]: ImageComponent,
   [UnderlinedCard.id]: UnderlinedCard,
   [Icon.id]: Icon,
+  [Agenda.id]: Agenda,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -81,6 +83,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Sections",
     componentIds: [
       Hero.id,
+      Agenda.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
