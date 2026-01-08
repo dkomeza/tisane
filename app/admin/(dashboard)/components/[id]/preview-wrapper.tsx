@@ -129,7 +129,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
             </TabsContent>
             <TabsContent
               value="admin"
-              className="w-xl h-3/4 overflow-hidden flex flex-col"
+              className="w-xl overflow-hidden flex flex-col"
             >
               <AdminComponent
                 id={block.id}
