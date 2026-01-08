@@ -37,7 +37,7 @@ export const Column: CMSComponent<"column", ColumnProps> = {
     align: z
       .enum(["start", "end", "center", "stretch", "baseline"])
       .default("stretch"),
-    wrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("wrap"),
+    wrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("nowrap"),
     gap: z.number().min(0).max(12).default(4),
     children: z.array(z.lazy(() => DBComponentSchema)).optional(),
   }),
