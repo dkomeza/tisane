@@ -1,12 +1,15 @@
 import { ButtonComponent } from "./elements/button";
 import z from "zod";
 
-import { Heading } from "./typography/Typography";
 import { Hero } from "./sections/Hero";
 import { Row } from "@/components/registry/layout/row";
+import { Typography } from "@/components/registry/typography/typography";
 import { Column } from "@/components/registry/layout/column";
 import { ImageComponent } from "@/components/registry/items/image";
 import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
+import { Heading } from "@/components/registry/typography/heading";
+import { Paragraph } from "@/components/registry/typography/paragraph";
+import { Span } from "@/components/registry/typography/span";
 import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
 // -- PLOP IMPORTS HERE --
@@ -38,12 +41,15 @@ export const DBComponentsArraySchema = z.array(DBComponentSchema);
  */
 export const COMPONENT_REGISTRY = {
   [ButtonComponent.id]: ButtonComponent,
-  [Heading.id]: Heading,
   [Hero.id]: Hero,
+  [Typography.id]: Typography,
   [Row.id]: Row,
   [Column.id]: Column,
   [ImageComponent.id]: ImageComponent,
   [UnderlinedCard.id]: UnderlinedCard,
+  [Heading.id]: Heading,
+  [Paragraph.id]: Paragraph,
+  [Span.id]: Span,
   [Icon.id]: Icon,
   [Agenda.id]: Agenda,
   // -- PLOP REGISTRY HERE --
@@ -92,7 +98,10 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     id: "typography",
     label: "Typography",
     componentIds: [
+      Typography.id,
       Heading.id,
+      Paragraph.id,
+      Span.id,
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },
