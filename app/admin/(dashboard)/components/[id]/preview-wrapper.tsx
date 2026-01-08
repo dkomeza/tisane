@@ -48,15 +48,19 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   type TABS = "client" | "admin";
   const [activeTab, setActiveTab] = useState<TABS>(defaultTab as TABS);
 
+  const isStale = blocks.length === 0 || blocks[0]?.type !== componentType;
+
   useEffect(() => {
+    if (!isStale) return;
+
     const initialBlock: DBComponent<T> = {
       type: componentType,
       data: { ...component.Schema.parse({}) } as Block<T>["data"],
     };
     build([initialBlock]);
-  }, [componentType, build, component.Schema]);
+  }, [componentType, build, isStale]);
 
-  if (!component || blocks.length === 0) return null;
+  if (!component || isStale) return null;
   const block = blocks[0] as Block<T>;
 
   const ClientComponent = component.ClientComponent as React.FC<

@@ -68,30 +68,34 @@ export const BorderedContainer: CMSComponent<
  */
 function BorderedContainerClient({ data }: BlockProps<BorderedContainerProps>) {
   return (
-    <table className="">
-      <tr>
-        <th className="pr-8 border-b border-brand-purple-400 pb-2 text-nowrap">
-          <Heading.ClientComponent id="heading" data={data.heading.data} />
-        </th>
-        <th className="border-b border-brand-purple-400 pb-2 hidden md:table-cell"></th>
-      </tr>
-      <tr>
-        <td className="hidden md:table-cell"></td>
-        <td className="pt-8">
-          <div className="flex flex-col gap-6 md:gap-8">
-            <Typography.ClientComponent
-              id="typography"
-              data={data.typography.data}
-            />
-            <div className="self-end">
-              <ButtonComponent.ClientComponent
-                id="button"
-                data={data.button.data}
+    <table>
+      <thead>
+        <tr>
+          <th className="pr-8 border-b border-brand-purple-400 pb-2 text-nowrap">
+            <Heading.ClientComponent id="heading" data={data.heading.data} />
+          </th>
+          <th className="border-b border-brand-purple-400 pb-2 hidden md:table-cell"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="hidden md:table-cell"></td>
+          <td className="pt-8">
+            <div className="flex flex-col gap-6 md:gap-8">
+              <Typography.ClientComponent
+                id="typography"
+                data={data.typography.data}
               />
+              <div className="self-end">
+                <ButtonComponent.ClientComponent
+                  id="button"
+                  data={data.button.data}
+                />
+              </div>
             </div>
-          </div>
-        </td>
-      </tr>
+          </td>
+        </tr>
+      </tbody>
     </table>
   );
 }
