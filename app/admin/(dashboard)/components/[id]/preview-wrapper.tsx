@@ -10,6 +10,7 @@ import {
   Block,
   BlockProps,
   AdminBlockProps,
+  DBComponent,
 } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -42,19 +43,18 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   const router = useRouter();
 
   const defaultTab = searchParams.get("tab") || "client";
-  const { blocks, setBlocks } = useCMSStore();
+  const { blocks, build } = useCMSStore();
 
   type TABS = "client" | "admin";
   const [activeTab, setActiveTab] = useState<TABS>(defaultTab as TABS);
 
   useEffect(() => {
-    const initialBlock: Block<T> = {
-      id: nanoid(8),
+    const initialBlock: DBComponent<T> = {
       type: componentType,
       data: { ...component.Schema.parse({}) } as Block<T>["data"],
     };
-    setBlocks([initialBlock]);
-  }, [componentType, setBlocks, component.Schema]);
+    build([initialBlock]);
+  }, [componentType, build, component.Schema]);
 
   if (!component || blocks.length === 0) return null;
   const block = blocks[0] as Block<T>;
