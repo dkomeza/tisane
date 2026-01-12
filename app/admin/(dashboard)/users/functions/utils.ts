@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function extractInviteToken(id: string) {
   const verification = await prisma.verification.findFirst({
     where: {
-      identifier: `invite-user:${id}`,
+      value: id,
       expiresAt: {
         gt: new Date(),
       },
