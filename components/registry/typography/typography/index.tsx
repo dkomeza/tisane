@@ -99,7 +99,6 @@ function RenderHeading(props: { block: unknown }) {
   }
 
   return (
-    // @ts-expect-error TS2322
     <Heading.ClientComponent id="heading" data={parse.data}>
       {Array.isArray(block.content)
         ? block.content.map((child, index: number) => (
@@ -137,7 +136,6 @@ function RenderParagraph(props: { block: unknown }) {
   }
 
   return (
-    // @ts-expect-error TS2322
     <Paragraph.ClientComponent id="paragraph" data={parse.data}>
       {Array.isArray(block.content)
         ? block.content.map((child, index: number) => (
