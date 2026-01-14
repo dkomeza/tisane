@@ -9,6 +9,7 @@ import { ComponentRegistry, ComponentType } from ".";
 export type CMSStore = {
   blocks: Block[];
   setBlocks: (blocks: Block[]) => void;
+  build: (dbBlocks: DBComponent[]) => void;
   updateBlock: <T extends ComponentType>(
     id: string,
     data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>
@@ -17,16 +18,6 @@ export type CMSStore = {
   removeBlock: (id: string) => void;
   getBlock: (id: string) => Block | null;
 };
-
-/** DataStore defines the helper interface to allow nested stores */
-export interface DataStore {
-  addBlock: (block: Block) => void;
-  updateBlock: <T extends ComponentType>(
-    id: string,
-    data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>
-  ) => void;
-  removeBlock: (id: string) => void;
-}
 
 type ZustandStore = UseBoundStore<StoreApi<CMSStore>>;
 
