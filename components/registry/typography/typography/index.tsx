@@ -32,7 +32,6 @@ export const Typography = {
 } as CMSComponent<"typography", TypographyProps>;
 
 function RenderSpan(props: { block: unknown }) {
-  console.log(props.block);
   if (
     !props.block ||
     typeof props.block !== "object" ||

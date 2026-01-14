@@ -329,8 +329,6 @@ export function TypographyAdmin({
     block?.data?.content ||
     '{"type":"doc","content":[{"type":"paragraph","attrs":{"textAlign":"left"},"content":[{"type":"text","text":"Start writing your text here..."}]}]}';
 
-  console.log(initialContent);
-
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
