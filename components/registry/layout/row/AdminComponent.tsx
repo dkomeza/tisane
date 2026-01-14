@@ -63,7 +63,7 @@ export default function RowAdminVisual({
   const data = block.data;
 
   return (
-    <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm overflow-hidden mb-4">
+    <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm mb-4">
       {/* Header */}
       <div className="p-3 border-b bg-muted/30 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -247,7 +247,10 @@ export default function RowAdminVisual({
             {/* Add Button */}
             <Popover>
               <PopoverTrigger asChild>
-                <button className="w-12 h-12 shrink-0 border-2 border-dashed rounded-lg flex items-center justify-center hover:border-primary/50 hover:bg-primary/5 transition-all">
+                <button
+                  type="button"
+                  className="w-12 h-12 shrink-0 border-2 border-dashed rounded-lg flex items-center justify-center hover:border-primary/50 hover:bg-primary/5 transition-all"
+                >
                   <Plus className="w-5 h-5 text-muted-foreground" />
                 </button>
               </PopoverTrigger>

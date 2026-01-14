@@ -10,6 +10,7 @@ import {
   Block,
   BlockProps,
   AdminBlockProps,
+  DBComponent,
 } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -42,21 +43,24 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   const router = useRouter();
 
   const defaultTab = searchParams.get("tab") || "client";
-  const { blocks, setBlocks } = useCMSStore();
+  const { blocks, build } = useCMSStore();
 
   type TABS = "client" | "admin";
   const [activeTab, setActiveTab] = useState<TABS>(defaultTab as TABS);
 
+  const isStale = blocks.length === 0 || blocks[0]?.type !== componentType;
+
   useEffect(() => {
-    const initialBlock: Block<T> = {
-      id: nanoid(8),
+    if (!isStale) return;
+
+    const initialBlock: DBComponent<T> = {
       type: componentType,
       data: { ...component.Schema.parse({}) } as Block<T>["data"],
     };
-    setBlocks([initialBlock]);
-  }, [componentType, setBlocks, component.Schema]);
+    build([initialBlock]);
+  }, [componentType, build, isStale]);
 
-  if (!component || blocks.length === 0) return null;
+  if (!component || isStale) return null;
   const block = blocks[0] as Block<T>;
 
   const ClientComponent = component.ClientComponent as React.FC<
@@ -123,7 +127,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
               </TabsTrigger>
             </TabsList>
           </div>
-          <div className="flex-1 p-8 min-h-[400px] flex items-center justify-center relative">
+          <div className="flex-1 p-8 min-h-[400px] flex justify-center items-center relative">
             <TabsContent value="client">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>

@@ -52,33 +52,32 @@ export function AgendaAdmin({ id, useStore }: AdminBlockProps<AgendaProps>) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center px-1">
-          <label className="text-xs font-black text-zinc-500 uppercase tracking-widest">
-            Agenda Items ({block.data.items.length})
-          </label>
-        </div>
-
-        <div className="space-y-3">
-          {block.data.items.map((item, index) => (
-            <AgendaItemAdmin
-              key={index}
-              item={item}
-              index={index}
-              onUpdate={(updates) => updateItem(index, updates)}
-              onRemove={() => removeItem(index)}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={addItem}
-          className="w-full py-3 border-2 border-dashed border-zinc-800 rounded-xl text-zinc-500 hover:text-brand-purple-300 hover:border-brand-purple-300/50 transition-all text-[10px] font-black uppercase tracking-widest"
-        >
-          + Add New Agenda Entry
-        </button>
+    <div className="space-y-4 overflow-visible">
+      <div className="flex flex-col px-1">
+        <label className="text-xs font-black text-zinc-500 uppercase tracking-widest">
+          Agenda Items ({block.data.items.length})
+        </label>
       </div>
+
+      <div>
+        {block.data.items.map((item, index) => (
+          <AgendaItemAdmin
+            key={index}
+            item={item}
+            index={index}
+            onUpdate={(updates) => updateItem(index, updates)}
+            onRemove={() => removeItem(index)}
+          />
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={addItem}
+        className="w-full py-3 border-2 border-dashed border-zinc-800 rounded-xl text-zinc-500 hover:text-brand-purple-300 hover:border-brand-purple-300/50 transition-all text-[10px] font-black uppercase"
+      >
+        + Add New Agenda Entry
+      </button>
     </div>
   );
 }
@@ -126,12 +125,13 @@ function AgendaItemAdmin({
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden group">
-      <div className="bg-zinc-800/50 px-4 py-2 flex justify-between items-center border-b border-zinc-800">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl mb-6">
+      <div className="bg-zinc-800/50 px-4 py-2 border-b border-zinc-800 flex justify-between items-center">
         <span className="text-[10px] font-black text-zinc-500 uppercase">
           Item #{index + 1} - {item.type}
         </span>
         <button
+          type="button"
           onClick={onRemove}
           className="text-zinc-600 hover:text-red-500 transition-colors"
         >
@@ -209,13 +209,13 @@ function AgendaItemAdmin({
 
         {item.type === "session" && (
           <div className="space-y-3 pt-2 border-t border-zinc-800">
-            {/* Image Selection - Similar to UnderlinedCard */}
+            {/* Image Selection*/}
             <div className="space-y-2">
               <label className="text-[9px] font-bold text-zinc-500 uppercase">
                 Session Image
               </label>
               {item.mediaId && selectedMedia ? (
-                <div className="relative group/img rounded-md overflow-hidden border border-zinc-700 max-w-[200px]">
+                <div className="relative group/img rounded-md overflow-hidden border border-zinc-700 w-full">
                   <div className="aspect-video relative">
                     <Image
                       src={selectedMedia.url || ""}
@@ -229,6 +229,7 @@ function AgendaItemAdmin({
                     <MediaSelector
                       trigger={
                         <Button
+                          type="button"
                           size="icon"
                           variant="secondary"
                           className="size-6"
@@ -239,6 +240,7 @@ function AgendaItemAdmin({
                       onSelect={handleSelectMedia}
                     />
                     <Button
+                      type="button"
                       size="icon"
                       variant="destructive"
                       className="size-6"
@@ -249,7 +251,7 @@ function AgendaItemAdmin({
                   </div>
                 </div>
               ) : (
-                <div className="border border-zinc-700 border-dashed rounded-lg p-4 text-center transition-colors max-w-[200px] bg-zinc-800/30">
+                <div className="border border-zinc-700 border-dashed rounded-lg p-4 text-center transition-colors w-full bg-zinc-800/30">
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-2 bg-zinc-800 rounded-full shadow-sm">
                       <ImageIcon className="w-4 h-4 text-zinc-500" />
@@ -257,6 +259,7 @@ function AgendaItemAdmin({
                     <MediaSelector
                       trigger={
                         <Button
+                          type="button"
                           variant="outline"
                           size="sm"
                           className="h-7 text-[10px] bg-zinc-900 border-zinc-700 text-zinc-400"
@@ -316,6 +319,7 @@ function AgendaItemAdmin({
                   Prowadzący
                 </label>
                 <button
+                  type="button"
                   onClick={() => {
                     const newSpeakers = [
                       ...item.speakers,
@@ -336,6 +340,7 @@ function AgendaItemAdmin({
                     className="bg-zinc-800/50 p-3 rounded-lg border border-zinc-700 space-y-2 relative group/speaker"
                   >
                     <button
+                      type="button"
                       onClick={() => {
                         const newSpeakers = [...item.speakers];
                         newSpeakers.splice(sIdx, 1);

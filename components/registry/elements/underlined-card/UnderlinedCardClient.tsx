@@ -20,7 +20,7 @@ export function UnderlinedCardClient({
         {data.mediaId ? (
           <ImageClient data={{ mediaId: data.mediaId }} id={`${id}-image`} />
         ) : (
-          <div className=" h-48 bg-gray-200 flex items-center justify-center text-gray-400">
+          <div className="w-full flex items-center justify-center text-gray-400 border border-dashed border-gray-600 p-20">
             No Image
           </div>
         )}

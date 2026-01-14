@@ -33,8 +33,7 @@ import {
   AdminBlockProps,
   Block,
 } from "@/components/registry/types";
-import { Tabs, TabsTrigger } from "@/components/ui/tabs";
-import { TabsContent, TabsList } from "@radix-ui/react-tabs";
+import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
@@ -187,7 +186,7 @@ function ContentForm() {
   const { blocks, addBlock } = useCMSStore();
 
   return (
-    <ScrollArea className="flex-1 flex p-6">
+    <div className="flex-1 flex p-6">
       <div className="flex-1 flex flex-col gap-4">
         {blocks.map((block) => {
           const component = COMPONENT_REGISTRY[block.type];
@@ -264,7 +263,7 @@ function ContentForm() {
           </PopoverContent>
         </Popover>
       </div>
-    </ScrollArea>
+    </div>
   );
 }
 
@@ -322,13 +321,13 @@ export function PageForm({
           }, 100);
         }
       }}
-      className="flex-1 overflow-hidden"
+      className="w-full"
     >
-      <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-0">
+      <Card className="w-full border-muted/60 bg-card/50 backdrop-blur-sm flex flex-col shadow-sm p-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-1 flex-col overflow-hidden"
+            className="flex flex-col"
           >
             <div className="border-b border-border/50 bg-muted/20 py-3 px-6 flex items-center justify-between">
               <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
@@ -350,24 +349,16 @@ export function PageForm({
                 {isSubmitting ? "Saving..." : "Save Page"}
               </Button>
             </div>
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex flex-col">
               <TabsContent value="metadata" className="p-6">
                 <MatadataForm form={form} />
               </TabsContent>
-              <TabsContent
-                value="content"
-                className="flex flex-1  overflow-hidden"
-              >
+              <TabsContent value="content" className="flex">
                 <ContentForm />
               </TabsContent>
-              <div
-                className={cn(
-                  "p-6 flex-1 outline-none overflow-hidden",
-                  activeTab === "preview" ? "flex" : "hidden"
-                )}
-              >
+              <TabsContent value="preview" className="p-6 outline-none">
                 <ContentPreview slug={defaultValues?.slug} />
-              </div>
+              </TabsContent>
             </div>
           </form>
         </Form>

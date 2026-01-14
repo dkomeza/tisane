@@ -199,27 +199,27 @@ function ColorSelector({ editor }: { editor: Editor }) {
     values: number[];
     primary: number;
   }[] = [
-    {
-      name: "Orange",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Pink",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Purple",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Grey",
-      values: [100, 200, 300, 400, 500, 600],
-      primary: 5,
-    },
-  ];
+      {
+        name: "Orange",
+        values: [100, 200, 300, 400, 500],
+        primary: 3,
+      },
+      {
+        name: "Pink",
+        values: [100, 200, 300, 400, 500],
+        primary: 3,
+      },
+      {
+        name: "Purple",
+        values: [100, 200, 300, 400, 500],
+        primary: 3,
+      },
+      {
+        name: "Grey",
+        values: [100, 200, 300, 400, 500, 600],
+        primary: 5,
+      },
+    ];
 
   return (
     <div className="flex item-center gap-2">
@@ -227,6 +227,7 @@ function ColorSelector({ editor }: { editor: Editor }) {
         <Popover key={colorGroup.name}>
           <PopoverTrigger asChild>
             <button
+              type="button"
               key={colorGroup.name}
               className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
               style={{
@@ -243,6 +244,7 @@ function ColorSelector({ editor }: { editor: Editor }) {
             <div className="grid grid-cols-3 gap-2 p-2">
               {colorGroup.values.map((variant) => (
                 <button
+                  type="button"
                   key={variant}
                   className="w-6 h-6 rounded-full border-2 border-border"
                   style={{
@@ -257,7 +259,10 @@ function ColorSelector({ editor }: { editor: Editor }) {
           </PopoverContent>
         </Popover>
       ))}
-      <button className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group">
+      <button
+        type="button"
+        className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
+      >
         <ChevronDownIcon className="mt-0.5 size-4" />
       </button>
     </div>
