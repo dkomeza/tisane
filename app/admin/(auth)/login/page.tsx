@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/auth/client";
@@ -23,6 +23,14 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEmail("");
+    setPassword("");
+    setLoading(false);
+    setError(null);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

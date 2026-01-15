@@ -9,7 +9,7 @@ export default async function AdminDashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { authorized } = await authorize();
+  const { authorized, session } = await authorize();
 
   if (!authorized) {
     redirect("/admin/login");
@@ -17,7 +17,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <SidebarProvider>
-      <Sidebar />
+      <Sidebar user={session.user} />
       <main className="flex flex-col py-8 px-12 w-full min-h-svh">
         {children}
       </main>
