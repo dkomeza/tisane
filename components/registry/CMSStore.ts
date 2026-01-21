@@ -42,7 +42,7 @@ export const useCMSStore = create<CMSStore>()(
 
     build: (dbBlocks) =>
       set((state) => {
-        state.blocks = dbBlocks as Block[];
+        const writableBlocks = structuredClone(dbBlocks) as Block[];
 
         const updateIDs = (node: Block[] | Block) => {
           if (!node || typeof node !== "object") return;
@@ -52,14 +52,17 @@ export const useCMSStore = create<CMSStore>()(
           } else {
             node.id = nanoid(12);
 
-            for (const key in node.data) {
-              const property = node.data[key as keyof typeof node.data];
-              updateIDs(property);
+            if (node.data) {
+              for (const key in node.data) {
+                const property = node.data[key as keyof typeof node.data];
+                updateIDs(property as Block | Block[]);
+              }
             }
           }
         };
 
-        updateIDs(state.blocks);
+        updateIDs(writableBlocks);
+        state.blocks = writableBlocks;
       }),
 
     updateBlock: (id, data) =>

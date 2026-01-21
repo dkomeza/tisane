@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
 import { PageContentRenderer } from "./PageContentRenderer";
+import { Menu } from "@/components/Menu";
 
 interface PageProps {
   params: Promise<{
@@ -63,5 +64,10 @@ export default async function CMSPage({ params }: PageProps) {
     }
   }
 
-  return <PageContentRenderer blocks={page.content} />;
+  return (
+    <>
+      <Menu slug={"main-menu"} />
+      <PageContentRenderer blocks={page.content} />
+    </>
+  );
 }
