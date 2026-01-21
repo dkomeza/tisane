@@ -357,6 +357,7 @@
 
 ## CMS Component Registry
  - Set up CMS component registry ~ 16 hours (Dawid)
+ - Create a page to preview all CMS components ~ 4 hours (Dawid)
  - Typography components (Typography, Heading, Paragraph, Span) ~ 12 hours (Dawid)
  - CMS Link component ~ 4 hours (Dawid)
  - Hero section ~ 2 hours (Dawid)
