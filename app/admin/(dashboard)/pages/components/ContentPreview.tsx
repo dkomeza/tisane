@@ -134,9 +134,10 @@ export function ContentPreview({ slug, className }: ContentPreviewProps) {
     };
 
     const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(containerRef.current);
+    // resizeObserver.observe(containerRef.current);
 
     window.addEventListener("resize", handleResize);
+    // recomputeSize();
 
     return () => {
       resizeObserver.disconnect();
@@ -145,7 +146,7 @@ export function ContentPreview({ slug, className }: ContentPreviewProps) {
   }, []);
 
   return (
-    <div className={cn("flex flex-col h-full w-full gap-4", className)}>
+    <div className={cn("flex flex-col h-full w-full gap-4 flex-1", className)}>
       <Card className="p-2 flex items-center justify-between bg-muted/40 w-full">
         <div className="flex items-center gap-2">
           <TooltipProvider>

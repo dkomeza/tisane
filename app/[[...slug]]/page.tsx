@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { getCachedPageBySlug } from "@/lib/pages/lookup-service"; // Update path to your service
+import { getCachedPageBySlug } from "@/lib/pages/lookup-service";
 import { Metadata } from "next";
 import { authorize } from "@/lib/auth/authorize";
 import { hasPermission } from "@/lib/permissions";
-import { PageContentRenderer } from "@/components/cms/PageContentRenderer";
+import { PageContentRenderer } from "./PageContentRenderer";
 
 interface PageProps {
   params: Promise<{

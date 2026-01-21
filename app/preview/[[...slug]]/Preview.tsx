@@ -1,6 +1,6 @@
 "use client";
 
-import { PageContentRenderer } from "@/components/cms/PageContentRenderer";
+import { PageContentRenderer } from "@/app/[[...slug]]/PageContentRenderer";
 import { usePreviewReceiver } from "@/hooks/use-preview-sync";
 import { Loader2 } from "lucide-react";
 

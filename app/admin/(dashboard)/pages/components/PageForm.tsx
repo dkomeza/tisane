@@ -276,7 +276,7 @@ export function PageForm({
   onSubmit: (data: CreatePageRequest) => void;
   isSubmitting?: boolean;
 }) {
-  const { blocks, setBlocks, build } = useCMSStore();
+  const { blocks, build } = useCMSStore();
   const { broadcast } = usePreviewBroadcaster(defaultValues?.slug);
   const form = useForm<CreatePageRequest>({
     resolver: zodResolver(CreatePageSchema) as Resolver<CreatePageRequest>,
@@ -321,13 +321,13 @@ export function PageForm({
           }, 100);
         }
       }}
-      className="w-full"
+      className="w-full flex-1 overflow-hidden"
     >
-      <Card className="w-full border-muted/60 bg-card/50 backdrop-blur-sm flex flex-col shadow-sm p-0">
+      <Card className="flex-1 w-full border-muted/60 bg-card/50 backdrop-blur-sm flex flex-col shadow-sm p-0">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col"
+            className="flex-1 flex flex-col"
           >
             <div className="border-b border-border/50 bg-muted/20 py-3 px-6 flex items-center justify-between">
               <TabsList className="flex p-1 bg-muted rounded-lg w-fit">
@@ -349,7 +349,7 @@ export function PageForm({
                 {isSubmitting ? "Saving..." : "Save Page"}
               </Button>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1">
               <TabsContent value="metadata" className="p-6">
                 <MatadataForm form={form} />
               </TabsContent>

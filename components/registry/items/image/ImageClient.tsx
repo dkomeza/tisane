@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getMedia } from "@/app/actions/media/view-action";
 import Image from "next/image";
 import { ImageProps } from ".";
