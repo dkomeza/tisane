@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { hasPermission } from "@/lib/permissions";
 import { authorize } from "@/lib/auth/authorize";
 import {
@@ -8,10 +10,10 @@ import {
   CreateMenuResponse,
 } from "@/lib/schemas/MenusSchema";
 import prisma from "@/lib/prisma";
-import { preprocess } from "@/components/registry";
+import { DBComponent, preprocess } from "@/components/registry";
 
 export async function createMenu(
-  request: CreateMenuRequest
+  request: CreateMenuRequest,
 ): Promise<CreateMenuResponse> {
   const { session } = await authorize();
 
@@ -28,7 +30,7 @@ export async function createMenu(
 
     const { title, slug, content } = parse.data;
 
-    const menu = await (prisma as any).menu.create({
+    const menu = await prisma.menu.create({
       data: {
         title,
         slug,
@@ -36,11 +38,13 @@ export async function createMenu(
       },
     });
 
-    if (menu.content) {
-      menu.content = preprocess(menu.content);
-    }
+    const res = {
+      ...menu,
+      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+    };
 
-    return { success: true, data: { menu } };
+    revalidatePath("/admin/menus");
+    return { success: true, data: { menu: res } };
   } catch (error) {
     return {
       success: false,

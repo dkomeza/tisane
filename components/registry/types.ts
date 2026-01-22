@@ -12,9 +12,16 @@ export type CMSStore = {
   build: (dbBlocks: DBComponent[]) => void;
   updateBlock: <T extends ComponentType>(
     id: string,
-    data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>
+    data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>,
   ) => void;
   addBlock: (block: Block, parentId?: string, propertyName?: string) => void;
+  moveBlock: (
+    parentId: string,
+    fromKey: string,
+    toKey: string,
+    itemId: string,
+    overId: string | null,
+  ) => void;
   removeBlock: (id: string) => void;
   getBlock: (id: string) => Block | null;
 };

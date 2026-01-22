@@ -18,7 +18,6 @@ export default function CreateMenuPage() {
       if (res.success) {
         toast.success("Menu created successfully");
         router.push("/admin/menus");
-        router.refresh();
       } else {
         toast.error(res.error || "Failed to create menu");
       }

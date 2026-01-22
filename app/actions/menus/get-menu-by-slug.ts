@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { GetMenuResponse } from "@/lib/schemas/MenusSchema";
-import { preprocess } from "@/components/registry";
+import { DBComponent, preprocess } from "@/components/registry";
 
 export async function getMenuBySlug(slug: string): Promise<GetMenuResponse> {
   try {
@@ -14,13 +14,12 @@ export async function getMenuBySlug(slug: string): Promise<GetMenuResponse> {
       return { success: false, error: "Menu not found" };
     }
 
-    if (menu.content) {
-      menu.content = preprocess(menu.content);
-    } else {
-      menu.content = [];
-    }
+    const res = {
+      ...menu,
+      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+    };
 
-    return { success: true, data: { menu } };
+    return { success: true, data: { menu: res } };
   } catch (error) {
     return {
       success: false,

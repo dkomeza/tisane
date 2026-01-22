@@ -3,7 +3,6 @@ import {
   COMPONENT_REGISTRY,
   ReactClientComponent,
 } from "@/components/registry";
-import { BlockProps } from "@/components/registry";
 
 export async function Menu({
   slug,
@@ -20,26 +19,12 @@ export async function Menu({
   }
 
   const { menu } = res.data;
+  const Component = COMPONENT_REGISTRY[menu.content.type]
+    .ClientComponent as ReactClientComponent<typeof menu.content.data>;
 
   return (
     <nav className={className}>
-      <ul className="flex gap-4 items-center">
-        {menu.content.map((block, i) => {
-          const ComponentConfig = COMPONENT_REGISTRY[block.type];
-          if (!ComponentConfig) return null;
-
-          const Component =
-            ComponentConfig.ClientComponent as ReactClientComponent<
-              typeof block.data
-            >;
-
-          return (
-            <li key={i}>
-              <Component id={`menu-${i}`} data={block.data} />
-            </li>
-          );
-        })}
-      </ul>
+      <Component id={menu.id} data={menu.content.data} />
     </nav>
   );
 }

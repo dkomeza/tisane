@@ -8,10 +8,10 @@ import {
   GetMenuResponse,
 } from "@/lib/schemas/MenusSchema";
 import prisma from "@/lib/prisma";
-import { preprocess } from "@/components/registry";
+import { DBComponent, preprocess } from "@/components/registry";
 
 export async function getMenu(
-  request: GetMenuRequest
+  request: GetMenuRequest,
 ): Promise<GetMenuResponse> {
   const { session } = await authorize();
 
@@ -28,7 +28,7 @@ export async function getMenu(
 
     const { menuId } = parse.data;
 
-    const menu = await (prisma as any).menu.findUnique({
+    const menu = await prisma.menu.findUnique({
       where: { id: menuId },
     });
 
@@ -36,13 +36,12 @@ export async function getMenu(
       return { success: false, error: "Menu not found" };
     }
 
-    if (menu.content) {
-      menu.content = preprocess(menu.content);
-    } else {
-      menu.content = [];
-    }
+    const res = {
+      ...menu,
+      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+    };
 
-    return { success: true, data: { menu } };
+    return { success: true, data: { menu: res } };
   } catch (error) {
     return {
       success: false,

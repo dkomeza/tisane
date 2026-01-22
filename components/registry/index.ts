@@ -14,6 +14,7 @@ import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
 import { CmsLink } from "@/components/registry/elements/cms-link";
+import { Menu } from "@/components/registry/layout/menu";
 // -- PLOP IMPORTS HERE --
 
 import { DBComponent, RegistryCategory } from "./types";
@@ -56,6 +57,7 @@ export const COMPONENT_REGISTRY = {
   [Agenda.id]: Agenda,
   [BorderedContainer.id]: BorderedContainer,
   [CmsLink.id]: CmsLink,
+  [Menu.id]: Menu,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -85,6 +87,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     componentIds: [
       Row.id,
       Column.id,
+      Menu.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
@@ -127,14 +130,21 @@ export function preprocess(data: unknown): DBComponent[] {
       return DBComponentsArraySchema.parse(parsed);
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Error processing page content"
+        error instanceof Error
+          ? error.message
+          : "Error processing page content",
       );
     }
   }
 
-  if (typeof data === "object" && Array.isArray(data)) {
-    return DBComponentsArraySchema.parse(data);
+  if (typeof data === "object") {
+    if (Array.isArray(data)) {
+      return DBComponentsArraySchema.parse(data);
+    } else {
+      return DBComponentsArraySchema.parse([data]);
+    }
   }
 
+  console.error("Invalid data format for page content:", data);
   throw new Error("Invalid data format for page content");
 }

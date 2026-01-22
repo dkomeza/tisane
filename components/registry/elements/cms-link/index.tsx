@@ -38,7 +38,7 @@ export const CmsLink: CMSComponent<"cms-link", CmsLinkProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function CmsLinkClient({ data }: BlockProps<CmsLinkProps>) {
+export function CmsLinkClient({ data }: BlockProps<CmsLinkProps>) {
   const href = data.url || "#";
   const target = data.newTab ? "_blank" : undefined;
   const rel = data.newTab ? "noopener noreferrer" : undefined;

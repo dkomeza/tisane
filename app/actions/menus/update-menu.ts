@@ -8,10 +8,10 @@ import {
   UpdateMenuResponse,
 } from "@/lib/schemas/MenusSchema";
 import prisma from "@/lib/prisma";
-import { preprocess } from "@/components/registry";
+import { DBComponent, preprocess } from "@/components/registry";
 
 export async function updateMenu(
-  request: UpdateMenuRequest
+  request: UpdateMenuRequest,
 ): Promise<UpdateMenuResponse> {
   const { session } = await authorize();
 
@@ -28,7 +28,7 @@ export async function updateMenu(
 
     const { menuId, title, slug, content } = parse.data;
 
-    const menu = await (prisma as any).menu.update({
+    const menu = await prisma.menu.update({
       where: { id: menuId },
       data: {
         title,
@@ -37,11 +37,12 @@ export async function updateMenu(
       },
     });
 
-    if (menu.content) {
-      menu.content = preprocess(menu.content);
-    }
+    const res = {
+      ...menu,
+      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+    };
 
-    return { success: true, data: { menu } };
+    return { success: true, data: { menu: res } };
   } catch (error) {
     return {
       success: false,

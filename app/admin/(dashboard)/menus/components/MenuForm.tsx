@@ -15,23 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useEffect, useState } from "react";
-import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
-import {
-  DBComponent,
-  AdminBlockProps,
-  Block,
-} from "@/components/registry/types";
+import { COMPONENT_REGISTRY } from "@/components/registry";
+import { ReactAdminComponent } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
-import { PlusCircle } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { nanoid } from "nanoid";
 import { useCMSStore } from "@/components/registry/CMSStore";
-import { toast } from "sonner";
 
 const slugify = (text: string) =>
   text
@@ -43,96 +30,18 @@ const slugify = (text: string) =>
     .replace(/\-\-+/g, "-");
 
 function ContentForm() {
-  const { blocks, addBlock } = useCMSStore();
+  const { blocks } = useCMSStore();
 
-  return (
-    <ScrollArea className="flex-1 flex p-6 h-[500px] border rounded-md">
-      <div className="flex-1 flex flex-col gap-4">
-        {blocks.map((block) => {
-          const component = COMPONENT_REGISTRY[block.type];
-          if (!component) return null;
+  if (blocks.length === 0) {
+    return <div></div>;
+  }
 
-          const AdminComponent = component.AdminComponent as React.FC<
-            AdminBlockProps<typeof block.data>
-          >;
+  const block = blocks[0];
 
-          return (
-            <div
-              key={block.id}
-              className="bg-secondary/20 rounded-md p-4 flex justify-center-safe"
-            >
-              <AdminComponent
-                id={block.id}
-                data={block.data}
-                useStore={useCMSStore}
-              />
-            </div>
-          );
-        })}
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              className="flex-1 flex items-center justify-center p-6 border-2 border-dashed border-border/50 rounded-md w-full hover:bg-muted/50 transition-colors"
-            >
-              <h2 className="flex items-center text-xl gap-2 text-muted-foreground">
-                <PlusCircle /> Add Menu Item
-              </h2>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent asChild>
-            <Card className="w-md overflow-hidden">
-              <ScrollArea className="h-96">
-                {REGISTRY_CATEGORIES.map((category) => (
-                  <div key={category.id} className="mb-4">
-                    <h3 className="mb-2 font-semibold px-2">
-                      {category.label}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2 px-2">
-                      {category.componentIds.map((componentId) => {
-                        const Preview =
-                          COMPONENT_REGISTRY[componentId].PreviewComponent;
-                        return (
-                          <button
-                            key={componentId}
-                            className="border border-border/50 rounded-md p-2 hover:bg-muted transition-colors flex flex-col items-center gap-2"
-                            onClick={() => {
-                              const newBlock: Block = {
-                                id: nanoid(8),
-                                type: componentId,
-                                data: {
-                                  ...COMPONENT_REGISTRY[
-                                    componentId
-                                  ].Schema.parse({}),
-                                },
-                              };
+  const Component = COMPONENT_REGISTRY[block.type]
+    .AdminComponent as ReactAdminComponent<typeof block.data>;
 
-                              if (!newBlock || !addBlock) return;
-                              addBlock(newBlock);
-                              toast.success(
-                                `Added ${COMPONENT_REGISTRY[componentId].label}`
-                              );
-                            }}
-                          >
-                            <div className="pointer-events-none">
-                              <Preview />
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                              {COMPONENT_REGISTRY[componentId].label}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </ScrollArea>
-            </Card>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </ScrollArea>
-  );
+  return <Component useStore={useCMSStore} id={block.id} data={block.data} />;
 }
 
 export function MenuForm({
@@ -151,7 +60,7 @@ export function MenuForm({
     defaultValues: {
       title: "",
       slug: "",
-      content: [] as DBComponent[],
+      content: undefined,
       ...defaultValues,
     },
   });
@@ -161,28 +70,35 @@ export function MenuForm({
 
   useEffect(() => {
     if (defaultValues?.content) {
-      build(defaultValues.content);
+      build([defaultValues.content]);
     } else {
-      build([]);
+      build([
+        {
+          type: "menu",
+          data: COMPONENT_REGISTRY["menu"].Schema.parse({}),
+        },
+      ]);
     }
-  }, [defaultValues, build]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues?.slug, build]);
 
   useEffect(() => {
-    setValue(
-      "content",
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      blocks.map(({ id, ...rest }) => rest)
-    );
+    if (blocks.length === 0) return;
+    const menu = blocks[0];
+
+    setValue("content", menu);
   }, [blocks, setValue]);
 
   return (
     <Card className="flex-1 border-muted/60 bg-card/50 backdrop-blur-sm overflow-hidden flex flex-col shadow-sm p-6">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, (errors) =>
+            console.error("Form errors:", errors),
+          )}
           className="flex flex-1 flex-col gap-6"
         >
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6 items-start">
             <FormField
               control={form.control}
               name="title"
