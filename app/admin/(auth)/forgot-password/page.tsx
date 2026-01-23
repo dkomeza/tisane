@@ -24,20 +24,20 @@ export default function AdminForgotPasswordPage() {
     try {
       const { error } = await authClient.requestPasswordReset({
         email,
-        redirectTo: "/admin/login",
+        redirectTo: "/admin/reset-password",
       });
 
       if (error) {
         throw new Error(error.message);
       } else {
         toast.success(
-          "If an account with that email exists, a password reset email has been sent."
+          "If an account with that email exists, a password reset email has been sent.",
         );
       }
     } catch (err) {
       toast.error(
         "Failed to send reset email. Please try again. " +
-          (err instanceof Error ? err.message : "")
+          (err instanceof Error ? err.message : ""),
       );
     } finally {
       setLoading(false);
