@@ -35,21 +35,42 @@ export default function Competition() {
               projekty, podzielą się doświadczeniem i pomogą autorom rozwijać
               ich pomysły.
             </p>
+            <p className="text-lg text-foreground/90 leading-relaxed font-semibold">
+              Finał konkursu – prezentacje 10 wybranych projektów, obrady jury,
+              ogłoszenie zwycięzców – odbędzie się 12.05.2026 podczas AGH IT
+              Future Day na Wydziale Informatyki AGH.
+            </p>
+            <p className="text-lg text-foreground leading-relaxed font-semibold">
+              Jak wziąć udział w konkursie? To proste!
+            </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col gap-4">
               <Button
                 size="lg"
-                className="bg-brand-violet hover:bg-brand-purple text-white shadow-lg shadow-brand-violet/20"
+                className="bg-brand-violet hover:bg-brand-purple text-white shadow-lg shadow-brand-violet/20 cursor-pointer"
               >
                 Zgłoś projekt <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-brand-violet text-brand-violet hover:bg-brand-violet/10"
-              >
-                Regulamin konkursu
-              </Button>
+              <div className="flex gap-4">
+                <a href="/AKTUAL Regulamin_ITisME_ogolnopolski.docx" download>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-brand-violet text-brand-violet hover:bg-brand-violet/10 cursor-pointer"
+                  >
+                    Regulamin konkursu
+                  </Button>
+                </a>
+                <a href="/Oswiadczenie-opiekuna_naukowego.docx" download>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-brand-pink text-brand-pink hover:bg-brand-pink/10 cursor-pointer"
+                  >
+                    Oświadczenie opiekuna naukowego
+                  </Button>
+                </a>
+              </div>
             </div>
           </div>
 
@@ -67,7 +88,7 @@ export default function Competition() {
               <div className="space-y-6 font-mono text-sm">
                 <div className="flex justify-between border-b border-border/50 pb-2">
                   <span className="text-muted-foreground">Data:</span>
-                  <span className="font-bold">26.03.2026</span>
+                  <span className="font-bold">12.05.2026</span>
                 </div>
                 <div className="flex justify-between border-b border-border/50 pb-2">
                   <span className="text-muted-foreground">Miejsce:</span>

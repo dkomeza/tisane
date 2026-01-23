@@ -31,7 +31,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
             if (textRef.current) {
               textRef.current.textContent = phrase.substring(
                 0,
-                Math.ceil(proxy.val)
+                Math.ceil(proxy.val),
               );
             }
           },
@@ -45,7 +45,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
               if (textRef.current) {
                 textRef.current.textContent = phrase.substring(
                   0,
-                  Math.ceil(proxy.val)
+                  Math.ceil(proxy.val),
                 );
               }
             },
@@ -60,7 +60,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
         ease: "power2.inOut",
       });
     },
-    { scope: container, dependencies: [phrases] }
+    { scope: container, dependencies: [phrases] },
   );
 
   return (
@@ -82,7 +82,7 @@ const HeroSection = () => {
           <div className="flex flex-wrap items-center gap-4 text-sm font-medium tracking-wide">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground border border-border">
               <Calendar className="w-4 h-4 text-brand-red" />
-              <span>26.03.2026</span>
+              <span>12.05.2026</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground border border-border">
               <MapPin className="w-4 h-4 text-brand-red" />

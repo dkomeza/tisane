@@ -19,12 +19,12 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <Competition />
       <Highlights />
       <About />
       <TargetAudience />
       <Topics />
-      <Competition />
-      <WhyParticipate />
+      {/* <WhyParticipate /> */}
       <Organizers />
       <Contact />
     </main>

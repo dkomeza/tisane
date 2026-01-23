@@ -49,14 +49,14 @@ export function Navbar() {
         ease: "power4.out",
       });
     },
-    { scope: navRef }
+    { scope: navRef },
   );
 
   const navLinks = [
-    { name: "O wydarzeniu", href: "#about" },
-    { name: "Tematyka", href: "#topics" },
     { name: "Konkurs IT is ME", href: "#contest" },
+    { name: "O wydarzeniu", href: "#about" },
     { name: "Dla Kogo", href: "#target" },
+    { name: "Tematyka", href: "#topics" },
     { name: "Organizatorzy", href: "#organizers" },
   ];
 
@@ -67,7 +67,7 @@ export function Navbar() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b",
         isScrolled
           ? "bg-background/70 backdrop-blur-xl border-border/40 py-3 shadow-sm supports-backdrop-filter:bg-background/60"
-          : "bg-transparent border-transparent py-6"
+          : "bg-transparent border-transparent py-6",
       )}
     >
       <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
@@ -94,7 +94,7 @@ export function Navbar() {
                       navigationMenuTriggerStyle(),
                       "bg-transparent hover:bg-transparent focus:bg-transparent data-[active=true]:bg-transparent data-[state=open]:bg-transparent",
                       "text-sm font-sans text-muted-foreground hover:text-brand-red focus:text-brand-red transition-colors",
-                      "h-9 px-4 rounded-md"
+                      "h-9 px-4 rounded-md",
                     )}
                   >
                     <Link href={link.href}>{link.name}</Link>
@@ -114,7 +114,7 @@ export function Navbar() {
               "hidden lg:flex font-semibold transition-all duration-300",
               isScrolled
                 ? "bg-foreground text-background hover:bg-brand-red hover:text-white"
-                : "bg-brand-red text-white hover:bg-brand-pink shadow-lg shadow-brand-red/20"
+                : "bg-brand-red text-white hover:bg-brand-pink shadow-lg shadow-brand-red/20",
             )}
           >
             Zarejestruj się
