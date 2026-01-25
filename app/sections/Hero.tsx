@@ -124,13 +124,6 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <Button
               size="lg"
-              className="cursor-pointer bg-brand-red hover:bg-brand-pink text-white border-0 shadow-lg shadow-brand-red/20 transition-all duration-300 font-semibold"
-            >
-              Zarejestruj się
-            </Button>
-
-            <Button
-              size="lg"
               variant="outline"
               className="cursor-pointer border-brand-violet text-brand-violet hover:bg-brand-violet hover:text-white dark:border-brand-softPink dark:text-brand-softPink dark:hover:bg-brand-softPink dark:hover:text-brand-dark transition-all duration-300 group"
               onClick={() => {
@@ -140,6 +133,12 @@ const HeroSection = () => {
             >
               <Trophy className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
               Konkurs IT is ME
+            </Button>
+            <Button
+              size="lg"
+              className="cursor-pointer bg-brand-red hover:bg-brand-pink text-white border-0 shadow-lg shadow-brand-red/20 transition-all duration-300 font-semibold"
+            >
+              Zarejestruj się
             </Button>
           </div>
         </div>
