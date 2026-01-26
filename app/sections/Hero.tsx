@@ -134,12 +134,18 @@ const HeroSection = () => {
               <Trophy className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
               Konkurs IT is ME
             </Button>
-            <Button
-              size="lg"
-              className="cursor-pointer bg-brand-red hover:bg-brand-pink text-white border-0 shadow-lg shadow-brand-red/20 transition-all duration-300 font-semibold"
+            <a
+              href="https://forms.office.com/e/nbZ7xL0EAm"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Zarejestruj się
-            </Button>
+              <Button
+                size="lg"
+                className="cursor-pointer bg-brand-red hover:bg-brand-pink text-white border-0 shadow-lg shadow-brand-red/20 transition-all duration-300 font-semibold w-full"
+              >
+                Zarejestruj się
+              </Button>
+            </a>
           </div>
         </div>
 

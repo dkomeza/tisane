@@ -89,12 +89,19 @@ export default function Competition() {
               w konkursie!
             </p>
             <div className="flex flex-col gap-4 pt-4">
-              <Button
-                size="lg"
-                className="bg-brand-violet hover:bg-brand-purple text-white shadow-lg shadow-brand-violet/20 cursor-pointer"
+              <a
+                href="https://forms.office.com/e/nbZ7xL0EAm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
               >
-                Zgłoś projekt <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
+                <Button
+                  size="lg"
+                  className="bg-brand-violet hover:bg-brand-purple text-white shadow-lg shadow-brand-violet/20 cursor-pointer w-full"
+                >
+                  Zgłoś projekt <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </a>
               <div className="flex flex-wrap gap-4">
                 <a
                   href="/AKTUAL Regulamin_ITisME_ogolnopolski.docx"

@@ -24,9 +24,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ModeToggle } from "@/app/components/ModeToggle";
 import Signet from "./Signet";
+import "./navbar.css";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const navRef = React.useRef<HTMLElement>(null);
 
   // Scroll Effect
@@ -38,19 +40,6 @@ export function Navbar() {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Entry Animation
-  useGSAP(
-    () => {
-      gsap.from(navRef.current, {
-        y: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power4.out",
-      });
-    },
-    { scope: navRef },
-  );
 
   const navLinks = [
     { name: "Konkurs IT is ME", href: "#contest" },
@@ -64,7 +53,7 @@ export function Navbar() {
     <header
       ref={navRef}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b w-full overflow-hidden",
         isScrolled
           ? "bg-background/70 backdrop-blur-xl border-border/40 py-3 shadow-sm supports-backdrop-filter:bg-background/60"
           : "bg-transparent border-transparent py-6",
@@ -107,21 +96,26 @@ export function Navbar() {
 
         <div className="flex items-center gap-4">
           <ModeToggle />
-
-          <Button
-            size="sm"
-            className={cn(
-              "hidden lg:flex font-semibold transition-all duration-300",
-              isScrolled
-                ? "bg-foreground text-background hover:bg-brand-red hover:text-white"
-                : "bg-brand-red text-white hover:bg-brand-pink shadow-lg shadow-brand-red/20",
-            )}
+          <a
+            href="https://forms.office.com/e/nbZ7xL0EAm"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden lg:block"
           >
-            Zarejestruj się
-          </Button>
-
+            <Button
+              size="sm"
+              className={cn(
+                "hidden lg:flex font-semibold transition-all duration-300 cursor-pointer",
+                isScrolled
+                  ? "bg-foreground text-background hover:bg-brand-red hover:text-white"
+                  : "bg-brand-red text-white hover:bg-brand-pink shadow-lg shadow-brand-red/20",
+              )}
+            >
+              Zarejestruj się
+            </Button>
+          </a>
           {/* MOBILE TOGGLE */}
-          <Sheet>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button
                 variant="ghost"
@@ -135,7 +129,7 @@ export function Navbar() {
 
             <SheetContent
               side="right"
-              className="w-full sm:w-[350px] border-l border-border/40 bg-background/70 dark:bg-background/60 backdrop-blur-2xl p-0 [&>button]:top-8 [&>button]:right-8 [&>button>svg]:size-6"
+              className="w-full sm:w-[350px] border-l border-border/40 bg-background/70 dark:bg-background/20 backdrop-blur-2xl p-0 [&>button]:top-8 [&>button]:right-8 [&>button>svg]:size-6"
             >
               <div className="flex flex-col h-full p-6">
                 <SheetHeader className="text-left border-b border-border/50 pb-6 mb-8">
@@ -153,11 +147,14 @@ export function Navbar() {
                   <ul>
                     {navLinks.map((link, i) => (
                       <SheetClose asChild key={link.name}>
-                        <li className="text-xl font-medium text-muted-foreground hover:text-foreground hover:pl-2 transition-all duration-300 py-3 border-b border-border/30 last:border-0 group">
+                        <li
+                          className="text-xl font-medium text-muted-foreground hover:text-foreground hover:pl-2 transition-all duration-300 py-3 border-b border-border/30 last:border-0 group animate-menu-item"
+                          style={{ animationDelay: `${(i + 5) * 50}ms` }}
+                        >
                           <Link
                             href={link.href}
                             className="flex items-center justify-between group"
-                            style={{ transitionDelay: `${i * 50}ms` }}
+                            onClick={() => setIsOpen(false)}
                           >
                             {link.name}
                             <span className="text-brand-red opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
@@ -170,13 +167,20 @@ export function Navbar() {
                   </ul>
                 </nav>
 
-                <div className="mt-auto pt-8">
-                  <Button
-                    className="w-full bg-brand-red hover:bg-brand-pink text-white font-bold h-12 text-lg shadow-lg shadow-brand-red/20"
-                    size="lg"
+                <div className="mt-auto pt-8 space-y-12">
+                  <a
+                    href="https://forms.office.com/e/nbZ7xL0EAm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
                   >
-                    Zarejestruj się
-                  </Button>
+                    <Button
+                      className="w-full bg-brand-red hover:bg-brand-pink text-white font-bold h-12 text-lg shadow-lg shadow-brand-red/20 cursor-pointer"
+                      size="lg"
+                    >
+                      Zarejestruj się
+                    </Button>
+                  </a>
 
                   <div className="mt-6 flex justify-between text-xs font-mono text-muted-foreground opacity-50">
                     <span>v2026.1.0</span>

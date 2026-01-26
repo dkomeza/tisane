@@ -1,5 +1,4 @@
 import React from "react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cpu, Server, Lightbulb } from "lucide-react";
 
@@ -39,7 +38,7 @@ export default function Topics() {
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Tematy, którymi żyje branża IT
         </h2>
-        <div className="w-100 h-1 bg-linear-to-r from-brand-red to-brand-pink mx-auto rounded-full" />
+        <div className="w-full sm:w-100 h-1 bg-linear-to-r from-brand-red to-brand-pink mx-auto rounded-full" />
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
