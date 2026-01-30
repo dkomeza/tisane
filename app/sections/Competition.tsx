@@ -104,7 +104,7 @@ export default function Competition() {
               </a>
               <div className="flex flex-wrap gap-4">
                 <a
-                  href="/AKTUAL Regulamin_ITisME_ogolnopolski.docx"
+                  href="/Regulamin_ITisME_ogolnopolski.docx"
                   className="flex-1"
                   download
                 >
