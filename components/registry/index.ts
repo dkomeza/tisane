@@ -15,9 +15,11 @@ import { Agenda } from "@/components/registry/sections/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
+import { Container } from "@/components/registry/layout/container";
 // -- PLOP IMPORTS HERE --
 
-import { DBComponent, RegistryCategory } from "./types";
+import { Block, DBComponent, RegistryCategory } from "./types";
+import { nanoid } from "nanoid";
 export * from "./types";
 
 /**
@@ -58,6 +60,7 @@ export const COMPONENT_REGISTRY = {
   [BorderedContainer.id]: BorderedContainer,
   [CmsLink.id]: CmsLink,
   [Menu.id]: Menu,
+  [Container.id]: Container,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -88,6 +91,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Row.id,
       Column.id,
       Menu.id,
+      Container.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
@@ -118,6 +122,24 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
 
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
 export type ComponentType = keyof ComponentRegistry;
+
+export function createBlock<T extends ComponentType>(type: T): Block<T> {
+  return {
+    type,
+    data: COMPONENT_REGISTRY[type].Schema.parse({}) as never,
+    id: nanoid(),
+  };
+}
+
+export function getComponentByType<T extends ComponentType>(
+  type: T,
+): ComponentRegistry[T] {
+  const component = COMPONENT_REGISTRY[type];
+  if (!component) {
+    throw new Error(`Component with type "${type}" not found in registry.`);
+  }
+  return component;
+}
 
 export function preprocess(data: unknown): DBComponent[] {
   if (data == null) {

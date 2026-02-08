@@ -36,6 +36,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 const VALID_CHILDREN: ComponentType[] = [
   "cms-link",
@@ -72,11 +73,22 @@ export function MenuAdmin({ id, useStore }: AdminBlockProps<MenuProps>) {
       return id as "left" | "center" | "right";
     }
 
+    if (["m_top", "m_center", "m_bottom"].includes(id)) {
+      return id as "m_top" | "m_center" | "m_bottom";
+    }
+
     return Object.keys(data).find((key) =>
-      data[key as "left" | "center" | "right"].find(
-        (item) => (item as Block).id === id,
-      ),
-    ) as "left" | "center" | "right" | undefined;
+      data[
+        key as "left" | "center" | "right" | "m_top" | "m_center" | "m_bottom"
+      ].find((item) => (item as Block).id === id),
+    ) as
+      | "left"
+      | "center"
+      | "right"
+      | "m_top"
+      | "m_center"
+      | "m_bottom"
+      | undefined;
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -136,7 +148,7 @@ export function MenuAdmin({ id, useStore }: AdminBlockProps<MenuProps>) {
   }
 
   return (
-    <Tabs defaultValue="desktop">
+    <Tabs defaultValue="desktop" className="flex-1">
       <TabsList className="mb-4">
         <TabsTrigger value="desktop">Desktop</TabsTrigger>
         <TabsTrigger value="mobile">Mobile</TabsTrigger>
@@ -174,7 +186,40 @@ export function MenuAdmin({ id, useStore }: AdminBlockProps<MenuProps>) {
           </Portal>
         </DndContext>
       </TabsContent>
-      <TabsContent value="mobile"></TabsContent>
+      <TabsContent value="mobile" className="flex-1">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onDragStart={handleDragStart}
+        >
+          <div className="h-full flex flex-col items-stretch justify-between bg-secondary/10 p-4 rounded-lg gap-2">
+            {(["m_top", "m_center", "m_bottom"] as const).map((side) => (
+              <MenuContainer
+                key={side}
+                id={id}
+                side={side}
+                data={data}
+                useStore={useStore}
+                activeId={activeId}
+                mobile
+              />
+            ))}
+          </div>
+          <Portal>
+            <DragOverlay dropAnimation={null} zIndex={1000}>
+              {activeId ? (
+                <OverlayItem
+                  activeId={activeId}
+                  data={data}
+                  useStore={useStore}
+                />
+              ) : null}
+            </DragOverlay>
+          </Portal>
+        </DndContext>
+      </TabsContent>
     </Tabs>
   );
 }
@@ -185,12 +230,14 @@ function MenuContainer({
   data,
   useStore,
   activeId,
+  mobile,
 }: {
   id: string;
-  side: "left" | "center" | "right";
+  side: keyof MenuProps;
   data: MenuProps;
   useStore: AdminBlockProps<MenuProps>["useStore"];
   activeId: string | null;
+  mobile?: boolean;
 }) {
   const { addBlock } = useStore();
   const items = data[side].map((block) => (block as Block).id);
@@ -204,9 +251,11 @@ function MenuContainer({
     <SortableContext items={items} strategy={horizontalListSortingStrategy}>
       <div
         ref={setNodeRef}
-        className={`flex flex-row items-center gap-2 min-h-[50px] p-2 rounded-md border transition-all duration-200 ${
-          isDragTarget ? "border-border" : "border-transparent"
-        }`}
+        className={cn(
+          "flex gap-2 min-h-[50px] p-2 rounded-md border transition-all duration-200",
+          isDragTarget ? "border-border" : "border-transparent",
+          mobile ? "flex-col" : "flex-row items-center",
+        )}
       >
         {data[side].length > 0 && (
           <>

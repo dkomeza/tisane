@@ -31,7 +31,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
             if (textRef.current) {
               textRef.current.textContent = phrase.substring(
                 0,
-                Math.ceil(proxy.val)
+                Math.ceil(proxy.val),
               );
             }
           },
@@ -45,7 +45,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
               if (textRef.current) {
                 textRef.current.textContent = phrase.substring(
                   0,
-                  Math.ceil(proxy.val)
+                  Math.ceil(proxy.val),
                 );
               }
             },
@@ -60,7 +60,7 @@ const TypewriterEffect = ({ phrases }: { phrases: string[] }) => {
         ease: "power2.inOut",
       });
     },
-    { scope: container, dependencies: [phrases] }
+    { scope: container, dependencies: [phrases] },
   );
 
   return (

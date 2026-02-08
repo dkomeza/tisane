@@ -53,6 +53,14 @@ html {
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@theme {
+  --container-sm: 40rem;
+  --container-md: 48rem;
+  --container-lg: 64rem;
+  --container-xl: 80rem;
+  --container-2xl: 96rem;
+}
+
 @theme static {
   --color-brand-orange-100: #efbfc2;
   --color-brand-orange-200: #ef989b;

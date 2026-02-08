@@ -15,7 +15,6 @@ import {
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Monitor, Shield } from "lucide-react";
-import { nanoid } from "nanoid";
 import {
   Breadcrumb,
   BreadcrumbLink,
@@ -110,7 +109,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                   "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
-                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!",
                 )}
               >
                 <Monitor className="w-4 h-4" /> Client View
@@ -120,14 +119,14 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                   "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
-                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                  "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!",
                 )}
               >
                 <Shield className="w-4 h-4" /> Admin View
               </TabsTrigger>
             </TabsList>
           </div>
-          <div className="flex-1 p-8 min-h-[400px] flex justify-center items-center relative">
+          <div className="flex-1 p-8 min-h-[400px] flex justify-center items-center relative @container">
             <TabsContent value="client">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>

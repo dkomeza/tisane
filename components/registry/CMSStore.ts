@@ -135,7 +135,9 @@ export const useCMSStore = create<CMSStore>()(
           return false;
         };
 
-        findAndAdd(state.blocks);
+        if (!findAndAdd(state.blocks)) {
+          console.warn("Failed to add block:", block);
+        }
       }),
 
     moveBlock: (parentId, fromKey, toKey, itemId, overId) =>

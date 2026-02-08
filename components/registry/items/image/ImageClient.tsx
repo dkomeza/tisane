@@ -25,7 +25,9 @@ export function ImageClient({ data }: BlockProps<ImageProps>) {
       if (isMounted) setMedia(m);
     });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [data.mediaId]);
 
   if (!media?.url) return null;
@@ -36,7 +38,8 @@ export function ImageClient({ data }: BlockProps<ImageProps>) {
       alt={media.alt || ""}
       width={media.width || 800}
       height={media.height || 600}
-      className="w-full h-auto"
+      className="w-full h-full object-contain block"
+      loading="lazy"
       priority={false}
     />
   );

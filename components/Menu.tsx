@@ -3,6 +3,7 @@ import {
   COMPONENT_REGISTRY,
   ReactClientComponent,
 } from "@/components/registry";
+import { cn } from "@/lib/utils";
 
 export async function Menu({
   slug,
@@ -23,7 +24,7 @@ export async function Menu({
     .ClientComponent as ReactClientComponent<typeof menu.content.data>;
 
   return (
-    <nav className={className}>
+    <nav className={cn("fixed top-0 left-0 w-full z-50", className)}>
       <Component id={menu.id} data={menu.content.data} />
     </nav>
   );
