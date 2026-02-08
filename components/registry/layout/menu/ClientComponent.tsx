@@ -40,7 +40,7 @@ export function MenuClient({ data }: BlockProps<MenuProps>) {
       <div className="hidden md:block">
         <div
           className={cn(
-            "flex justify-between items-center px-32 transition-all duration-500",
+            "flex justify-between items-center px-8 lg:px-16 xl:px-32 transition-all duration-500",
             isScrolled ? "py-4" : "py-8",
             isScrolled
               ? "backdrop-blur-2xl bg-black/10"
@@ -49,7 +49,7 @@ export function MenuClient({ data }: BlockProps<MenuProps>) {
             isScrolled ? "border-b border-white/10" : "border-none",
           )}
         >
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center gap-4 xl:gap-6">
             {data.left.map((component, index) => {
               const Component = COMPONENT_REGISTRY[component.type]
                 .ClientComponent as ReactClientComponent<typeof component.data>;
@@ -60,7 +60,7 @@ export function MenuClient({ data }: BlockProps<MenuProps>) {
               );
             })}
           </ul>
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center gap-4 xl:gap-6">
             {data.center.map((component, index) => {
               const Component = COMPONENT_REGISTRY[component.type]
                 .ClientComponent as ReactClientComponent<typeof component.data>;
@@ -69,7 +69,7 @@ export function MenuClient({ data }: BlockProps<MenuProps>) {
               );
             })}
           </ul>
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center gap-4 xl:gap-6">
             {data.right.map((component, index) => {
               const Component = COMPONENT_REGISTRY[component.type]
                 .ClientComponent as ReactClientComponent<typeof component.data>;
@@ -94,41 +94,50 @@ export function MenuClient({ data }: BlockProps<MenuProps>) {
           <SheetContent className="w-full bg-brand-grey-600/20 backdrop-blur-2xl">
             <SheetTitle className="sr-only">Menu</SheetTitle>
 
-            <ul className="flex flex-col justify-between items-stretch px-4 gap-4 h-full">
-              <div>
+            <ul className="flex flex-col justify-between items-stretchs gap-4 h-full">
+              <div className="flex flex-col items-stretch gap-2">
                 {data.m_top.map((component, index) => {
                   const Component = COMPONENT_REGISTRY[component.type]
                     .ClientComponent as ReactClientComponent<
                     typeof component.data
                   >;
                   return (
-                    <li key={index} className="h-12 flex">
+                    <li
+                      key={index}
+                      className="h-12 flex items-stretch flex-col"
+                    >
                       <Component id={nanoid()} data={component.data} />
                     </li>
                   );
                 })}
               </div>
-              <div>
+              <div className="flex flex-col items-stretch gap-2">
                 {data.m_center.map((component, index) => {
                   const Component = COMPONENT_REGISTRY[component.type]
                     .ClientComponent as ReactClientComponent<
                     typeof component.data
                   >;
                   return (
-                    <li key={index} className="h-12 flex">
+                    <li
+                      key={index}
+                      className="h-12 flex items-stretch flex-col"
+                    >
                       <Component id={nanoid()} data={component.data} />
                     </li>
                   );
                 })}
               </div>
-              <div>
+              <div className="flex flex-col items-stretch gap-2">
                 {data.m_bottom.map((component, index) => {
                   const Component = COMPONENT_REGISTRY[component.type]
                     .ClientComponent as ReactClientComponent<
                     typeof component.data
                   >;
                   return (
-                    <li key={index} className="h-12 flex">
+                    <li
+                      key={index}
+                      className="h-12 flex items-stretch flex-col"
+                    >
                       <Component id={nanoid()} data={component.data} />
                     </li>
                   );

@@ -66,9 +66,9 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
       : null;
 
   return (
-    <main className="relative h-screen">
+    <main className="relative h-screen isolate">
       {imageData && (
-        <div className="absolute inset-0 -z-10 overflow-hidden [&>img]:object-cover [&>img]:object-center">
+        <div className="absolute inset-0 -z-10 overflow-hidden [&>img]:object-cover [&>img]:object-top">
           <ImageComponent id="hero-background" data={imageData} />
         </div>
       )}

@@ -2,11 +2,11 @@
  * Component: CMSLink
  */
 
-import { BlockProps, CMSComponent } from "@/components/registry";
+import { CMSComponent } from "@/components/registry";
 import z from "zod";
-import Link from "next/link";
 import { Link as LinkIcon } from "lucide-react";
 import { CmsLinkAdmin } from "./CmsLinkAdmin";
+import { CmsLinkClient } from "./CmsLinkClient";
 
 export type CmsLinkProps = {
   text: string;
@@ -18,7 +18,7 @@ export type CmsLinkProps = {
 
 const Schema = z.object({
   text: z.string().min(1).default("Link Text"),
-  linkType: z.enum(["internal", "external"]).default("external"),
+  linkType: z.enum(["internal", "external"]).default("internal"),
   url: z.string().optional(),
   pageId: z.string().optional(),
   newTab: z.boolean().default(false),
@@ -34,21 +34,6 @@ export const CmsLink: CMSComponent<"cms-link", CmsLinkProps> = {
 
   Schema: Schema,
 };
-
-/**
- * This is the client-side component that will be rendered in the application.
- */
-export function CmsLinkClient({ data }: BlockProps<CmsLinkProps>) {
-  const href = data.url || "#";
-  const target = data.newTab ? "_blank" : undefined;
-  const rel = data.newTab ? "noopener noreferrer" : undefined;
-
-  return (
-    <Link href={href} target={target} rel={rel} className="hover:underline">
-      {data.text}
-    </Link>
-  );
-}
 
 /**
  * The preview component is used in the editor UI,
