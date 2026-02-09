@@ -102,7 +102,7 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
   const ImageComponent = COMPONENT_REGISTRY["imageComponent"].AdminComponent;
 
   return (
-    <main className="relative aspect-video @container">
+    <main className="relative">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {block.data.backgroundImage ? (
           <ImageComponent

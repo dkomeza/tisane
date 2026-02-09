@@ -187,7 +187,7 @@ function ContentForm() {
 
   return (
     <div className="flex-1 flex p-6">
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="flex-1 flex flex-col gap-4 overflow-scroll">
         {blocks.map((block) => {
           const component = COMPONENT_REGISTRY[block.type];
           if (!component) return null;
@@ -301,7 +301,7 @@ export function PageForm({
     form.setValue(
       "content",
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      blocks.map(({ id, ...rest }) => rest)
+      blocks.map(({ id, ...rest }) => rest),
     );
     broadcast(form.getValues("content") || []);
   }, [blocks, form, broadcast]);
@@ -338,7 +338,7 @@ export function PageForm({
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 capitalize",
                       "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
-                      "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!"
+                      "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!",
                     )}
                   >
                     {tab}
@@ -353,7 +353,7 @@ export function PageForm({
               <TabsContent value="metadata" className="p-6">
                 <MatadataForm form={form} />
               </TabsContent>
-              <TabsContent value="content" className="flex">
+              <TabsContent value="content" className="flex overflow-scroll">
                 <ContentForm />
               </TabsContent>
               <TabsContent value="preview" className="p-6 outline-none">
