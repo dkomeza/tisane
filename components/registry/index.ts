@@ -16,6 +16,7 @@ import { BorderedContainer } from "@/components/registry/sections/bordered-conta
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
 import { Container } from "@/components/registry/layout/container";
+import { DocumentsButton } from "@/components/registry/elements/documents-button";
 // -- PLOP IMPORTS HERE --
 
 import { Block, DBComponent, RegistryCategory } from "./types";
@@ -61,6 +62,7 @@ export const COMPONENT_REGISTRY = {
   [CmsLink.id]: CmsLink,
   [Menu.id]: Menu,
   [Container.id]: Container,
+  [DocumentsButton.id]: DocumentsButton,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -72,6 +74,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       ButtonComponent.id,
       UnderlinedCard.id,
       CmsLink.id,
+      DocumentsButton.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },
