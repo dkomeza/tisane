@@ -30,16 +30,10 @@ export function DocumentsButtonClient(props: BlockProps<DocumentsButtonProps>) {
         };
     }, [data.mediaId]);
 
-    const handleDownload = () => {
-        if (media?.url) {
-            window.open(media.url, "_blank");
-        }
-    };
-
     return (
         <ButtonClient
             {...props}
-            onClick={handleDownload}
+            download={media?.url}
             className={!media?.url ? "opacity-50 pointer-events-none" : ""}
         />
     );

@@ -7,6 +7,7 @@ interface ButtonClientProps extends BlockProps<ButtonProps> {
     onClick?: () => void;
     className?: string;
     type?: "button" | "submit" | "reset";
+    download?: string;
 }
 
 export function ButtonClient({
@@ -14,6 +15,7 @@ export function ButtonClient({
     onClick,
     className,
     type = "button",
+    download,
 }: ButtonClientProps) {
     const colorStyles = {
         primary:
@@ -35,19 +37,28 @@ export function ButtonClient({
     const IconRight = data.iconRight ? iconMap[data.iconRight as IconName] : null;
 
     return (
-        <button
-            type={type}
-            onClick={onClick}
-            className={cn(
-                "flex items-center justify-center gap-3 font-medium transition-colors duration-200 disabled:pointer-events-none",
-                colorStyles[data.color],
-                sizeStyles[data.variant],
-                className
-            )}
-        >
-            {IconLeft && <IconLeft className="size-5" />}
-            <span className="flex-1 text-center">{data.content}</span>
-            {IconRight && <IconRight className="size-5" />}
-        </button>
+        <DownloadWrapper download={download}>
+            <button
+                type={type}
+                onClick={onClick}
+                className={cn(
+                    "flex items-center justify-center gap-3 font-medium transition-colors duration-200 disabled:pointer-events-none",
+                    colorStyles[data.color],
+                    sizeStyles[data.variant],
+                    className
+                )}
+            >
+                {IconLeft && <IconLeft className="size-5" />}
+                <span className="flex-1 text-center">{data.content}</span>
+                {IconRight && <IconRight className="size-5" />}
+            </button>
+        </DownloadWrapper>
     );
+}
+
+function DownloadWrapper({ download, children }: { download: string | undefined, children: React.ReactNode }) {
+    if (download) {
+        return <a href={download} download={download} target="_blank">{children}</a>;
+    }
+    return children;
 }
