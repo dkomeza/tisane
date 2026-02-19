@@ -64,13 +64,18 @@ function HeadingClient({
     4: "text-heading-4",
     5: "text-heading-5",
     6: "text-heading-6",
+
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+    justify: "text-justify",
   };
 
   const level = (data.level >= 1 && data.level <= 6 ? data.level : 1) as Level;
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
-    <Tag className={`${typography[level]} text-${textAlign}`}>
+    <Tag className={`${typography[level]} ${typography[textAlign]}`}>
       {text ? text : children}
     </Tag>
   );

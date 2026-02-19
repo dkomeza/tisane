@@ -44,14 +44,19 @@ function ParagraphClient({
   data,
   children,
 }: BlockProps<ParagraphProps> & { children?: React.ReactNode }) {
-  const textAlignClass = `text-${data.textAlign || "left"}`;
   const typography = {
     "body-l": "text-body-l",
     "body-m": "text-body-m",
     "body-s": "text-body-s",
     "body-micro": "text-body-micro",
+
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+    justify: "text-justify",
   };
   const variantClass = typography[data.variant || "body-m"];
+  const textAlignClass = typography[data.textAlign || "left"];
 
   return (
     <div className={`${variantClass} ${textAlignClass}`}>

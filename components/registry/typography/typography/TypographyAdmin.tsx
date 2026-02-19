@@ -18,15 +18,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import TextAlign from "@tiptap/extension-text-align";
 
 import { Button } from "@/components/ui/button";
-import {
-  AlignCenterIcon,
-  AlignJustifyIcon,
-  AlignLeftIcon,
-  AlignRightIcon,
-  ChevronDownIcon,
-  Redo2Icon,
-  Undo2Icon,
-} from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -39,6 +31,8 @@ import { Heading as CMSHeading } from "../heading";
 import { Paragraph as CMSParagraph } from "../paragraph";
 import { nanoid } from "nanoid";
 import TextTypeSelector from "./components/TextTypeSelector";
+import HistoryButtons from "./components/HistoryButtons";
+import AlignmentSelector from "./components/AlignmentSelector";
 
 export const EditableHeading = (props: NodeViewProps) => {
   const { level, textAlign } = props.node.attrs;
@@ -68,31 +62,6 @@ const ParagraphNodeView = (props: NodeViewProps) => {
     </NodeViewWrapper>
   );
 };
-
-function HistoryButtons({ editor }: { editor: Editor }) {
-  return (
-    <ButtonGroup>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => editor.chain().focus().undo().run()}
-        disabled={!editor.can().undo()}
-      >
-        <Undo2Icon />
-        <span className="sr-only">Undo</span>
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={() => editor.chain().focus().redo().run()}
-        disabled={!editor.can().redo()}
-      >
-        <Redo2Icon />
-        <span className="sr-only">Redo</span>
-      </Button>
-    </ButtonGroup>
-  );
-}
 
 function TextStyleButtons({ editor }: { editor: Editor }) {
   return (
@@ -205,51 +174,6 @@ function ColorSelector({ editor }: { editor: Editor }) {
   );
 }
 
-function AlignmentSelector({ editor }: { editor: Editor }) {
-  return (
-    <ButtonGroup>
-      <Button
-        size="sm"
-        variant={editor.isActive({ textAlign: "left" }) ? "default" : "outline"}
-        onClick={() => editor.chain().focus().setTextAlign("left").run()}
-      >
-        <AlignLeftIcon />
-        <span className="sr-only">Align Left</span>
-      </Button>
-      <Button
-        size="sm"
-        variant={
-          editor.isActive({ textAlign: "center" }) ? "default" : "outline"
-        }
-        onClick={() => editor.chain().focus().setTextAlign("center").run()}
-      >
-        <AlignCenterIcon />
-        <span className="sr-only">Align Center</span>
-      </Button>
-      <Button
-        size="sm"
-        variant={
-          editor.isActive({ textAlign: "right" }) ? "default" : "outline"
-        }
-        onClick={() => editor.chain().focus().setTextAlign("right").run()}
-      >
-        <AlignRightIcon />
-        <span className="sr-only">Align Right</span>
-      </Button>
-      <Button
-        size="sm"
-        variant={
-          editor.isActive({ textAlign: "justify" }) ? "default" : "outline"
-        }
-        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-      >
-        <AlignJustifyIcon />
-        <span className="sr-only">Justify</span>
-      </Button>
-    </ButtonGroup>
-  );
-}
-
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
@@ -317,8 +241,6 @@ export function TypographyAdmin({
           <HistoryButtons editor={editor} />
           <Separator orientation="vertical" className="h-7!" />
           <TextTypeSelector editor={editor} />
-          <Separator orientation="vertical" className="h-7!" />
-          <TextStyleButtons editor={editor} />
           <Separator orientation="vertical" className="h-7!" />
           <AlignmentSelector editor={editor} />
         </div>
