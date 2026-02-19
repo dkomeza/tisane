@@ -6,7 +6,7 @@ import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { refresh } from "next/cache";
-const ALLOWED_PREFIX = "image/";
+const ALLOWED_PREFIXES = ["image/", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const URL_EXPIRATION_SECONDS = 3600; // 1 Hour
 
@@ -14,8 +14,9 @@ export async function getPresignedUploadUrl(
   filename: string,
   contentType: string
 ) {
-  if (!contentType.startsWith(ALLOWED_PREFIX)) {
-    throw new Error("Only image uploads are allowed");
+  const isAllowed = ALLOWED_PREFIXES.some(prefix => contentType.startsWith(prefix));
+  if (!isAllowed) {
+    throw new Error("Only images and documents are allowed");
   }
 
   const sanitizedFileName = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
