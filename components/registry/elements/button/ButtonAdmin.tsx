@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import {
     Type,
     Palette,
-    MousePointer2,
     BoxSelect,
     Trash2,
     Smile,

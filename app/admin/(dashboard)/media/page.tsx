@@ -230,6 +230,7 @@ function FilterButton({ active, onClick, icon, label, count }: {
   return (
     <button
       onClick={onClick}
+      type="button"
       className={cn(
         "w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all text-sm font-medium",
         active
