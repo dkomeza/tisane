@@ -55,22 +55,22 @@ function HeadingClient({
   data,
   children,
 }: BlockProps<HeadingProps> & { children?: React.ReactNode }) {
-  const { text, textAlign } = data;
+  const { text, textAlign = "left" } = data;
 
-  const TextSize: Record<Level, string> = {
-    1: "text-[56px]",
-    2: "text-[42px]",
-    3: "text-[32px]",
-    4: "text-[24px]",
-    5: "text-[20px]",
-    6: "text-[16px]",
+  const typography = {
+    1: "text-heading-1",
+    2: "text-heading-2",
+    3: "text-heading-3",
+    4: "text-heading-4",
+    5: "text-heading-5",
+    6: "text-heading-6",
   };
 
   const level = (data.level >= 1 && data.level <= 6 ? data.level : 1) as Level;
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
 
   return (
-    <Tag className={cn(TextSize[level])} style={{ textAlign: textAlign }}>
+    <Tag className={`${typography[level]} text-${textAlign}`}>
       {text ? text : children}
     </Tag>
   );

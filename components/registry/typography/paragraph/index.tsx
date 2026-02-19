@@ -13,6 +13,7 @@ import z from "zod";
 export type ParagraphProps = {
   text?: string;
   textAlign?: "left" | "center" | "right" | "justify";
+  variant?: "body-l" | "body-m" | "body-s" | "body-micro";
 };
 
 export const Paragraph: CMSComponent<"paragraph", ParagraphProps> = {
@@ -29,6 +30,10 @@ export const Paragraph: CMSComponent<"paragraph", ParagraphProps> = {
       .enum(["left", "center", "right", "justify"])
       .optional()
       .default("left"),
+    variant: z
+      .enum(["body-l", "body-m", "body-s", "body-micro"])
+      .optional()
+      .default("body-m"),
   }),
 };
 
@@ -39,8 +44,17 @@ function ParagraphClient({
   data,
   children,
 }: BlockProps<ParagraphProps> & { children?: React.ReactNode }) {
+  const textAlignClass = `text-${data.textAlign || "left"}`;
+  const typography = {
+    "body-l": "text-body-l",
+    "body-m": "text-body-m",
+    "body-s": "text-body-s",
+    "body-micro": "text-body-micro",
+  };
+  const variantClass = typography[data.variant || "body-m"];
+
   return (
-    <div className="text-xl" style={{ textAlign: data.textAlign }}>
+    <div className={`${variantClass} ${textAlignClass}`}>
       {data.text ? data.text : children}
     </div>
   );
