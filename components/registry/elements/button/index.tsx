@@ -13,7 +13,6 @@ export const ButtonSchema = z.object({
   color: z
     .enum(["primary", "dark", "white", "violet", "pink"])
     .default("primary"),
-  isDisabled: z.boolean().default(false),
   iconLeft: z.string().optional(),
   iconRight: z.string().optional(),
 });

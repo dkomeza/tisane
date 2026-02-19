@@ -37,7 +37,6 @@ export function ButtonClient({
     return (
         <button
             type={type}
-            disabled={data.isDisabled}
             onClick={onClick}
             className={cn(
                 "flex items-center justify-center gap-3 font-medium transition-colors duration-200 disabled:pointer-events-none",

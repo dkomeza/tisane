@@ -197,31 +197,6 @@ export function ButtonAdmin({ id, data, updateBlock, removeBlock }: ButtonAdminP
                         ))}
                     </div>
                 </div>
-
-                <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white">
-                        <MousePointer2 className="w-3 h-3" />
-                        Interaction
-                    </label>
-                    <div className="flex items-center h-[38px]">
-                        <label className="flex items-center gap-3 cursor-pointer group">
-                            <div className="relative inline-flex items-center">
-                                <input
-                                    type="checkbox"
-                                    className="sr-only peer"
-                                    checked={data.isDisabled}
-                                    onChange={(e) =>
-                                        updateBlock(id, { isDisabled: e.target.checked })
-                                    }
-                                />
-                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#9061F5]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#9061F5]"></div>
-                            </div>
-                            <span className="text-sm text-white group-hover:text-gray-100">
-                                Disabled
-                            </span>
-                        </label>
-                    </div>
-                </div>
             </div>
         </div>
     );
