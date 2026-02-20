@@ -33,6 +33,7 @@ import { nanoid } from "nanoid";
 import TextTypeSelector from "./components/TextTypeSelector";
 import HistoryButtons from "./components/HistoryButtons";
 import AlignmentSelector from "./components/AlignmentSelector";
+import FloatingMenu from "./components/FloatingMenu";
 
 export const EditableHeading = (props: NodeViewProps) => {
   const { level, textAlign } = props.node.attrs;
@@ -63,36 +64,7 @@ const ParagraphNodeView = (props: NodeViewProps) => {
   );
 };
 
-function TextStyleButtons({ editor }: { editor: Editor }) {
-  return (
-    <ButtonGroup>
-      <Button
-        size="sm"
-        variant={editor.isActive("bold") ? "default" : "outline"}
-        onClick={() => editor.chain().focus().toggleBold().run()}
-      >
-        <strong>B</strong>
-        <span className="sr-only">Bold</span>
-      </Button>
-      <Button
-        size="sm"
-        variant={editor.isActive("italic") ? "default" : "outline"}
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-      >
-        <em>I</em>
-        <span className="sr-only">Italic</span>
-      </Button>
-      <Button
-        size="sm"
-        variant={editor.isActive("underline") ? "default" : "outline"}
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-      >
-        <u>U</u>
-        <span className="sr-only">Underline</span>
-      </Button>
-    </ButtonGroup>
-  );
-}
+
 
 function ColorSelector({ editor }: { editor: Editor }) {
   const colorToBrandName = (color: string, variant: number) => {
@@ -237,13 +209,17 @@ export function TypographyAdmin({
   return (
     <div className="flex-1 flex flex-col">
       {editor && (
-        <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4">
-          <HistoryButtons editor={editor} />
-          <Separator orientation="vertical" className="h-7!" />
-          <TextTypeSelector editor={editor} />
-          <Separator orientation="vertical" className="h-7!" />
-          <AlignmentSelector editor={editor} />
-        </div>
+        <>
+          <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4">
+            <HistoryButtons editor={editor} />
+            <Separator orientation="vertical" className="h-7!" />
+            <TextTypeSelector editor={editor} />
+            <Separator orientation="vertical" className="h-7!" />
+            <AlignmentSelector editor={editor} />
+          </div>
+
+          <FloatingMenu editor={editor} />
+        </>
       )}
       <EditorContent
         className="border border-border bg-muted/30 p-4 rounded-lg rounded-t-sm flex-1"
