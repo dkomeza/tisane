@@ -249,33 +249,40 @@ export default function ColumnAdmin({
                   <Plus className="w-5 h-5 text-muted-foreground" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-64 p-2">
-                <div className="space-y-2">
-                  <div className="font-medium text-sm px-2">Add Element</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {Object.values(COMPONENT_REGISTRY).map((comp) => (
-                      <button
-                        key={comp.id}
-                        type="button"
-                        onClick={() =>
-                          addBlock(
-                            {
-                              id: nanoid(),
-                              type: comp.id,
-                              data: comp.Schema.parse({}),
-                            },
-                            id,
-                            "children"
-                          )
-                        }
-                        className="text-xs flex flex-col items-center gap-2 p-2 rounded-md hover:bg-accent border border-transparent hover:border-border transition-all"
-                      >
-                        <div className="w-8 h-8 rounded bg-muted flex items-center justify-center">
-                          <Plus className="w-4 h-4 opacity-50" />
-                        </div>
-                        {comp.label}
-                      </button>
-                    ))}
+              <PopoverContent align="start" className="w-80 p-0 overflow-hidden">
+                <div className="flex flex-col h-[400px]">
+                  <div className="p-3 border-b bg-muted/30">
+                    <div className="font-semibold text-sm">Add Element</div>
+                    <div className="text-[10px] text-muted-foreground opacity-70">Select a component to add</div>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      {Object.values(COMPONENT_REGISTRY)
+                        .sort((a, b) => a.label.localeCompare(b.label))
+                        .map((comp) => (
+                          <button
+                            key={comp.id}
+                            type="button"
+                            onClick={() =>
+                              addBlock(
+                                {
+                                  id: nanoid(),
+                                  type: comp.id,
+                                  data: comp.Schema.parse({}),
+                                },
+                                id,
+                                "children"
+                              )
+                            }
+                            className="text-xs flex flex-col items-center gap-2 p-3 rounded-md hover:bg-accent border border-border/40 hover:border-primary/30 transition-all bg-card/50 shadow-sm"
+                          >
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center border border-border/20 shadow-inner">
+                              <Plus className="w-4 h-4 opacity-50 font-bold" />
+                            </div>
+                            <span className="font-medium text-center leading-tight whitespace-normal">{comp.label}</span>
+                          </button>
+                        ))}
+                    </div>
                   </div>
                 </div>
               </PopoverContent>
