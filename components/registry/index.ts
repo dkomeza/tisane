@@ -17,6 +17,7 @@ import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
 import { Container } from "@/components/registry/layout/container";
 import { DocumentsButton } from "@/components/registry/elements/documents-button";
+import { Grid } from "@/components/registry/layout/grid";
 // -- PLOP IMPORTS HERE --
 
 import { Block, DBComponent, RegistryCategory } from "./types";
@@ -63,6 +64,7 @@ export const COMPONENT_REGISTRY = {
   [Menu.id]: Menu,
   [Container.id]: Container,
   [DocumentsButton.id]: DocumentsButton,
+  [Grid.id]: Grid,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -95,6 +97,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Column.id,
       Menu.id,
       Container.id,
+      Grid.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
