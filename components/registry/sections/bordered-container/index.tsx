@@ -13,7 +13,6 @@ import { BorderedContainerAdmin } from "./BorderedContainerAdmin";
 import { Heading } from "@/components/registry/typography/heading";
 import { Typography } from "@/components/registry/typography/typography";
 import { ButtonComponent } from "@/components/registry/elements/button";
-import { cn } from "@/lib/utils";
 
 export type BorderedContainerProps = {
   heading: DBComponent<"heading">;
@@ -68,7 +67,7 @@ export const BorderedContainer: CMSComponent<
  */
 function BorderedContainerClient({ data }: BlockProps<BorderedContainerProps>) {
   return (
-    <table>
+    <table className="w-full">
       <thead>
         <tr>
           <th className="pr-8 border-b border-brand-purple-400 pb-2 text-nowrap">

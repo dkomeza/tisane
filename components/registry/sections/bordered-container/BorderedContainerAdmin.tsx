@@ -10,6 +10,8 @@ import { Typography } from "@/components/registry/typography/typography";
 import { ButtonComponent } from "@/components/registry/elements/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { TrashIcon } from "lucide-react";
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
@@ -19,13 +21,22 @@ export function BorderedContainerAdmin({
   useStore,
 }: AdminBlockProps<BorderedContainerProps>) {
   const store = useStore();
-  const { getBlock } = store;
+  const { getBlock, removeBlock } = store;
   const block = getBlock(id) as Block<"bordered-container">;
 
   if (!block) return null;
 
   return (
-    <Card className="flex flex-col gap-4 p-4">
+    <Card className="flex flex-col gap-4 p-4 relative group">
+      <Button
+        variant="destructive"
+        type="button"
+        size="icon"
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={() => removeBlock(id)}
+      >
+        <TrashIcon className="h-4 w-4" />
+      </Button>
       <Tabs defaultValue="heading" className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-brand-dark-200">
           <TabsTrigger value="heading">Heading</TabsTrigger>

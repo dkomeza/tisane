@@ -56,7 +56,23 @@ export const Container: CMSComponent<"container", ContainerProps> = {
  * This is the client-side component that will be rendered in the application.
  */
 function ContainerClient({ data }: BlockProps<ContainerProps>) {
-  return <section className="px-4 py-4 @sm:bg-red-500">asdf</section>;
+  const ContentComponent = data.content
+    ? (getComponentByType(data.content.type).ClientComponent as React.FC<
+        BlockProps<typeof data.content.data>
+      >)
+    : null;
+
+  const content = data.content ? (data.content as Block) : null;
+
+  return (
+    <section className="p-4 block @container/block w-full">
+      <div className="@2xl/block:px-32">
+        {content && ContentComponent && (
+          <ContentComponent id={content.id} data={content.data} />
+        )}
+      </div>
+    </section>
+  );
 }
 
 /**
@@ -69,7 +85,7 @@ function ContainerAdmin({ id, useStore }: AdminBlockProps<ContainerProps>) {
   if (!block) return null;
 
   return (
-    <div className="p-4 hover:border-secondary border border-trasparent rounded-md">
+    <div className="p-8 hover:border-secondary border border-transparent rounded-sm w-full">
       {block.data.content ? (
         (() => {
           const content = block.data.content as Block<
