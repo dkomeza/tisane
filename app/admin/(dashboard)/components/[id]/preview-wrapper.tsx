@@ -127,7 +127,7 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
             </TabsList>
           </div>
           <div className="flex-1 p-8 min-h-[400px] flex justify-center items-center relative @container">
-            <TabsContent value="client">
+            <TabsContent value="client" className="w-full">
               <ClientComponent id={block.id} data={block.data} />
             </TabsContent>
             <TabsContent
