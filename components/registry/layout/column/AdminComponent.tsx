@@ -197,8 +197,7 @@ export default function ColumnAdmin({
           </div>
           <div
             className={cn(
-              "flex gap-4 p-2 min-h-[50px] border-2 border-dashed border-border/40 rounded-lg transition-all",
-              "flex-col overflow-x-auto items-start"
+              "flex flex-col gap-4 p-2 min-h-[50px] border-2 border-dashed border-border/40 rounded-lg transition-all"
             )}
           >
             {block.data.children?.map((child, index) => {
@@ -220,7 +219,7 @@ export default function ColumnAdmin({
               return (
                 <div
                   key={childId}
-                  className="relative group shrink-0 min-w-[200px]"
+                  className="relative group w-full"
                 >
                   <AdminComp
                     id={childId}

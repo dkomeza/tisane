@@ -41,7 +41,7 @@ function GridClient({ data }: BlockProps<GridProps>) {
   return (
     <div
       className={cn(
-        "flex flex-wrap",
+        "flex flex-wrap w-full h-full",
         `gap-${data.gap}`
       )}
     >

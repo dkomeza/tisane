@@ -50,7 +50,7 @@ function RowClient({ data }: BlockProps<RowProps>) {
   return (
     <div
       className={cn(
-        "flex flex-row",
+        "flex flex-row w-full h-full",
         `flex-${data.wrap} gap-${data.gap}`,
         `justify-${data.justify} items-${data.align}`
       )}
