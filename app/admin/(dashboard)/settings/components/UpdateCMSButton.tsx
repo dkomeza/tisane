@@ -61,7 +61,7 @@ export function UpdateCMSButton() {
     toastId: string | number,
   ) => {
     try {
-      const res = await fetch("/");
+      const res = await fetch("/api/admin/healthcheck");
       if (res.ok && hasErrored) {
         clearInterval(interval);
         toast.success("Update completed! The system will restart shortly.", {

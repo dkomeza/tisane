@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 
 import {
+  Activity,
   Blocks,
   FileText,
   Image,
@@ -76,6 +77,11 @@ const groups: Group[] = [
         label: "Integrations",
         href: "/admin/integrations",
         icon: Blocks,
+      },
+      {
+        label: "Healthcheck",
+        href: "/admin/healthcheck",
+        icon: Activity,
       },
     ],
   },
