@@ -20,12 +20,15 @@ import z from "zod";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export type HeadingProps = {
   level: number;
   text?: string;
   textAlign?: "left" | "center" | "right" | "justify";
 };
+
+type Level = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const Heading: CMSComponent<"heading", HeadingProps> = {
   id: "heading" as const,
@@ -52,12 +55,27 @@ function HeadingClient({
   data,
   children,
 }: BlockProps<HeadingProps> & { children?: React.ReactNode }) {
-  const { text, textAlign } = data;
+  const { text, textAlign = "left" } = data;
 
-  const level = data.level >= 1 && data.level <= 6 ? data.level : 1;
+  const typography = {
+    1: "text-heading-1",
+    2: "text-heading-2",
+    3: "text-heading-3",
+    4: "text-heading-4",
+    5: "text-heading-5",
+    6: "text-heading-6",
+
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+    justify: "text-justify",
+  };
+
+  const level = (data.level >= 1 && data.level <= 6 ? data.level : 1) as Level;
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+
   return (
-    <Tag className="text-4xl" style={{ textAlign: textAlign }}>
+    <Tag className={`${typography[level]} ${typography[textAlign]}`}>
       {text ? text : children}
     </Tag>
   );

@@ -5,10 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { APIError, betterAuth } from "better-auth";
 import { resend } from "../resend";
 
-const baseURL =
-  (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
-  process.env.BETTER_AUTH_URL ||
-  "http://localhost:3000";
+const baseURL = process.env.BETTER_AUTH_URL || "http://localhost:3000";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

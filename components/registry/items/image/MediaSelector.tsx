@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/media/UploadZone";
 import { getMediaList } from "@/app/actions/media/media";
 import Image from "next/image";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MediaSelectorProps {
@@ -118,27 +118,44 @@ export function MediaSelector({
                     {images.map((img) => (
                       <div
                         key={img.id}
-                        className="group relative aspect-square border rounded-md overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all bg-gray-50"
+                        className="flex flex-col gap-2 group cursor-pointer"
                         onClick={() => {
                           onSelect(img);
                           setShow(false);
                         }}
                       >
-                        <Image
-                          src={img.url}
-                          alt={img.key}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="pointer-events-none"
-                          >
-                            Select
-                          </Button>
+                        <div className="relative aspect-square border rounded-md overflow-hidden hover:ring-2 hover:ring-primary transition-all bg-gray-50 flex items-center justify-center">
+                          {img.mimeType?.startsWith("image/") ? (
+                            <Image
+                              src={img.url}
+                              alt={img.key}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center gap-2 text-gray-400">
+                              <FileText className="w-10 h-10" />
+                              <span className="text-[10px] font-bold uppercase">
+                                {img.mimeType?.split("/")[1] || "DOC"}
+                              </span>
+                            </div>
+                          )}
+                          <div className="absolute inset-0 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/5">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="shadow-md"
+                            >
+                              Select
+                            </Button>
+                          </div>
                         </div>
+                        <p
+                          className="text-[10px] text-gray-500 truncate text-center px-1"
+                          title={img.key}
+                        >
+                          {img.key.split("-").slice(1).join("-") || img.key}
+                        </p>
                       </div>
                     ))}
                   </div>

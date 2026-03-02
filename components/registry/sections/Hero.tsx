@@ -1,4 +1,8 @@
-import { COMPONENT_REGISTRY, DBComponentSchema } from "@/components/registry";
+import {
+  COMPONENT_REGISTRY,
+  createBlock,
+  DBComponentSchema,
+} from "@/components/registry";
 import {
   AdminBlockProps,
   Block,
@@ -16,6 +20,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { TrashIcon } from "lucide-react";
 
 type HeroProps = {
   content?: DBComponent<"typography">;
@@ -66,9 +73,9 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
       : null;
 
   return (
-    <section className="relative h-screen">
+    <main className="relative h-screen isolate">
       {imageData && (
-        <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 -z-10 overflow-hidden [&>img]:object-cover [&>img]:object-top">
           <ImageComponent id="hero-background" data={imageData} />
         </div>
       )}
@@ -84,7 +91,7 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
           </div>
         )}
       </div>
-    </section>
+    </main>
   );
 }
 
@@ -92,21 +99,80 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
  * This is the admin component used to edit the component's data in the CMS.
  */
 function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
-  const { blocks, updateBlock, addBlock } = useStore();
+  const { blocks, addBlock, removeBlock } = useStore();
 
   const block = blocks.find((b) => b.id === id) as Block<"hero">;
 
   if (!block) return null;
 
   const TypographyComponent = COMPONENT_REGISTRY["typography"].AdminComponent;
-  const ImageComponent = COMPONENT_REGISTRY["imageComponent"].AdminComponent;
+  const ImageComponent = COMPONENT_REGISTRY["imageComponent"].ClientComponent;
+  const ImageAdminComponent =
+    COMPONENT_REGISTRY["imageComponent"].AdminComponent;
+
+  const ctaData = block.data.cta?.data;
+  const CTARegistryComponent = block.data.cta?.type
+    ? COMPONENT_REGISTRY[block.data.cta.type]
+    : null;
+  const CTAComponent = CTARegistryComponent
+    ? CTARegistryComponent.ClientComponent
+    : null;
+  const CTAAdminComponent = CTARegistryComponent
+    ? CTARegistryComponent.AdminComponent
+    : null;
+
+  console.log("CTA Registry Component:", CTARegistryComponent);
+
+  const imageData = block.data.backgroundImage?.data;
 
   return (
-    <div className="border p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-4">Hero Component</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-muted/30 p-3 rounded-xl col-span-2">
-          <p className="mb-2">Content:</p>
+    <main className="w-full relative aspect-video isolate group border border-dashed border-transparent hover:border-primary/30 rounded-sm overflow-hidden">
+      <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm">
+              Edit background
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            {block.data.backgroundImage ? (
+              <ImageAdminComponent
+                id={(block.data.backgroundImage as Block).id}
+                data={block.data.backgroundImage!.data}
+                useStore={useStore}
+              />
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                <button
+                  type="button"
+                  className="w-full py-8 px-4 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
+                  onClick={() => {
+                    const newBlock = createBlock("imageComponent");
+                    addBlock(newBlock, block.id, "backgroundImage");
+                  }}
+                >
+                  Add Background Image
+                </button>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => removeBlock(block.id)}
+        >
+          <TrashIcon className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {imageData && (
+        <div className="absolute inset-0 -z-10 overflow-hidden [&>img]:object-cover [&>img]:object-top">
+          <ImageComponent id="hero-background" data={imageData} />
+        </div>
+      )}
+      <div className="h-full flex flex-col @md:flex-row justify-end @md:justify-between items-end @md:items-center gap-20 @md:gap-0 py-8">
+        <div className="max-w-4xl mx-6 @sm:mx-12 @md:mr-0 @md:ml-16 @lg:ml-20 @xl:ml-24 @2xl:ml-32 z-10">
           {block.data.content ? (
             <TypographyComponent
               id={(block.data.content as Block).id}
@@ -117,17 +183,10 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
             <div className="text-sm text-muted-foreground">
               <button
                 type="button"
-                className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
+                className="w-full py-12 px-4 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
                 onClick={() => {
-                  addBlock(
-                    {
-                      id: nanoid(),
-                      type: "typography",
-                      data: Typography.Schema.parse({}),
-                    },
-                    id,
-                    "content"
-                  );
+                  const newBlock = createBlock("typography");
+                  addBlock(newBlock, block.id, "content");
                 }}
               >
                 Add Typography Content
@@ -135,93 +194,50 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
             </div>
           )}
         </div>
-        <div className="bg-muted/30 p-3 rounded-lg">
-          <p className="mb-2">CTA:</p>
-          {block.data.cta ? (
-            (() => {
-              const ctaBlock = block.data.cta as Block;
-              const CTAAdminComponent = COMPONENT_REGISTRY[ctaBlock.type]
-                .AdminComponent as ReactAdminComponent<typeof ctaBlock.data>;
-
-              return (
-                <CTAAdminComponent
-                  id={ctaBlock.id}
-                  data={ctaBlock.data}
-                  useStore={useStore}
-                />
-              );
-            })()
+        <div className="shrink-0 @md:self-end @md:pb-8">
+          {CTAAdminComponent && ctaData ? (
+            <>
+              <CTAAdminComponent
+                id={(block.data.cta as Block).id}
+                // @ts-expect-error - The type is not correctly inferred here, but it will work at runtime
+                data={ctaData}
+                useStore={useStore}
+              />
+            </>
           ) : (
             <div className="text-sm text-muted-foreground">
               <Popover>
                 <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
-                    onClick={() => {}}
-                  >
-                    Add CTA Component
-                  </button>
+                  <Button variant="outline" size="sm" type="button">
+                    Add Call to Action
+                  </Button>
                 </PopoverTrigger>
-                <PopoverContent className="grid grid-cols-2 gap-3 w-[300px] max-h-96 overflow-y-auto">
-                  {Object.values(COMPONENT_REGISTRY).map((component) => (
-                    <div
-                      key={component.id}
-                      className="p-2 border border-transparent hover:border-primary rounded-lg cursor-pointer text-center bg-muted/50 hover:bg-muted transition overflow-hidden"
-                      onClick={() => {
-                        addBlock(
-                          {
-                            id: nanoid(),
-                            type: component.id,
-                            data: component.Schema.parse({}),
-                          },
-                          id,
-                          "cta"
-                        );
-                      }}
-                    >
-                      <component.PreviewComponent />
-                    </div>
-                  ))}
+                <PopoverContent>
+                  <div className="flex flex-col gap-2">
+                    {Object.values(COMPONENT_REGISTRY)
+                      .filter((comp) => comp.id !== "hero")
+                      .map((comp) => (
+                        <Button
+                          key={comp.id}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const newBlock = createBlock(comp.id);
+                            addBlock(newBlock, block.id, "cta");
+                          }}
+                        >
+                          {comp.label}
+                        </Button>
+                      ))}
+                  </div>
                 </PopoverContent>
               </Popover>
             </div>
           )}
         </div>
-        <div className="bg-muted/30 p-3 rounded-lg">
-          <p className="mb-2">Background Image:</p>
-          {block.data.backgroundImage ? (
-            <ImageComponent
-              id={(block.data.backgroundImage as Block).id}
-              data={block.data.backgroundImage!.data}
-              useStore={useStore}
-            />
-          ) : (
-            <div className="text-sm text-muted-foreground">
-              <button
-                type="button"
-                className="w-full py-12 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all"
-                onClick={() => {
-                  addBlock(
-                    {
-                      id: nanoid(),
-                      type: "imageComponent",
-                      data: COMPONENT_REGISTRY["imageComponent"].Schema.parse(
-                        {}
-                      ),
-                    },
-                    id,
-                    "backgroundImage"
-                  );
-                }}
-              >
-                Add Background Image Component
-              </button>
-            </div>
-          )}
-        </div>
       </div>
-    </div>
+    </main>
   );
 }
 

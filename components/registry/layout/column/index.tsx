@@ -50,7 +50,7 @@ function ColumnClient({ data }: BlockProps<ColumnProps>) {
   return (
     <div
       className={cn(
-        "flex flex-col",
+        "flex flex-col w-full h-full",
         `flex-${data.wrap} gap-${data.gap}`,
         `justify-${data.justify} items-${data.align}`
       )}

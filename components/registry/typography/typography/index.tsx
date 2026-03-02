@@ -26,7 +26,7 @@ export const Typography = {
     content: z
       .string()
       .default(
-        '{"type":"doc","content":[{"type":"heading","attrs":{"textAlign":null,"level":1},"content":[{"type":"text","text":"Example contentasdf"}]},{"type":"paragraph","attrs":{"textAlign":null}}]}'
+        '{"type":"doc","content":[{"type":"heading","attrs":{"textAlign":null,"level":1},"content":[{"type":"text","text":"Example contentasdf"}]},{"type":"paragraph","attrs":{"textAlign":null}}]}',
       ),
   }),
 } as CMSComponent<"typography", TypographyProps>;
@@ -123,12 +123,13 @@ function RenderParagraph(props: { block: unknown }) {
 
   const block = props.block as {
     type: string;
-    attrs?: { textAlign?: string };
+    attrs?: { textAlign?: string; variant?: string };
     content?: { type: string; text?: string }[];
   };
 
   const textAlign = block.attrs?.textAlign || "left";
-  const parse = Paragraph.Schema.safeParse({ textAlign });
+  const variant = block.attrs?.variant || "body-m";
+  const parse = Paragraph.Schema.safeParse({ textAlign, variant });
 
   if (!parse.success) {
     return null;

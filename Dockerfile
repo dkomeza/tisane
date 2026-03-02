@@ -17,12 +17,18 @@ COPY . .
 
 # Generate Prisma Client
 RUN DATABASE_URL="postgresql://user:password@localhost:5432/db?schema=public" npm run db:generate
+
+ARG APP_VERSION
+ENV NEXT_PUBLIC_APP_VERSION=$APP_VERSION
 RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+ARG APP_VERSION
+ENV NEXT_PUBLIC_APP_VERSION=$APP_VERSION
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

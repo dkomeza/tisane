@@ -128,7 +128,15 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true,
-    accept: { "image/*": [] },
+    accept: {
+      "image/*": [],
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+        ".docx",
+      ],
+    },
+
     maxSize: 50 * 1024 * 1024,
     disabled: isUploading,
   });

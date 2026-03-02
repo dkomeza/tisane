@@ -13,9 +13,18 @@ import { Span } from "@/components/registry/typography/span";
 import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
+import { CmsLink } from "@/components/registry/elements/cms-link";
+import { Menu } from "@/components/registry/layout/menu";
+import { Container } from "@/components/registry/layout/container";
+import { DocumentsButton } from "@/components/registry/elements/documents-button";
+import { Grid } from "@/components/registry/layout/grid";
+import { GridItem } from "@/components/registry/layout/grid-item";
+import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
+import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
 // -- PLOP IMPORTS HERE --
 
-import { DBComponent, RegistryCategory } from "./types";
+import { Block, DBComponent, RegistryCategory } from "./types";
+import { nanoid } from "nanoid";
 export * from "./types";
 
 /**
@@ -54,6 +63,14 @@ export const COMPONENT_REGISTRY = {
   [Icon.id]: Icon,
   [Agenda.id]: Agenda,
   [BorderedContainer.id]: BorderedContainer,
+  [CmsLink.id]: CmsLink,
+  [Menu.id]: Menu,
+  [Container.id]: Container,
+  [DocumentsButton.id]: DocumentsButton,
+  [Grid.id]: Grid,
+  [GridItem.id]: GridItem,
+  [UnderlinedTable.id]: UnderlinedTable,
+  [UnderlinedTableColumn.id]: UnderlinedTableColumn,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -64,6 +81,8 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     componentIds: [
       ButtonComponent.id,
       UnderlinedCard.id,
+      CmsLink.id,
+      DocumentsButton.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },
@@ -82,6 +101,9 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     componentIds: [
       Row.id,
       Column.id,
+      Menu.id,
+      Container.id,
+      Grid.id,
       // -- PLOP LAYOUT HERE --
     ],
     isRootLevel: true,
@@ -93,6 +115,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Hero.id,
       Agenda.id,
       BorderedContainer.id,
+      UnderlinedTable.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
@@ -113,6 +136,24 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
 export type ComponentType = keyof ComponentRegistry;
 
+export function createBlock<T extends ComponentType>(type: T): Block<T> {
+  return {
+    type,
+    data: COMPONENT_REGISTRY[type].Schema.parse({}) as never,
+    id: nanoid(),
+  };
+}
+
+export function getComponentByType<T extends ComponentType>(
+  type: T,
+): ComponentRegistry[T] {
+  const component = COMPONENT_REGISTRY[type];
+  if (!component) {
+    throw new Error(`Component with type "${type}" not found in registry.`);
+  }
+  return component;
+}
+
 export function preprocess(data: unknown): DBComponent[] {
   if (data == null) {
     return [];
@@ -124,14 +165,21 @@ export function preprocess(data: unknown): DBComponent[] {
       return DBComponentsArraySchema.parse(parsed);
     } catch (error) {
       throw new Error(
-        error instanceof Error ? error.message : "Error processing page content"
+        error instanceof Error
+          ? error.message
+          : "Error processing page content",
       );
     }
   }
 
-  if (typeof data === "object" && Array.isArray(data)) {
-    return DBComponentsArraySchema.parse(data);
+  if (typeof data === "object") {
+    if (Array.isArray(data)) {
+      return DBComponentsArraySchema.parse(data);
+    } else {
+      return DBComponentsArraySchema.parse([data]);
+    }
   }
 
+  console.error("Invalid data format for page content:", data);
   throw new Error("Invalid data format for page content");
 }
