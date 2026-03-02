@@ -16,8 +16,9 @@ import z from "zod";
 import GridAdmin from "./AdminComponent";
 
 export type GridProps = {
+  columns: number;
   gap: number;
-  children?: DBComponent[];
+  children?: DBComponent<"grid-item">[];
 };
 
 export const Grid: CMSComponent<"grid", GridProps> = {
@@ -29,8 +30,11 @@ export const Grid: CMSComponent<"grid", GridProps> = {
   PreviewComponent: GridPreview,
 
   Schema: z.object({
+    columns: z.number().min(1).max(12).default(4),
     gap: z.number().min(0).max(12).default(4),
-    children: z.array(z.lazy(() => DBComponentSchema)).optional(),
+    children: z.array(z.lazy(() => DBComponentSchema)).optional() as z.ZodType<
+      DBComponent<"grid-item">[] | undefined
+    >,
   }),
 };
 
@@ -40,10 +44,10 @@ export const Grid: CMSComponent<"grid", GridProps> = {
 function GridClient({ data }: BlockProps<GridProps>) {
   return (
     <div
-      className={cn(
-        "flex flex-wrap w-full h-full",
-        `gap-${data.gap}`
-      )}
+      className={cn("grid w-full h-full", `gap-${data.gap}`)}
+      style={{
+        gridTemplateColumns: `repeat(${data.columns}, minmax(0, 1fr))`,
+      }}
     >
       {data.children?.map((child, index) => {
         const ChildComponent =
@@ -56,12 +60,11 @@ function GridClient({ data }: BlockProps<GridProps>) {
         >;
 
         return (
-          <div
-            key={index}
-            className="flex-grow flex-shrink basis-auto min-w-[300px]"
-          >
-            <ClientComp id={`child-${index}`} data={child.data} />
-          </div>
+          <ClientComp
+            key={(child as unknown as Block).id || index}
+            id={(child as unknown as Block).id || `child-${index}`}
+            data={child.data}
+          />
         );
       })}
     </div>

@@ -18,6 +18,9 @@ import { Menu } from "@/components/registry/layout/menu";
 import { Container } from "@/components/registry/layout/container";
 import { DocumentsButton } from "@/components/registry/elements/documents-button";
 import { Grid } from "@/components/registry/layout/grid";
+import { GridItem } from "@/components/registry/layout/grid-item";
+import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
+import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
 // -- PLOP IMPORTS HERE --
 
 import { Block, DBComponent, RegistryCategory } from "./types";
@@ -65,6 +68,9 @@ export const COMPONENT_REGISTRY = {
   [Container.id]: Container,
   [DocumentsButton.id]: DocumentsButton,
   [Grid.id]: Grid,
+  [GridItem.id]: GridItem,
+  [UnderlinedTable.id]: UnderlinedTable,
+  [UnderlinedTableColumn.id]: UnderlinedTableColumn,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -109,6 +115,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Hero.id,
       Agenda.id,
       BorderedContainer.id,
+      UnderlinedTable.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
