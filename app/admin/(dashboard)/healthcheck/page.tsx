@@ -58,7 +58,7 @@ function ServiceCard({
   detail,
 }: ServiceCardProps) {
   return (
-    <div className="flex flex-col gap-3 p-5 rounded-xl border border-border bg-card shadow-sm transition-all">
+    <div className="flex flex-col justify-between gap-3 p-5 rounded-xl border border-border bg-card shadow-sm transition-all min-h-[110px]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-muted text-muted-foreground">
@@ -72,24 +72,23 @@ function ServiceCard({
         <StatusBadge status={status} />
       </div>
 
-      {(latencyMs !== undefined || detail) && (
-        <div className="flex flex-col gap-1 pt-2 border-t border-border/60">
-          {latencyMs !== undefined && (
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Latency</span>
-              <span className="font-mono font-medium">
-                {latencyMs}
-                <span className="text-muted-foreground ml-0.5">ms</span>
-              </span>
-            </div>
-          )}
-          {detail && (
-            <p className="text-xs text-muted-foreground italic truncate">
-              {detail}
-            </p>
-          )}
-        </div>
-      )}
+      <div className="flex flex-col gap-1 pt-2 border-t border-border/60">
+        {latencyMs !== undefined && (
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Latency</span>
+            <span className="font-mono font-medium">
+              {latencyMs}
+              <span className="text-muted-foreground ml-0.5">ms</span>
+            </span>
+          </div>
+        )}
+        {detail && (
+          <p className="text-xs text-muted-foreground italic truncate">
+            {detail}
+          </p>
+        )}
+        {latencyMs === undefined && !detail && <div className="h-4" />}
+      </div>
     </div>
   );
 }

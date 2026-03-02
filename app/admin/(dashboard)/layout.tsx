@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { authorize } from "@/lib/auth/authorize";
 import { redirect } from "next/navigation";
+import { UpdateNotifier } from "./components/UpdateNotifier";
 
 export default async function AdminDashboardLayout({
   children,
@@ -23,6 +24,7 @@ export default async function AdminDashboardLayout({
       </main>
       <SidebarTrigger className="md:hidden fixed top-4 left-4" />
       <Toaster richColors />
+      <UpdateNotifier />
     </SidebarProvider>
   );
 }

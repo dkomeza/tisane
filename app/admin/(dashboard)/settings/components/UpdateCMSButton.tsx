@@ -9,7 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { RefreshCw, Download, Info } from "lucide-react";
+import {
+  RefreshCw,
+  Download,
+  Info,
+  CheckCircle2,
+  ArrowUpCircle,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,14 +29,16 @@ interface GitHubRelease {
 export function UpdateCMSButton() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+  const [isUpToDate, setIsUpToDate] = useState(false);
   const [release, setRelease] = useState<GitHubRelease | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [hasErrored, setHasErrored] = useState(false);
 
   const currentVersion = process.env.NEXT_PUBLIC_APP_VERSION;
 
-  const checkForUpdates = async () => {
+  const checkForUpdates = async (silent = false) => {
     setIsChecking(true);
+    setIsUpToDate(false);
+    setRelease(null);
     try {
       const res = await fetch(
         "https://api.github.com/repos/dkomeza/tisane/releases/latest",
@@ -39,44 +47,32 @@ export function UpdateCMSButton() {
 
       const data: GitHubRelease = await res.json();
 
-      // If we're not running with a version (dev mode), or it's genuinely newer
       if (!currentVersion || data.tag_name !== currentVersion) {
+        // Show plaque — don't auto-open the modal
         setRelease(data);
-        setShowModal(true);
       } else {
-        toast.info(
-          `You are already running the latest version (${currentVersion}).`,
-        );
+        setIsUpToDate(true);
+        if (!silent) {
+          toast.info(
+            `You are already running the latest version (${currentVersion}).`,
+          );
+        }
       }
     } catch (e) {
       console.error(e);
-      toast.error("Failed to check for updates");
+      if (!silent) {
+        toast.error("Failed to check for updates");
+      }
     } finally {
       setIsChecking(false);
     }
   };
 
-  const checkUpdateStatus = async (
-    interval: NodeJS.Timeout,
-    toastId: string | number,
-  ) => {
-    try {
-      const res = await fetch("/api/admin/healthcheck");
-      if (res.ok && hasErrored) {
-        clearInterval(interval);
-        toast.success("Update completed! The system will restart shortly.", {
-          id: toastId,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        throw new Error("Update failed");
-      }
-    } catch (_) {
-      setHasErrored(true);
-    }
-  };
+  // Auto-check for updates on mount
+  useEffect(() => {
+    checkForUpdates(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleUpdate = async () => {
     setIsUpdating(true);
@@ -99,8 +95,27 @@ export function UpdateCMSButton() {
       });
 
       const updateToast = toast.loading("Updating system... ");
-      const interval = setInterval(() => {
-        checkUpdateStatus(interval, updateToast);
+
+      // Plain let variable so the setInterval callback always sees the
+      // latest value — React state gives a stale closure here.
+      let hasErrored = false;
+
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch("/api/admin/healthcheck");
+          if (res.ok && hasErrored) {
+            clearInterval(interval);
+            toast.success(
+              "Update completed! The system will restart shortly.",
+              { id: updateToast },
+            );
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+          }
+        } catch {
+          hasErrored = true;
+        }
       }, 500);
     } catch (error) {
       console.error(error);
@@ -115,22 +130,78 @@ export function UpdateCMSButton() {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <p className="text-sm font-medium text-muted-foreground">
           Current Version: {currentVersion || "Development / Unversioned"}
         </p>
-        <Button
-          onClick={checkForUpdates}
-          disabled={isChecking || isUpdating}
-          className="w-fit"
-        >
-          {isChecking ? (
-            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
+
+        {isChecking ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <RefreshCw className="w-4 h-4 animate-spin" />
+            Checking for updates…
+          </div>
+        ) : release ? (
+          <>
+            {/* Update available plaque */}
+            <div className="flex items-start gap-3 rounded-lg border border-blue-500/30 bg-blue-500/10 p-4 text-sm">
+              <ArrowUpCircle className="mt-0.5 w-5 h-5 shrink-0 text-blue-500" />
+              <div className="flex flex-col gap-1">
+                <p className="font-medium text-blue-700 dark:text-blue-300">
+                  Update available: {release.name || release.tag_name}
+                </p>
+                <p className="text-muted-foreground">
+                  A new version of Tisane is ready to install.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setShowModal(true)}
+                disabled={isUpdating}
+                className="w-fit"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                View Release Notes &amp; Update
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => checkForUpdates(false)}
+                disabled={isUpdating}
+                className="text-muted-foreground"
+              >
+                <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+                Re-check
+              </Button>
+            </div>
+          </>
+        ) : isUpToDate ? (
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+              <CheckCircle2 className="w-4 h-4" />
+              You&apos;re running the latest version.
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => checkForUpdates(false)}
+              disabled={isUpdating}
+              className="w-fit"
+            >
+              <RefreshCw className="w-3.5 h-3.5 mr-1.5" />
+              Re-check
+            </Button>
+          </div>
+        ) : (
+          <Button
+            onClick={() => checkForUpdates(false)}
+            disabled={isChecking || isUpdating}
+            className="w-fit"
+          >
             <Download className="w-4 h-4 mr-2" />
-          )}
-          {isChecking ? "Checking..." : "Check for Updates"}
-        </Button>
+            Check for Updates
+          </Button>
+        )}
       </div>
 
       <Dialog open={showModal} onOpenChange={setShowModal}>
