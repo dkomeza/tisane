@@ -96,27 +96,25 @@ export function UpdateCMSButton() {
 
       const updateToast = toast.loading("Updating system... ");
 
-      // Plain let variable so the setInterval callback always sees the
-      // latest value — React state gives a stale closure here.
-      let hasErrored = false;
+      // Snapshot the version that's running right now. As soon as the
+      // healthcheck returns a different version we know the new container is up.
+      const versionBeforeUpdate = process.env.NEXT_PUBLIC_APP_VERSION ?? null;
 
       const interval = setInterval(async () => {
         try {
           const res = await fetch("/api/admin/healthcheck");
-          if (res.ok && hasErrored) {
+          if (!res.ok) return; // container still restarting — keep polling
+          const data: { ok: boolean; version: string | null } =
+            await res.json();
+          if (data.version !== versionBeforeUpdate) {
             clearInterval(interval);
-            toast.success(
-              "Update completed! The system will restart shortly.",
-              { id: updateToast },
-            );
-            setTimeout(() => {
-              window.location.reload();
-            }, 2000);
+            toast.success("Update complete! Reloading…", { id: updateToast });
+            setTimeout(() => window.location.reload(), 1500);
           }
         } catch {
-          hasErrored = true;
+          // Network error → container is restarting, keep polling
         }
-      }, 500);
+      }, 1000);
     } catch (error) {
       console.error(error);
       toast.error(

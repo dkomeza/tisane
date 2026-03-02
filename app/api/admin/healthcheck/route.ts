@@ -62,7 +62,10 @@ export async function GET() {
   // Allow unauthenticated callers (e.g. Docker healthcheck probe) to get a
   // simple liveness response without exposing any internal service details.
   if (!authorized) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      version: process.env.NEXT_PUBLIC_APP_VERSION ?? null,
+    });
   }
 
   const [database, storage] = await Promise.all([
