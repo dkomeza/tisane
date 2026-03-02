@@ -2,7 +2,7 @@ services:
   app:
     container_name: prod_tisane
     labels:
-      - "com.containrrr.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.enable=true"
     image: ghcr.io/dkomeza/tisane:latest
     env_file:
       - .env
@@ -27,7 +27,7 @@ services:
   migrator:
     container_name: prod_tisane_migrator
     labels:
-      - "com.containrrr.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.enable=true"
     image: ghcr.io/dkomeza/tisane-builder:latest
     env_file:
       - .env
@@ -55,8 +55,6 @@ services:
 
   db:
     container_name: prod_tisane_postgres
-    labels:
-      - "com.containrrr.watchtower.enable=false"
     image: postgres:16
     restart: unless-stopped
     environment:
@@ -75,8 +73,6 @@ services:
 
   minio:
     container_name: prod_tisane_minio
-    labels:
-      - "com.containrrr.watchtower.enable=false"
     image: minio/minio:latest
     command: server /data --console-address ":9001"
     restart: unless-stopped
@@ -95,8 +91,6 @@ services:
 
   minio_init:
     container_name: prod_tisane_minio_init
-    labels:
-      - "com.containrrr.watchtower.enable=false"
     image: minio/mc
     depends_on:
       minio:
@@ -117,12 +111,10 @@ services:
 
   proxy:
     container_name: prod_tisane_proxy
-    labels:
-      - "com.containrrr.watchtower.enable=false"
     image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "3000:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
