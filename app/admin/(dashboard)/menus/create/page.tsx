@@ -4,16 +4,19 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { MenuForm } from "../components/MenuForm";
-import { CreateMenuRequest } from "@/lib/schemas/MenusSchema";
+import {
+  UpdateMenuRequest,
+  CreateMenuRequest,
+} from "@/lib/schemas/MenusSchema";
 import { createMenu } from "@/app/actions/menus/create-menu";
 
 export default function CreateMenuPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  function onSubmit(data: CreateMenuRequest) {
+  function onSubmit(data: UpdateMenuRequest) {
     startTransition(async () => {
-      const res = await createMenu(data);
+      const res = await createMenu(data as CreateMenuRequest);
 
       if (res.success) {
         toast.success("Menu created successfully");

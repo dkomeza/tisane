@@ -1,3 +1,5 @@
+"use cache";
+
 import { notFound } from "next/navigation";
 import { getCachedPageBySlug } from "@/lib/pages/lookup-service";
 import { Metadata } from "next";
