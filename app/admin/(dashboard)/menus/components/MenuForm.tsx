@@ -2,7 +2,12 @@
 
 import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateMenuSchema, CreateMenuRequest } from "@/lib/schemas/MenusSchema";
+import {
+  CreateMenuSchema,
+  CreateMenuRequest,
+  UpdateMenuRequest,
+  UpdateMenuSchema,
+} from "@/lib/schemas/MenusSchema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,13 +55,13 @@ export function MenuForm({
   isSubmitting,
 }: {
   defaultValues?: Partial<CreateMenuRequest>;
-  onSubmit: (data: CreateMenuRequest) => void;
+  onSubmit: (data: UpdateMenuRequest) => void;
   isSubmitting?: boolean;
 }) {
   const { blocks, build } = useCMSStore();
 
-  const form = useForm<CreateMenuRequest>({
-    resolver: zodResolver(CreateMenuSchema) as Resolver<CreateMenuRequest>,
+  const form = useForm<UpdateMenuRequest>({
+    resolver: zodResolver(UpdateMenuSchema) as Resolver<UpdateMenuRequest>,
     defaultValues: {
       title: "",
       slug: "",

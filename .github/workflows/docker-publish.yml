@@ -47,6 +47,8 @@ jobs:
           labels: ${{ steps.meta-builder.outputs.labels }}
           build-args: |
             APP_VERSION=${{ github.ref_name }}
+          secrets: |
+            env_file=build.env
 
       - name: Extract metadata (tags, labels) for final app
         id: meta-app
@@ -67,3 +69,5 @@ jobs:
           labels: ${{ steps.meta-app.outputs.labels }}
           build-args: |
             APP_VERSION=${{ github.ref_name }}
+          secrets: |
+            env_file=build.env
