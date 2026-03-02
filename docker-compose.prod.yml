@@ -1,8 +1,6 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/dkomeza/tisane:latest
     env_file:
       - .env
     depends_on:
@@ -26,10 +24,7 @@ services:
       retries: 3
 
   migrator:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
+    image: ghcr.io/dkomeza/tisane-builder:latest
     env_file:
       - .env
     command: npx prisma migrate deploy
@@ -39,6 +34,20 @@ services:
     networks:
       - tisane_net
     restart: "no"
+
+  watchtower:
+    container_name: tisane_watchtower
+    image: containrrr/watchtower
+    command: --http-api-update
+    environment:
+      - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - tisane_net
+    restart: unless-stopped
 
   db:
     container_name: tisane_postgres
