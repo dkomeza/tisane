@@ -45,8 +45,6 @@ services:
     command: --http-api-update --label-enable
     environment:
       - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
-    ports:
-      - "127.0.0.1:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
