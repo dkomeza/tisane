@@ -21,9 +21,7 @@ RUN DATABASE_URL="postgresql://user:password@localhost:5432/db?schema=public" np
 ARG APP_VERSION
 ENV NEXT_PUBLIC_APP_VERSION=$APP_VERSION
 
-RUN --mount=type=secret,id=env_file \
-    . /run/secrets/env_file && \
-    npm run build
+RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
