@@ -18,13 +18,19 @@ export async function POST() {
     );
   }
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 1000);
+
   try {
     const response = await fetch(watchtowerUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      signal: controller.signal,
     });
+
+    clearTimeout(timeout);
 
     if (!response.ok) {
       throw new Error(`Watchtower responded with status: ${response.status}`);
@@ -32,9 +38,18 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: "Update triggered successfully",
+      message: "Update started",
     });
   } catch (error) {
+    clearTimeout(timeout);
+
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json({
+        success: true,
+        message: "Update started",
+      });
+    }
+
     console.error("Failed to trigger update:", error);
     return NextResponse.json(
       { error: "Failed to trigger update" },

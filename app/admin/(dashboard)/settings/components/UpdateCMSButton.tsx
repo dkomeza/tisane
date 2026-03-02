@@ -25,6 +25,7 @@ export function UpdateCMSButton() {
   const [isChecking, setIsChecking] = useState(false);
   const [release, setRelease] = useState<GitHubRelease | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [hasErrored, setHasErrored] = useState(false);
 
   const currentVersion = process.env.NEXT_PUBLIC_APP_VERSION;
 
@@ -55,6 +56,28 @@ export function UpdateCMSButton() {
     }
   };
 
+  const checkUpdateStatus = async (
+    interval: NodeJS.Timeout,
+    toastId: string | number,
+  ) => {
+    try {
+      const res = await fetch("/");
+      if (res.ok && hasErrored) {
+        clearInterval(interval);
+        toast.success("Update completed! The system will restart shortly.", {
+          id: toastId,
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        throw new Error("Update failed");
+      }
+    } catch (_) {
+      setHasErrored(true);
+    }
+  };
+
   const handleUpdate = async () => {
     setIsUpdating(true);
     setShowModal(false);
@@ -74,6 +97,11 @@ export function UpdateCMSButton() {
       toast.success("Update triggered! The system will restart shortly.", {
         id: toastId,
       });
+
+      const updateToast = toast.loading("Updating system... ");
+      const interval = setInterval(() => {
+        checkUpdateStatus(interval, updateToast);
+      }, 500);
     } catch (error) {
       console.error(error);
       toast.error(
@@ -106,7 +134,7 @@ export function UpdateCMSButton() {
       </div>
 
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="sm:max-w-xl mx-12">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Info className="w-5 h-5 text-blue-500" />
@@ -125,9 +153,9 @@ export function UpdateCMSButton() {
               </pre>
             </ScrollArea>
             <p className="text-sm text-muted-foreground">
-              Clicking "Apply Update" will immediately restart the system. This
-              process takes approximately 10-30 seconds, during which the CMS
-              will be unavailable.
+              Clicking &quot;Apply Update&quot; will immediately restart the
+              system. This process takes approximately 10-30 seconds, during
+              which the CMS will be unavailable.
             </p>
           </div>
 
