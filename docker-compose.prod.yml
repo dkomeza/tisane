@@ -114,7 +114,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - app
+      app:
+        condition: service_healthy
       minio:
         condition: service_healthy
     networks:
