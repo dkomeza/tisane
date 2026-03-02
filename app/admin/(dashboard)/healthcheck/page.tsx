@@ -217,7 +217,7 @@ export default function HealthcheckPage() {
         <ServiceCard
           icon={<Cpu className="w-4 h-4" />}
           name="Application"
-          subtitle={data?.version ? `v${data.version}` : "Unversioned / Dev"}
+          subtitle={data?.version ? `${data.version}` : "Unversioned / Dev"}
           status={isLoading ? "loading" : data ? "healthy" : "loading"}
           latencyMs={undefined}
           detail={
