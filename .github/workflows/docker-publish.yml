@@ -28,25 +28,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for builder
-        id: meta-builder
+      - name: Extract metadata (tags, labels) for migrator
+        id: meta-migrator
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-builder
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-migrator
           tags: |
             type=raw,value=latest
+            type=semver,pattern={{version}}
 
-      - name: Build and push builder image
-        id: push-builder
+      - name: Build and push migrator image
+        id: push-migrator
         uses: docker/build-push-action@v6
         with:
           context: .
-          target: builder
+          target: migrator
           push: true
-          tags: ${{ steps.meta-builder.outputs.tags }}
-          labels: ${{ steps.meta-builder.outputs.labels }}
-          build-args: |
-            APP_VERSION=${{ github.ref_name }}
+          tags: ${{ steps.meta-migrator.outputs.tags }}
+          labels: ${{ steps.meta-migrator.outputs.labels }}
           secrets: |
             env_file=build.env
 

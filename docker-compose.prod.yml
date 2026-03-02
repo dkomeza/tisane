@@ -28,10 +28,9 @@ services:
     container_name: prod_tisane_migrator
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    image: ghcr.io/dkomeza/tisane-builder:latest
+    image: ghcr.io/dkomeza/tisane-migrator:latest
     env_file:
       - .env
-    command: npx prisma migrate deploy
     depends_on:
       db:
         condition: service_healthy

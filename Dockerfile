@@ -10,6 +10,16 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 
+# Lean migration image — only prisma CLI + schema, no app source
+FROM base AS migrator
+WORKDIR /app
+COPY --from=deps /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
+COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
+COPY prisma ./prisma
+ENV NODE_ENV=production
+CMD ["node_modules/.bin/prisma", "migrate", "deploy"]
+
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
