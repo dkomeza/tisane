@@ -6,8 +6,6 @@ const s3Endpoint = process.env.S3_PUBLIC_ENDPOINT
   ? new URL(process.env.S3_PUBLIC_ENDPOINT)
   : null;
 
-console.log(process.env);
-
 const nextConfig: NextConfig = {
   cacheComponents: true,
   output: "standalone",
