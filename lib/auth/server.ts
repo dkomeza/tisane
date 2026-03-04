@@ -5,12 +5,11 @@ import { nextCookies } from "better-auth/next-js";
 import { APIError, betterAuth } from "better-auth";
 import { resend } from "../resend";
 
-const baseURL = process.env.BETTER_AUTH_URL || "http://localhost:3000";
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  baseURL: process.env.SITE_URL,
   appName: "tisane",
   emailAndPassword: {
     enabled: true,
@@ -35,7 +34,6 @@ export const auth = betterAuth({
       }
     },
   },
-  baseURL,
   plugins: [admin(), nextCookies()],
 });
 

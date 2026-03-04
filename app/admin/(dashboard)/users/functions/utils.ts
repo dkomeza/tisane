@@ -23,12 +23,18 @@ export async function extractInviteToken(id: string) {
 }
 
 export async function sendInviteEmail(to: string, token: string) {
+  const siteUrl = process.env.SITE_URL;
+
+  if (!siteUrl) {
+    throw new Error("SITE_URL is not defined");
+  }
+
   return await resend.emails.send({
     from: process.env.EMAIL_FROM || "Tisane <onboarding@resend.dev>",
     to: [to],
     subject: "You're invited to join Tisane",
     react: InviteUserEmail({
-      inviteLink: `${process.env.BETTER_AUTH_URL || "http://localhost:3000"}/admin/signup?token=${token}`,
+      inviteLink: `${siteUrl}/admin/signup?token=${token}`,
     }),
   });
 }

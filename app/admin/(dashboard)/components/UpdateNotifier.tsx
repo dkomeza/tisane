@@ -77,7 +77,7 @@ export function UpdateNotifier() {
         const data: { tag_name: string; name: string } = await res.json();
 
         if (data.tag_name !== currentVersion) {
-          // localStorage.setItem(STORAGE_KEY, getTodayDateString());
+          localStorage.setItem(STORAGE_KEY, getTodayDateString());
           const versionName = data.name || data.tag_name;
           toast.custom(
             (t) => (

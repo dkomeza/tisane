@@ -77,7 +77,9 @@ export default function AdminMediaPage() {
         setMedia((prev) => prev.filter((item) => item.id !== id));
         toast.success("Media deleted successfully");
       } else {
-        toast.error("Failed to delete media: " + (result.error || "Unknown error"));
+        toast.error(
+          "Failed to delete media: " + (result.error || "Unknown error"),
+        );
       }
     } catch (err) {
       console.error(err);
@@ -107,12 +109,14 @@ export default function AdminMediaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] p-4 lg:p-8 text-zinc-100">
+    <div className="text-zinc-100 min-h-full">
       <div className="max-w-[1600px] mx-auto space-y-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Media</h1>
+            <h1 className="text-3xl font-bold text-white tracking-tight">
+              Media
+            </h1>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative w-full md:w-80">
@@ -157,14 +161,19 @@ export default function AdminMediaPage() {
                   onClick={() => setFilter("images")}
                   icon={<ImageIcon className="w-4 h-4" />}
                   label="Images"
-                  count={media.filter(m => m.mimeType?.startsWith("image/")).length}
+                  count={
+                    media.filter((m) => m.mimeType?.startsWith("image/")).length
+                  }
                 />
                 <FilterButton
                   active={filter === "documents"}
                   onClick={() => setFilter("documents")}
                   icon={<FileText className="w-4 h-4" />}
                   label="Documents"
-                  count={media.filter(m => !m.mimeType?.startsWith("image/")).length}
+                  count={
+                    media.filter((m) => !m.mimeType?.startsWith("image/"))
+                      .length
+                  }
                 />
               </CardContent>
             </Card>
@@ -177,12 +186,25 @@ export default function AdminMediaPage() {
                 <div className="flex items-center gap-2">
                   <div className="size-2 bg-brand-purple-200 rounded-full animate-pulse shadow-[0_0_10px_rgba(144,97,245,0.5)]" />
                   <span className="text-sm font-medium text-zinc-400">
-                    {loading ? "Refreshing..." : `${filteredMedia.length} results found`}
+                    {loading
+                      ? "Refreshing..."
+                      : `${filteredMedia.length} results found`}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" className="size-8 hover:bg-white/5" onClick={fetchMedia} disabled={loading}>
-                    <RefreshCwIcon className={cn("w-4 h-4 text-zinc-500", loading && "animate-spin")} />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 hover:bg-white/5"
+                    onClick={fetchMedia}
+                    disabled={loading}
+                  >
+                    <RefreshCwIcon
+                      className={cn(
+                        "w-4 h-4 text-zinc-500",
+                        loading && "animate-spin",
+                      )}
+                    />
                   </Button>
                 </div>
               </CardHeader>
@@ -193,8 +215,12 @@ export default function AdminMediaPage() {
                       <div className="p-4 bg-zinc-800/50 rounded-full mb-4 border border-zinc-700/50">
                         <File className="w-12 h-12 text-zinc-700" />
                       </div>
-                      <p className="text-lg font-medium text-zinc-400">No assets found</p>
-                      <p className="text-sm">Try adjusting your filters or search query.</p>
+                      <p className="text-lg font-medium text-zinc-400">
+                        No assets found
+                      </p>
+                      <p className="text-sm">
+                        Try adjusting your filters or search query.
+                      </p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 p-6">
@@ -220,12 +246,18 @@ export default function AdminMediaPage() {
   );
 }
 
-function FilterButton({ active, onClick, icon, label, count }: {
-  active: boolean,
-  onClick: () => void,
-  icon: React.ReactNode,
-  label: string,
-  count: number
+function FilterButton({
+  active,
+  onClick,
+  icon,
+  label,
+  count,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  count: number;
 }) {
   return (
     <button
@@ -235,27 +267,37 @@ function FilterButton({ active, onClick, icon, label, count }: {
         "w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all text-sm font-medium",
         active
           ? "bg-brand-purple-300 text-white shadow-lg shadow-brand-purple-300/20 translate-x-1"
-          : "text-zinc-400 hover:bg-white/5 hover:text-white"
+          : "text-zinc-400 hover:bg-white/5 hover:text-white",
       )}
     >
       <div className="flex items-center gap-3">
         {icon}
         {label}
       </div>
-      <span className={cn(
-        "text-[10px] px-1.5 py-0.5 rounded-md",
-        active ? "bg-white/20 text-white" : "bg-zinc-800 text-zinc-500"
-      )}>{count}</span>
+      <span
+        className={cn(
+          "text-[10px] px-1.5 py-0.5 rounded-md",
+          active ? "bg-white/20 text-white" : "bg-zinc-800 text-zinc-500",
+        )}
+      >
+        {count}
+      </span>
     </button>
   );
 }
 
-function MediaCard({ item, onCopy, onDelete, isDeleting, displayTitle }: {
-  item: Media,
-  onCopy: () => void,
-  onDelete: () => void,
-  isDeleting: boolean,
-  displayTitle: string
+function MediaCard({
+  item,
+  onCopy,
+  onDelete,
+  isDeleting,
+  displayTitle,
+}: {
+  item: Media;
+  onCopy: () => void;
+  onDelete: () => void;
+  isDeleting: boolean;
+  displayTitle: string;
 }) {
   const isImage = item.mimeType?.startsWith("image/");
 
@@ -284,21 +326,44 @@ function MediaCard({ item, onCopy, onDelete, isDeleting, displayTitle }: {
         {/* Overlay Actions */}
         <div className="absolute inset-0 bg-brand-purple-400/80 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3 p-4 backdrop-blur-md translate-y-4 group-hover:translate-y-0">
           <div className="flex items-center gap-2">
-            <Button size="icon" variant="ghost" className="size-9 bg-white text-brand-purple-300 hover:bg-brand-purple-50 rounded-full" onClick={() => window.open(item.url || "", "_blank")}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="size-9 bg-white text-brand-purple-300 hover:bg-brand-purple-50 rounded-full"
+              onClick={() => window.open(item.url || "", "_blank")}
+            >
               <ExternalLink className="w-4 h-4" />
             </Button>
-            <Button size="icon" variant="ghost" className="size-9 bg-white text-brand-purple-300 hover:bg-brand-purple-50 rounded-full" onClick={onCopy}>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="size-9 bg-white text-brand-purple-300 hover:bg-brand-purple-50 rounded-full"
+              onClick={onCopy}
+            >
               <Copy className="w-4 h-4" />
             </Button>
-            <Button size="icon" variant="ghost" className="size-9 bg-red-500 text-white hover:bg-red-600 rounded-full" onClick={onDelete} disabled={isDeleting}>
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="size-9 bg-red-500 text-white hover:bg-red-600 rounded-full"
+              onClick={onDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
             </Button>
           </div>
         </div>
       </div>
 
       <div className="px-1">
-        <p className="text-xs font-bold text-zinc-100 line-clamp-1 mb-0.5 capitalize" title={displayTitle}>
+        <p
+          className="text-xs font-bold text-zinc-100 line-clamp-1 mb-0.5 capitalize"
+          title={displayTitle}
+        >
           {displayTitle}
         </p>
         <p className="text-[10px] font-medium text-zinc-500 flex items-center justify-between">

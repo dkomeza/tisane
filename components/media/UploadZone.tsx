@@ -51,7 +51,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
 
             const presignedData = await getPresignedUploadUrl(
               file.name,
-              file.type
+              file.type,
             );
 
             if (
@@ -59,6 +59,9 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               !presignedData.url ||
               !presignedData.fields
             ) {
+              if (presignedData.error) {
+                console.error("Failed to get upload URL:", presignedData.error);
+              }
               throw new Error(`Failed to get upload URL for ${file.name}`);
             }
 
@@ -75,7 +78,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
               if (event.lengthComputable) {
                 const filePercent = event.loaded / event.total;
                 const totalProgress = Math.round(
-                  ((completedFiles + filePercent) / totalFiles) * 100
+                  ((completedFiles + filePercent) / totalFiles) * 100,
                 );
                 setProgress(totalProgress);
               }
@@ -88,7 +91,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
                   file.type,
                   file.size,
                   width,
-                  height
+                  height,
                 );
                 completedFiles++;
                 resolve();
@@ -113,16 +116,16 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         }
         toast.success("Upload successful!");
         if (onUploadComplete) onUploadComplete();
-      } catch (err: any) {
+      } catch (err) {
         console.error(err);
-        setError(err.message || "Upload failed");
+        setError(err instanceof Error ? err.message : "Upload failed");
         toast.error("Upload failed");
       } finally {
         setIsUploading(false);
         setProgress(0);
       }
     },
-    [onUploadComplete]
+    [onUploadComplete],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -132,9 +135,8 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
       "image/*": [],
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-        ".docx",
-      ],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        [".docx"],
     },
 
     maxSize: 50 * 1024 * 1024,
@@ -167,7 +169,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
           </div>
         ) : (
           <>
-            <div className="p-3 rounded-full text-white text-gray-600">
+            <div className="p-3 rounded-full text-white">
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">

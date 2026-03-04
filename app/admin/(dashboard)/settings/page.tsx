@@ -14,7 +14,6 @@ export default async function SettingsPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
       </div>
-
       <div className="flex flex-col gap-4 bg-muted/30 p-6 rounded-lg border border-border">
         <div>
           <h2 className="text-xl font-semibold mb-1">System Updates</h2>

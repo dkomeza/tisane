@@ -6,15 +6,22 @@ import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { refresh } from "next/cache";
-const ALLOWED_PREFIXES = ["image/", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+const ALLOWED_PREFIXES = [
+  "image/",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 const URL_EXPIRATION_SECONDS = 3600; // 1 Hour
 
 export async function getPresignedUploadUrl(
   filename: string,
-  contentType: string
+  contentType: string,
 ) {
-  const isAllowed = ALLOWED_PREFIXES.some(prefix => contentType.startsWith(prefix));
+  const isAllowed = ALLOWED_PREFIXES.some((prefix) =>
+    contentType.startsWith(prefix),
+  );
   if (!isAllowed) {
     throw new Error("Only images and documents are allowed");
   }
@@ -37,9 +44,12 @@ export async function getPresignedUploadUrl(
     });
 
     return { success: true, url, fields, key };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Presigned URL error:", error);
-    return { success: false, error: error.message };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -48,7 +58,7 @@ export async function registerMediaInDb(
   type: string,
   size: number,
   width: number,
-  height: number
+  height: number,
 ) {
   try {
     const media = await prisma.media.create({
@@ -65,9 +75,12 @@ export async function registerMediaInDb(
 
     refresh();
     return { success: true, data: media };
-  } catch (error: any) {
+  } catch (error) {
     console.error("DB Register error:", error);
-    return { success: false, error: error.message };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 
@@ -94,7 +107,7 @@ export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
           expiresIn: URL_EXPIRATION_SECONDS,
         });
         return { ...item, url: signedUrl };
-      })
+      }),
     );
 
     return {
@@ -123,18 +136,18 @@ export async function deleteMedia(id: string) {
       new DeleteObjectCommand({
         Bucket: media.bucket,
         Key: media.key,
-      })
+      }),
     );
 
     await prisma.media.delete({ where: { id } });
 
     return { success: true, id };
-  } catch (err: any) {
+  } catch (err) {
     console.error("[Delete Action] CRITICAL FAILURE:", err);
 
     return {
       success: false,
-      error: err.message || "Delete operation failed",
+      error: err instanceof Error ? err.message : "Delete operation failed",
     };
   }
 }

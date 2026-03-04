@@ -1,6 +1,6 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -9,19 +9,21 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-
 # Lean migration image — only prisma CLI + schema, no app source
 FROM base AS migrator
 WORKDIR /app
-COPY --from=deps /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-COPY --from=deps /app/node_modules/prisma ./node_modules/prisma
-COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
+COPY package.json package-lock.json ./
+RUN npm init -y && \
+    PRISMA_VERSION=$(node -e "const pkg = require('./package.json'); console.log(pkg.devDependencies?.prisma || pkg.dependencies?.prisma || 'latest')") && \
+    npm install prisma@$PRISMA_VERSION dotenv
 COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 ENV NODE_ENV=production
-CMD ["node_modules/.bin/prisma", "migrate", "deploy"]
+CMD ["npx", "prisma", "migrate", "deploy"]
 
 FROM base AS builder
 WORKDIR /app
+RUN apk add --no-cache libc6-compat
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 

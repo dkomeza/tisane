@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:pre": "docker compose -f docker-compose.dev.yml --env-file .env.development up -d && next dev -p 3001",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

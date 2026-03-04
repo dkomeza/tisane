@@ -6,22 +6,23 @@ const s3Endpoint = process.env.S3_PUBLIC_ENDPOINT
   ? new URL(process.env.S3_PUBLIC_ENDPOINT)
   : null;
 
+console.log(process.env);
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   output: "standalone",
   images: {
     dangerouslyAllowLocalIP: development,
-    remotePatterns:
-      development && s3Endpoint
-        ? ([
-            {
-              protocol: s3Endpoint.protocol.replace(":", ""),
-              hostname: s3Endpoint.hostname,
-              port: s3Endpoint.port,
-              pathname: "/**",
-            },
-          ] as RemotePattern[])
-        : undefined,
+    remotePatterns: s3Endpoint
+      ? ([
+          {
+            protocol: s3Endpoint.protocol.replace(":", ""),
+            hostname: s3Endpoint.hostname,
+            port: s3Endpoint.port,
+            pathname: "/**",
+          },
+        ] as RemotePattern[])
+      : undefined,
   },
 };
 
