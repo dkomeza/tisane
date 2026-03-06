@@ -59,17 +59,24 @@ export async function registerMediaInDb(
   size: number,
   width: number,
   height: number,
+  folderId?: string | null,
+  displayName?: string,
 ) {
   try {
+    // Derive a display name from the key if not provided
+    const name = displayName || key.replace(/^\d+-/, "");
+
     const media = await prisma.media.create({
       data: {
         key,
         url: "",
+        name,
         mimeType: type,
         size: size,
         width: width,
         height: height,
         bucket: process.env.S3_BUCKET!,
+        folderId: folderId || null,
       },
     });
 
@@ -84,17 +91,27 @@ export async function registerMediaInDb(
   }
 }
 
-export async function getMediaList({ page = 1, pageSize = 20 } = {}) {
+export async function getMediaList({
+  page = 1,
+  pageSize = 20,
+  folderId = undefined as string | null | undefined,
+} = {}) {
   const skip = (page - 1) * pageSize;
+
+  // folderId === undefined means all media (no folder filter)
+  // folderId === null means root media (not in any folder)
+  // folderId === "some-id" means media in that specific folder
+  const where = folderId !== undefined ? { folderId } : {};
 
   try {
     const [items, total] = await Promise.all([
       prisma.media.findMany({
+        where,
         skip,
         take: pageSize,
         orderBy: { createdAt: "desc" },
       }),
-      prisma.media.count(),
+      prisma.media.count({ where }),
     ]);
 
     const itemsWithSignedUrls = await Promise.all(
@@ -148,6 +165,38 @@ export async function deleteMedia(id: string) {
     return {
       success: false,
       error: err instanceof Error ? err.message : "Delete operation failed",
+    };
+  }
+}
+
+export async function renameMedia(id: string, name: string) {
+  try {
+    const media = await prisma.media.update({
+      where: { id },
+      data: { name },
+    });
+    return { success: true, data: media };
+  } catch (error) {
+    console.error("Rename media error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to rename media",
+    };
+  }
+}
+
+export async function moveMedia(id: string, folderId: string | null) {
+  try {
+    const media = await prisma.media.update({
+      where: { id },
+      data: { folderId },
+    });
+    return { success: true, data: media };
+  } catch (error) {
+    console.error("Move media error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to move media",
     };
   }
 }
