@@ -14,8 +14,14 @@ import {
   SelectSeparator,
 } from "@/components/ui/select";
 import { Editor, useEditorState } from "@tiptap/react";
+import { useRef } from "react";
 
 export default function TextTypeSelector({ editor }: { editor: Editor }) {
+  // Track whether the dropdown was opened by user interaction.
+  // This prevents onValueChange from firing when the controlled
+  // value changes due to editor selection changes (e.g. CMD+A).
+  const userOpenedRef = useRef(false);
+
   const current = useEditorState({
     editor,
     selector: ({ editor }) => {
@@ -37,22 +43,40 @@ export default function TextTypeSelector({ editor }: { editor: Editor }) {
     <Tooltip>
       <Select
         value={current}
-        onValueChange={(value) => {
-          if (value.startsWith("h")) {
-            editor
-              .chain()
-              .focus()
-              .setHeading({
-                level: Number(value.replace("h", "")) as 1 | 2 | 3 | 4 | 5 | 6,
-              })
-              .run();
-          } else {
-            editor
-              .chain()
-              .focus()
-              .setNode("paragraph", { variant: value })
-              .run();
+        onOpenChange={(open) => {
+          if (open) userOpenedRef.current = true;
+          if (!open) {
+            // Reset after a tick so onValueChange can still read it
+            setTimeout(() => {
+              userOpenedRef.current = false;
+            }, 0);
           }
+        }}
+        onValueChange={(value) => {
+          if (!userOpenedRef.current) return;
+          setTimeout(() => {
+            if (value.startsWith("h")) {
+              editor
+                .chain()
+                .focus()
+                .setHeading({
+                  level: Number(value.replace("h", "")) as
+                    | 1
+                    | 2
+                    | 3
+                    | 4
+                    | 5
+                    | 6,
+                })
+                .run();
+            } else {
+              editor
+                .chain()
+                .focus()
+                .setNode("paragraph", { variant: value })
+                .run();
+            }
+          }, 0);
         }}
       >
         <TooltipTrigger asChild>
