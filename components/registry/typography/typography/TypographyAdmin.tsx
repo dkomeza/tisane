@@ -19,7 +19,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Separator } from "@/components/ui/separator";
 
 import { Heading as CMSHeading } from "../heading";
-import { Paragraph as CMSParagraph } from "../paragraph";
+import { Paragraph as CMSParagraph, ParagraphClient } from "../paragraph";
 import { nanoid } from "nanoid";
 import TextTypeSelector from "./components/TextTypeSelector";
 import HistoryButtons from "./components/HistoryButtons";
@@ -47,12 +47,9 @@ const ParagraphNodeView = (props: NodeViewProps) => {
 
   return (
     <NodeViewWrapper className="paragraph-wrapper">
-      <CMSParagraph.ClientComponent
-        id={nanoid(8)}
-        data={{ textAlign, variant }}
-      >
+      <ParagraphClient id={nanoid(8)} data={{ textAlign, variant }} as="div">
         <NodeViewContent />
-      </CMSParagraph.ClientComponent>
+      </ParagraphClient>
     </NodeViewWrapper>
   );
 };
@@ -79,6 +76,7 @@ export function TypographyAdmin({
       StarterKit.configure({
         paragraph: false,
         heading: false,
+        link: false,
       }),
       Heading.extend({
         addNodeView() {
