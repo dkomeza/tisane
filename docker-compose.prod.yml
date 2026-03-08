@@ -41,7 +41,7 @@ services:
   watchtower:
     container_name: prod_tisane_watchtower
     image: containrrr/watchtower
-    command: --http-api-update --label-enable
+    command: --http-api-update --label-enable --include-stopped --revive-stopped
     environment:
       - WATCHTOWER_HTTP_API_TOKEN=${WATCHTOWER_HTTP_API_TOKEN}
     volumes:

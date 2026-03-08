@@ -12,9 +12,10 @@ RUN npm ci
 # Lean migration image — only prisma CLI + schema, no app source
 FROM base AS migrator
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm init -y && \
-    PRISMA_VERSION=$(node -e "const pkg = require('./package.json'); console.log(pkg.devDependencies?.prisma || pkg.dependencies?.prisma || 'latest')") && \
+COPY package.json ./
+RUN PRISMA_VERSION=$(node -e "const pkg = require('./package.json'); console.log(pkg.devDependencies?.prisma || pkg.dependencies?.prisma || 'latest')") && \
+    rm package.json && \
+    npm init -y && \
     npm install prisma@$PRISMA_VERSION dotenv
 COPY prisma ./prisma
 COPY prisma.config.ts ./prisma.config.ts
