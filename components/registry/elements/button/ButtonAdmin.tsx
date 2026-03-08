@@ -60,7 +60,7 @@ export function ButtonAdmin({
       <PopoverTrigger asChild>
         <div className="relative group/button cursor-pointer inline-block">
           {/* Hover outline */}
-          <div className="transition-all duration-200 pointer-events-none opacity-100 group-hover/button:opacity-50">
+          <div className="transition-all duration-200 pointer-events-none opacity-100 group-hover/button:opacity-50 flex flex-col">
             <ButtonClient id={id} data={data} />
           </div>
         </div>

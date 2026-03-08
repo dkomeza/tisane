@@ -15,6 +15,12 @@ export type CMSStore = {
     data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>,
   ) => void;
   addBlock: (block: Block, parentId?: string, propertyName?: string) => void;
+  insertBlock: (
+    block: Block,
+    index: number,
+    parentId?: string,
+    propertyName?: string,
+  ) => void;
   moveBlock: (
     parentId: string,
     fromKey: string,

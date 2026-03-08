@@ -140,6 +140,45 @@ export const useCMSStore = create<CMSStore>()(
         }
       }),
 
+    insertBlock: (block, index, parentId, propertyName = "children") =>
+      set((state) => {
+        if (!parentId) {
+          state.blocks.splice(index, 0, block);
+          return;
+        }
+
+        const findAndInsert = (
+          node: Draft<Block> | Draft<Block>[],
+        ): boolean => {
+          if (!node || typeof node !== "object") return false;
+
+          if (!Array.isArray(node) && node.id === parentId) {
+            const key = propertyName as keyof typeof node.data;
+            if (Array.isArray(node.data[key])) {
+              // @ts-expect-error We can't be sure of the type here
+              node.data[key].splice(index, 0, block);
+            }
+            return true;
+          }
+
+          if (Array.isArray(node)) {
+            for (const item of node) {
+              if (findAndInsert(item)) return true;
+            }
+          } else {
+            for (const key in node.data) {
+              const property = node.data[key as keyof typeof node.data];
+              if (findAndInsert(property)) return true;
+            }
+          }
+          return false;
+        };
+
+        if (!findAndInsert(state.blocks)) {
+          console.warn("Failed to insert block:", block);
+        }
+      }),
+
     moveBlock: (parentId, fromKey, toKey, itemId, overId) =>
       set((state) => {
         const findBlock = (

@@ -10,13 +10,13 @@ export function UnderlinedCardClient({
 }: BlockProps<UnderlinedCardProps>) {
   return (
     <div
-      className="w-full border-b flex flex-col gap-6 pb-4"
+      className="w-full border-b flex flex-col gap-6 pb-4 h-full"
       style={{
         borderBottomColor: data.underlineColor,
         width: data.width,
       }}
     >
-      <div className="overflow-hidden flex">
+      <div className="overflow-hidden flex [&>img]:object-cover flex-1">
         {data.mediaId ? (
           <ImageClient data={{ mediaId: data.mediaId }} id={`${id}-image`} />
         ) : (
