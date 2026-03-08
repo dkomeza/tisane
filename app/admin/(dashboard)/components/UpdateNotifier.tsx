@@ -23,7 +23,7 @@ function UpdateToast({
   onGoToSettings,
 }: UpdateToastProps) {
   return (
-    <div className="flex items-start gap-3 w-full rounded-lg bg-blue-500/10 px-4 py-3 border border-blue-500/30">
+    <div className="flex items-start gap-3 w-full rounded-lg bg-blue-500/10 px-4 py-3 border border-blue-500/30 backdrop-blur-lg">
       <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/15">
         <ArrowUpCircle className="h-4 w-4 text-blue-500" />
       </div>
