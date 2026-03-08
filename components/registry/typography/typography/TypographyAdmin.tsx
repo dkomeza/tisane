@@ -1,12 +1,11 @@
 "use client";
 
 import { AdminBlockProps, Block } from "@/components/registry/types";
-import { TypographyProps } from ".";
+import { TypographyProps, Typography } from ".";
 
 import {
   useEditor,
   EditorContent,
-  Editor,
   NodeViewWrapper,
   NodeViewContent,
   ReactNodeViewRenderer,
@@ -17,23 +16,17 @@ import Heading from "@tiptap/extension-heading";
 import Paragraph from "@tiptap/extension-paragraph";
 import TextAlign from "@tiptap/extension-text-align";
 
-import { Button } from "@/components/ui/button";
-import { ChevronDownIcon } from "lucide-react";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { Separator } from "@/components/ui/separator";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import { Heading as CMSHeading } from "../heading";
-import { Paragraph as CMSParagraph } from "../paragraph";
+import { Paragraph as CMSParagraph, ParagraphClient } from "../paragraph";
 import { nanoid } from "nanoid";
 import TextTypeSelector from "./components/TextTypeSelector";
 import HistoryButtons from "./components/HistoryButtons";
 import AlignmentSelector from "./components/AlignmentSelector";
 import FloatingMenu from "./components/FloatingMenu";
+
+import { useEffect, useRef, useState } from "react";
 
 export const EditableHeading = (props: NodeViewProps) => {
   const { level, textAlign } = props.node.attrs;
@@ -54,100 +47,16 @@ const ParagraphNodeView = (props: NodeViewProps) => {
 
   return (
     <NodeViewWrapper className="paragraph-wrapper">
-      <CMSParagraph.ClientComponent
-        id={nanoid(8)}
-        data={{ textAlign, variant }}
-      >
+      <ParagraphClient id={nanoid(8)} data={{ textAlign, variant }} as="div">
         <NodeViewContent />
-      </CMSParagraph.ClientComponent>
+      </ParagraphClient>
     </NodeViewWrapper>
   );
 };
 
-
-
-function ColorSelector({ editor }: { editor: Editor }) {
-  const colorToBrandName = (color: string, variant: number) => {
-    return `--color-brand-${color.toLowerCase()}-${variant}`;
-  };
-
-  const colors: {
-    name: string;
-    values: number[];
-    primary: number;
-  }[] = [
-    {
-      name: "Orange",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Pink",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Purple",
-      values: [100, 200, 300, 400, 500],
-      primary: 3,
-    },
-    {
-      name: "Grey",
-      values: [100, 200, 300, 400, 500, 600],
-      primary: 5,
-    },
-  ];
-
-  return (
-    <div className="flex item-center gap-2">
-      {colors.map((colorGroup) => (
-        <Popover key={colorGroup.name}>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              key={colorGroup.name}
-              className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
-              style={{
-                backgroundColor: `var(${colorToBrandName(
-                  colorGroup.name,
-                  colorGroup.values[colorGroup.primary],
-                )})`,
-              }}
-            >
-              <ChevronDownIcon className="mt-0.5 size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <div className="grid grid-cols-3 gap-2 p-2">
-              {colorGroup.values.map((variant) => (
-                <button
-                  type="button"
-                  key={variant}
-                  className="w-6 h-6 rounded-full border-2 border-border"
-                  style={{
-                    backgroundColor: `var(${colorToBrandName(
-                      colorGroup.name,
-                      variant,
-                    )})`,
-                  }}
-                />
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
-      ))}
-      <button
-        type="button"
-        className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center group"
-      >
-        <ChevronDownIcon className="mt-0.5 size-4" />
-      </button>
-    </div>
-  );
-}
-
 /**
  * This is the admin component used to edit the component's data in the CMS.
+ * It renders the client typography by default, and swaps to a TipTap editor on click.
  */
 export function TypographyAdmin({
   id,
@@ -155,6 +64,8 @@ export function TypographyAdmin({
 }: AdminBlockProps<TypographyProps>) {
   const { getBlock, updateBlock } = useStore();
   const block = getBlock(id) as Block<"typography">;
+  const [isEditing, setIsEditing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const initialContent =
     block?.data?.content ||
@@ -165,6 +76,7 @@ export function TypographyAdmin({
       StarterKit.configure({
         paragraph: false,
         heading: false,
+        link: false,
       }),
       Heading.extend({
         addNodeView() {
@@ -199,32 +111,69 @@ export function TypographyAdmin({
     },
     editorProps: {
       attributes: {
-        class: "min-h-[150px] h-full outline-none prose max-w-none prose",
+        class: "min-h-[50px] h-full outline-none prose max-w-none prose",
       },
     },
   });
 
+  // Click-outside handler to exit editing mode
+  useEffect(() => {
+    if (!isEditing) return;
+
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setIsEditing(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isEditing]);
+
+  // Focus editor when entering edit mode (deferred to avoid flushSync during render)
+  useEffect(() => {
+    if (isEditing && editor) {
+      const timer = setTimeout(() => editor.commands.focus("end"), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isEditing, editor]);
+
   if (!block) return null;
 
   return (
-    <div className="flex-1 flex flex-col">
-      {editor && (
-        <>
-          <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4">
-            <HistoryButtons editor={editor} />
-            <Separator orientation="vertical" className="h-7!" />
-            <TextTypeSelector editor={editor} />
-            <Separator orientation="vertical" className="h-7!" />
-            <AlignmentSelector editor={editor} />
+    <div ref={containerRef} className="flex-1 flex flex-col">
+      {/* Read-only: render client component with hover hint */}
+      {!isEditing && (
+        <div
+          className="relative group/typography cursor-text"
+          onClick={() => setIsEditing(true)}
+        >
+          <div className="transition-all duration-200 opacity-100 group-hover/typography:opacity-50">
+            <Typography.ClientComponent id={id} data={block.data} />
           </div>
-
-          <FloatingMenu editor={editor} />
-        </>
+        </div>
       )}
-      <EditorContent
-        className="border border-border bg-muted/30 p-4 rounded-lg rounded-t-sm flex-1"
-        editor={editor}
-      />
+
+      {/* Editing: render TipTap editor (always mounted, hidden when not editing) */}
+      <div className={isEditing ? "flex-1 flex flex-col" : "hidden"}>
+        {editor && (
+          <>
+            <div className="border border-border bg-muted/50 rounded-lg rounded-b-sm mb-2 p-4 py-3 flex items-center gap-4">
+              <HistoryButtons editor={editor} />
+              <Separator orientation="vertical" className="h-7!" />
+              <TextTypeSelector editor={editor} />
+              <Separator orientation="vertical" className="h-7!" />
+              <AlignmentSelector editor={editor} />
+            </div>
+
+            <FloatingMenu editor={editor} />
+          </>
+        )}
+        <EditorContent className="rounded-t-sm flex-1" editor={editor} />
+      </div>
     </div>
   );
 }

@@ -15,18 +15,35 @@ model Setting {
   @@map("settings")
 }
 
+model MediaFolder {
+  id        String        @id @default(cuid())
+  name      String
+  parentId  String?
+  parent    MediaFolder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  MediaFolder[] @relation("FolderTree")
+  media     Media[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([parentId])
+}
+
 model Media {
-  id        String   @id @default(cuid())
-  key       String   @unique
+  id        String       @id @default(cuid())
+  key       String       @unique
   url       String
+  name      String?
   alt       String?
   mimeType  String
   size      Int
-  width     Int      @default(0)
-  height    Int      @default(0)
+  width     Int          @default(0)
+  height    Int          @default(0)
   bucket    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  folderId  String?
+  folder    MediaFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   @@index([bucket])
+  @@index([folderId])
 }

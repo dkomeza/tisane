@@ -40,10 +40,14 @@ export const Paragraph: CMSComponent<"paragraph", ParagraphProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function ParagraphClient({
+export function ParagraphClient({
   data,
   children,
-}: BlockProps<ParagraphProps> & { children?: React.ReactNode }) {
+  as = "p",
+}: BlockProps<ParagraphProps> & {
+  children?: React.ReactNode;
+  as?: "p" | "div";
+}) {
   const typography = {
     "body-l": "text-body-l",
     "body-m": "text-body-m",
@@ -58,10 +62,12 @@ function ParagraphClient({
   const variantClass = typography[data.variant || "body-m"];
   const textAlignClass = typography[data.textAlign || "left"];
 
+  const Tag = as;
+
   return (
-    <div className={`${variantClass} ${textAlignClass}`}>
+    <Tag className={`${variantClass} ${textAlignClass}`}>
       {data.text ? data.text : children}
-    </div>
+    </Tag>
   );
 }
 

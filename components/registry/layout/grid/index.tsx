@@ -3,7 +3,6 @@
  */
 
 import {
-  AdminBlockProps,
   Block,
   BlockProps,
   CMSComponent,
@@ -18,6 +17,7 @@ import GridAdmin from "./AdminComponent";
 export type GridProps = {
   columns: number;
   gap: number;
+  rowAspectRatio: "auto" | "square" | "video" | "4/3" | "3/4";
   children?: DBComponent<"grid-item">[];
 };
 
@@ -32,6 +32,9 @@ export const Grid: CMSComponent<"grid", GridProps> = {
   Schema: z.object({
     columns: z.number().min(1).max(12).default(4),
     gap: z.number().min(0).max(12).default(4),
+    rowAspectRatio: z
+      .enum(["auto", "square", "video", "4/3", "3/4"])
+      .default("auto"),
     children: z.array(z.lazy(() => DBComponentSchema)).optional() as z.ZodType<
       DBComponent<"grid-item">[] | undefined
     >,
@@ -42,11 +45,25 @@ export const Grid: CMSComponent<"grid", GridProps> = {
  * This is the client-side component that will be rendered in the application.
  */
 function GridClient({ data }: BlockProps<GridProps>) {
+  const ratioMultiplier =
+    data.rowAspectRatio === "square"
+      ? 1
+      : data.rowAspectRatio === "video"
+        ? 9 / 16
+        : data.rowAspectRatio === "4/3"
+          ? 3 / 4
+          : data.rowAspectRatio === "3/4"
+            ? 4 / 3
+            : null;
+
   return (
     <div
-      className={cn("grid w-full h-full", `gap-${data.gap}`)}
+      className={cn("grid w-full h-full @container", `gap-${data.gap}`)}
       style={{
         gridTemplateColumns: `repeat(${data.columns}, minmax(0, 1fr))`,
+        ...(ratioMultiplier && {
+          gridAutoRows: `calc((100cqw - ${(data.columns - 1) * (data.gap * 0.25)}rem) / ${data.columns} * ${ratioMultiplier})`,
+        }),
       }}
     >
       {data.children?.map((child, index) => {
@@ -60,11 +77,19 @@ function GridClient({ data }: BlockProps<GridProps>) {
         >;
 
         return (
-          <ClientComp
+          <div
             key={(child as unknown as Block).id || index}
-            id={(child as unknown as Block).id || `child-${index}`}
-            data={child.data}
-          />
+            className="w-full h-full"
+            style={{
+              gridColumn: `span ${child.data.colSpan} / span ${child.data.colSpan}`,
+              gridRow: `span ${child.data.rowSpan} / span ${child.data.rowSpan}`,
+            }}
+          >
+            <ClientComp
+              id={(child as unknown as Block).id || `child-${index}`}
+              data={child.data}
+            />
+          </div>
         );
       })}
     </div>

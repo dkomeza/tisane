@@ -11,9 +11,10 @@ import { UploadCloud } from "lucide-react";
 
 interface UploadZoneProps {
   onUploadComplete?: () => void;
+  folderId?: string | null;
 }
 
-export function UploadZone({ onUploadComplete }: UploadZoneProps) {
+export function UploadZone({ onUploadComplete, folderId }: UploadZoneProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +93,8 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
                   file.size,
                   width,
                   height,
+                  folderId,
+                  file.name,
                 );
                 completedFiles++;
                 resolve();
@@ -125,7 +128,7 @@ export function UploadZone({ onUploadComplete }: UploadZoneProps) {
         setProgress(0);
       }
     },
-    [onUploadComplete],
+    [onUploadComplete, folderId],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

@@ -47,6 +47,7 @@ import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 import { ContentPreview } from "./ContentPreview";
 import { useCMSStore } from "@/components/registry/CMSStore";
+import { InsertionLine } from "@/components/registry/InsertionLine";
 
 const slugify = (text: string) =>
   text
@@ -183,12 +184,12 @@ function MatadataForm({
 }
 
 function ContentForm() {
-  const { blocks, addBlock } = useCMSStore();
+  const { blocks, addBlock, insertBlock } = useCMSStore();
 
   return (
     <div className="flex-1 flex p-6">
       <div className="flex-1 flex flex-col gap-4 overflow-scroll">
-        {blocks.map((block) => {
+        {blocks.map((block, index) => {
           const component = COMPONENT_REGISTRY[block.type];
           if (!component) return null;
 
@@ -197,15 +198,18 @@ function ContentForm() {
           >;
 
           return (
-            <div
-              key={block.id}
-              className="bg-secondary/20 rounded-md p-4 flex justify-center-safe"
-            >
-              <AdminComponent
-                id={block.id}
-                data={block.data}
-                useStore={useCMSStore}
+            <div key={block.id} className="flex flex-col gap-0">
+              <InsertionLine
+                rootOnly
+                onInsert={(newBlock) => insertBlock(newBlock, index)}
               />
+              <div className="bg-secondary/20 rounded-md p-4 flex justify-center-safe">
+                <AdminComponent
+                  id={block.id}
+                  data={block.data}
+                  useStore={useCMSStore}
+                />
+              </div>
             </div>
           );
         })}
