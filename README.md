@@ -2,7 +2,25 @@
 
 Tisane is the official website for the AGH IT Future Day event. It is built with modern web technologies to provide a fast, responsive, and visually appealing experience.
 
-The project is currently in active development, with plans to evolve into a fully custom Content Management System (CMS) to manage event content dynamically.
+## Running in Production
+
+To run the Tisane website in production, you can use Docker Compose. Make sure to set up your `.env` file with the necessary environment variables (see `.env.example` for reference).
+
+1. Clone the repository:
+
+   ```bash
+   git clone --depth 1 https://github.com/dkomeza/tisane.git
+   cd tisane
+   ```
+
+2. Create a `.env` file based on the provided `.env.example` and fill in the required values.
+3. Start the application using Docker Compose:
+
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d
+   ```
+
+This will start the Tisane application along with its dependencies (PostgreSQL and MinIO). The website will be accessible at `http://localhost:3000`.
 
 ## 🚀 Tech Stack
 
@@ -11,7 +29,7 @@ The project is currently in active development, with plans to evolve into a full
 - **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/), [Lucide React](https://lucide.dev/)
 - **Animations:** [GSAP](https://gsap.com/), [tw-animate-css](https://github.com/ikatyang/tw-animate-css)
-- **Database (Planned):** PostgreSQL with Drizzle ORM
+- **Database:** PostgreSQL with Prisma ORM
 
 ## ✨ Features
 
@@ -76,7 +94,7 @@ npm start
 - `app/`: Next.js App Router pages and layouts.
 - `app/sections/`: Modular components for the landing page sections.
 - `components/`: Reusable UI components (buttons, inputs, etc.).
-- `scripts/`: Utility scripts, including the `roadmap_manager.py` for syncing the roadmap with GitHub Issues.
+- `scripts/`: Utility scripts for project maintenance and setup.
 - `public/`: Static assets.
 
 ### Adding new CMS Components
@@ -86,4 +104,5 @@ To add a new CMS component, use the provided Handlebars template located at `tem
 ```bash
 npm run generate
 ```
+
 This command will prompt you for the component name, category and generate the required files in the appropriate directories. It will also update the component registry automatically.
