@@ -121,9 +121,24 @@ export function TypographyAdmin({
     if (!isEditing) return;
 
     function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Element | null;
+
+      // Ignore clicks on Radix popups (Select, Tooltip, DropdownMenu) and Tippy.js (BubbleMenu)
+      if (
+        target?.closest("[data-radix-popper-content-wrapper]") ||
+        target?.closest("[role='dialog']") ||
+        target?.closest("[role='listbox']") ||
+        target?.closest("[role='menu']") ||
+        target?.closest("[role='tooltip']") ||
+        target?.closest("[data-tippy-root]") ||
+        target?.closest(".tippy-box")
+      ) {
+        return;
+      }
+
       if (
         containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
+        !containerRef.current.contains(target as Node)
       ) {
         setIsEditing(false);
       }

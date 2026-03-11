@@ -14,7 +14,7 @@ function TextStyleButtons({ editor }: { editor: Editor }) {
   });
 
   return (
-    <ButtonGroup className="bg-muted/20 backdrop-blur-md">
+    <ButtonGroup className="bg-muted/20 backdrop-blur-md z-20">
       <Button
         size="sm"
         type="button"
