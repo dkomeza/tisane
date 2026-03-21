@@ -87,7 +87,7 @@ export const Container: CMSComponent<"container", ContainerProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function ContainerClient({ data }: BlockProps<ContainerProps>) {
+function ContainerClient({ data }: BlockProps<ContainerProps> & { children?: React.ReactNode }) {
   const ContentComponent = data.content
     ? (getComponentByType(data.content.type).ClientComponent as React.FC<
         BlockProps<typeof data.content.data>

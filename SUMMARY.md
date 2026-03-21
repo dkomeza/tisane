@@ -328,42 +328,145 @@
 
 
 # Sections
-
 ## One pager
- - Basic Next.js app setup with TypeScript, ESLint, Prettier, TailwindCSS ~ 24 hours (Dawid + Madzia)
-
-## Media (Madzia)
+- Podstawowa konfiguracja aplikacji Next.js z TypeScript, ESLint, Prettier, TailwindCSS
+- **Czas sekcji:** 12 godzin
 
 ## Users & Authentication
- - Provider setup (Resend, BetterAuth, Prisma) ~ 8 hours (Dawid)
- - Auth related pages (Login, Signup, Forgot Password) ~ 18 hours (Madzia)
- - Admin user management (List + Filter users, Invite, Edit and Remove user) ~ 12 hours (Dawid)
+- Konfiguracja providerów (Resend, BetterAuth, Prisma)
+- Strony związane z autoryzacją (Login, Signup, Forgot Password)
+- Zarządzanie użytkownikami (Lista, Filtrowanie, Zapraszanie, Edycja, Usuwanie)
+- **Czas sekcji:** 35 godzin
 
-## Onboarding (Dawid)
- - Onboarding wizzar (multi-step form to set up basic CMS settings) ~ 2 hours
- - Set up check (redirect to onboarding if not set up) ~ 1 hour
+## Onboarding
+- Wieloetapowy kreator (wizard) do podstawowej konfiguracji CMS
+- Sprawdzanie statusu konfiguracji i przekierowania
+- **Czas sekcji:** 12 godzin
 
 ## Admin Pages Management
- - Set up Prisma models and actions ~ 8 hours (Dawid)
- - Admin dashboard pages list (with pagination, search and filter) ~ 8 hours (Dawid)
- - Page metadata create/edit form ~ _ hours (Madzia)
- - Page content editor ~ 12 hours (Dawid)
+- Konfiguracja modeli i akcji Prisma
+- Lista stron w panelu (z paginacją, wyszukiwaniem i filtrowaniem)
+- Formularz tworzenia/edycji metadanych strony
+- Edytor treści stron (autorski system blokowy)
+- **Czas sekcji:** 65 godzin
 
 ## Admin menu management
- - Set up Prisma models and actions ~ 4 hours (Dawid)
- - Admin dashboard menu list (with pagination, search and filter) ~ 4 hours (Dawid)
- - Menu create/edit form ~ 6 hours (Dawid)
- - Customizable menu component ~ 8 hours (Dawid)
+- Konfiguracja modeli i akcji Prisma
+- Lista menu w panelu (z paginacją, wyszukiwaniem i filtrowaniem)
+- Formularz tworzenia/edycji menu
+- Konfigurowalny komponent menu
+- **Czas sekcji:** 25 godzin
 
 ## CMS Component Registry
- - Set up CMS component registry ~ 16 hours (Dawid)
- - Create a page to preview all CMS components ~ 4 hours (Dawid)
- - Typography components (Typography, Heading, Paragraph, Span) ~ 12 hours (Dawid)
- - CMS Link component ~ 4 hours (Dawid)
- - Hero section ~ 2 hours (Dawid)
+- Konfiguracja rejestru komponentów CMS
+- Strona podglądu wszystkich komponentów CMS
+- Komponenty typograficzne (Typography, Heading, Paragraph, Span)
+- Komponent CMS Link
+- Sekcja Hero
+- **Czas sekcji:** 40 godzin
 
-## CI&CD (Dawid)
- - Set up docker environment ~ 4 hours
+## CI&CD
+- Konfiguracja środowiska Docker
+- **Czas sekcji:** 8 godzin
 
 ## Utilities
- - PlopJS templates and generators for CMS components ~ 2 hours (Dawid)
+- Szablony PlopJS i generatory dla komponentów CMS
+- **Czas sekcji:** 5 godzin
+
+## Self update & production docker setup
+- Mechanizm automatycznej aktualizacji (sprawdzanie, pobieranie, wdrażanie)
+- Produkcyjny Dockerfile i konfiguracja docker-compose
+- **Czas sekcji:** 35 godzin
+
+## Final CMS Components
+- Refaktoryzacja sekcji Hero
+- Agenda
+- Prelegenci (Speakers)
+- Refaktoryzacja typografii
+- Tabela (Underlined Table)
+- Kontener (Container)
+- Siatka (Grid)
+- Inne potrzebne komponenty
+- **Czas sekcji:** 45 godzin
+  
+## Media Management
+- Wgrywanie i zarządzanie mediami (przechowywanie plików, metadane, interfejs admina)
+- Komponent selektora mediów do linkowania w stronach
+- Refaktoryzacja modułu mediów
+- **Czas sekcji:** 45 godzin
+
+---
+### PODSUMOWANIE PROJEKTU
+**Całkowity szacowany czas:** 327 godzin
+
+Podsumowanie czasowe projektu:
+
+*One pager
+- Podstawowa konfiguracja aplikacji Next.js z TypeScript, ESLint, Prettier, TailwindCSS
+- Czas sekcji: 12 godzin
+
+*Users & Authentication
+- Konfiguracja providerów (Resend, BetterAuth, Prisma)
+- Strony związane z autoryzacją (Login, Signup, Forgot Password)
+- Zarządzanie użytkownikami (Lista, Filtrowanie, Zapraszanie, Edycja, Usuwanie)
+- Czas sekcji: 35 godzin
+
+*Onboarding
+- Wieloetapowy kreator (wizard) do podstawowej konfiguracji CMS
+- Sprawdzanie statusu konfiguracji i przekierowania
+- Czas sekcji: 12 godzin
+
+*Admin Pages Management
+- Konfiguracja modeli i akcji Prisma
+- Lista stron w panelu (z paginacją, wyszukiwaniem i filtrowaniem)
+- Formularz tworzenia/edycji metadanych strony
+- Edytor treści stron (autorski system blokowy)
+- Czas sekcji: 65 godzin
+
+*Admin menu management
+- Konfiguracja modeli i akcji Prisma
+- Lista menu w panelu (z paginacją, wyszukiwaniem i filtrowaniem)
+- Formularz tworzenia/edycji menu
+- Konfigurowalny komponent menu
+- Czas sekcji: 25 godzin
+
+*CMS Component Registry
+- Konfiguracja rejestru komponentów CMS
+- Strona podglądu wszystkich komponentów CMS
+- Komponenty typograficzne (Typography, Heading, Paragraph, Span)
+- Komponent CMS Link
+- Sekcja Hero
+- Czas sekcji: 40 godzin
+
+*CI&CD
+- Konfiguracja środowiska Docker
+- Czas sekcji: 8 godzin
+
+*Utilities
+- Szablony PlopJS i generatory dla komponentów CMS
+- Czas sekcji: 5 godzin
+
+*Self update & production docker setup
+- Mechanizm automatycznej aktualizacji (sprawdzanie, pobieranie, wdrażanie)
+- Produkcyjny Dockerfile i konfiguracja docker-compose
+- Czas sekcji: 35 godzin
+
+*Final CMS Components
+- Refaktoryzacja sekcji Hero
+- Agenda
+- Prelegenci (Speakers)
+- Refaktoryzacja typografii
+- Tabela (Underlined Table)
+- Kontener (Container)
+- Siatka (Grid)
+- Inne potrzebne komponenty
+- Czas sekcji: 45 godzin
+  
+*Media Management
+- Wgrywanie i zarządzanie mediami (przechowywanie plików, metadane, interfejs admina)
+- Komponent selektora mediów do linkowania w stronach
+- Refaktoryzacja modułu mediów
+- Czas sekcji: 45 godzin
+
+
+*Całkowity szacowany czas to około 330 godzin

@@ -21,6 +21,8 @@ import { Grid } from "@/components/registry/layout/grid";
 import { GridItem } from "@/components/registry/layout/grid-item";
 import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
 import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
+import { Prelegenci } from "@/components/registry/sections/prelegenci";
+import { PrelegenciSpeakerComponent } from "@/components/registry/sections/prelegenci/speaker";
 // -- PLOP IMPORTS HERE --
 
 import { Block, DBComponent, RegistryCategory } from "./types";
@@ -71,6 +73,8 @@ export const COMPONENT_REGISTRY = {
   [GridItem.id]: GridItem,
   [UnderlinedTable.id]: UnderlinedTable,
   [UnderlinedTableColumn.id]: UnderlinedTableColumn,
+  [Prelegenci.id]: Prelegenci,
+  [PrelegenciSpeakerComponent.id]: PrelegenciSpeakerComponent,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -116,6 +120,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Agenda.id,
       BorderedContainer.id,
       UnderlinedTable.id,
+      Prelegenci.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
