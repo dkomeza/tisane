@@ -65,7 +65,7 @@ export function InsertionLine({
         <PopoverContent asChild side={isHorizontal ? "bottom" : "right"}>
           {rootOnly ? (
             <Card className="w-md">
-              <ScrollArea className="max-h-96">
+              <ScrollArea className="h-96">
                 {categories.map((category) => (
                   <div key={category.id} className="mb-4">
                     <h3 className="mb-2">{category.label}</h3>

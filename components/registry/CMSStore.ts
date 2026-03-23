@@ -1,31 +1,67 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Block, CMSStore } from "./types";
-import { Draft } from "immer";
 import { nanoid } from "nanoid";
 
-const findAndUpdate = (
-  node: Draft<Block> | Draft<Block>[],
-  targetId: string,
-  updateData: Partial<Block["data"]>,
+/**
+ * Type guard to safely identify a component node (DBComponent or Block).
+ * A valid component node must have a `type` string and a `data` object.
+ * This prevents treating generic configurations or styles as components.
+ */
+export const isValidComponentNode = (node: unknown): node is Block => {
+  if (node === null || typeof node !== "object" || Array.isArray(node)) {
+    return false;
+  }
+  const n = node as Record<string, unknown>;
+  return (
+    typeof n.type === "string" &&
+    typeof n.data === "object" &&
+    n.data !== null &&
+    !Array.isArray(n.data)
+  );
+};
+
+/**
+ * Robust tree traversal function that safely finds all component blocks.
+ * It recurses into generic wrapper objects and arrays, but only triggers
+ * the callback for actual component nodes.
+ */
+const visitBlocks = (
+  node: unknown,
+  callback: (block: Block, parent: unknown, keyInParent: string | number | null) => boolean | void,
+  parent: unknown = null,
+  keyInParent: string | number | null = null
 ): boolean => {
   if (!node || typeof node !== "object") return false;
 
-  if (!Array.isArray(node) && node.id === targetId) {
-    if (!node.data) node.data = {};
-    Object.assign(node.data, updateData);
-    return true;
+  // Handle arrays
+  if (Array.isArray(node)) {
+    for (let i = 0; i < node.length; i++) {
+      if (visitBlocks(node[i], callback, node, i)) return true;
+    }
+    return false;
   }
 
-  if (Array.isArray(node)) {
-    for (const item of node) {
-      if (findAndUpdate(item, targetId, updateData)) return true;
+  // Handle actual component nodes
+  if (isValidComponentNode(node)) {
+    // 1. Trigger callback for this block
+    if (callback(node, parent, keyInParent)) return true;
+
+    // 2. Only traverse inside `data` for nested blocks, avoiding root properties like `id` or `type`
+    const dataObj = node.data as Record<string, unknown>;
+    for (const key in dataObj) {
+      if (visitBlocks(dataObj[key], callback, dataObj, key)) {
+        return true;
+      }
     }
-  } else {
-    for (const key in node.data) {
-      const property = node.data[key as keyof typeof node.data];
-      if (findAndUpdate(property, targetId, updateData)) return true;
-    }
+    return false;
+  }
+
+  // Handle generic wrapper objects (like the user asked about)
+  // Recursively search inside their properties for nested blocks
+  const genericObj = node as Record<string, unknown>;
+  for (const key in genericObj) {
+    if (visitBlocks(genericObj[key], callback, genericObj, key)) return true;
   }
 
   return false;
@@ -44,60 +80,38 @@ export const useCMSStore = create<CMSStore>()(
       set((state) => {
         const writableBlocks = structuredClone(dbBlocks) as Block[];
 
-        const updateIDs = (node: Block[] | Block) => {
-          if (!node || typeof node !== "object") return;
-
-          if (Array.isArray(node)) {
-            node.forEach((item) => updateIDs(item));
-          } else {
+        visitBlocks(writableBlocks, (node) => {
+          if (!node.id) {
             node.id = nanoid(12);
-
-            if (node.data) {
-              for (const key in node.data) {
-                const property = node.data[key as keyof typeof node.data];
-                updateIDs(property as Block | Block[]);
-              }
-            }
           }
-        };
+        });
 
-        updateIDs(writableBlocks);
         state.blocks = writableBlocks;
       }),
 
     updateBlock: (id, data) =>
       set((state) => {
-        findAndUpdate(state.blocks, id, data);
+        visitBlocks(state.blocks, (node) => {
+          if (node.id === id) {
+            if (!node.data) (node as unknown as Record<string, unknown>).data = {};
+            Object.assign(node.data, data);
+            return true; // Stop searching
+          }
+        });
       }),
 
     removeBlock: (id) =>
       set((state) => {
-        const findAndRemove = (current: Block | Block[]): boolean => {
-          if (!current || typeof current !== "object") return false;
-
-          if (Array.isArray(current)) {
-            const index = current.findIndex((item) => item.id === id);
-            if (index !== -1) {
-              current.splice(index, 1);
-              return true;
+        visitBlocks(state.blocks, (node, parent, keyInParent) => {
+          if (node.id === id) {
+            if (Array.isArray(parent) && typeof keyInParent === "number") {
+              parent.splice(keyInParent, 1);
+            } else if (parent && keyInParent !== null && typeof keyInParent === "string") {
+              delete (parent as Record<string, unknown>)[keyInParent];
             }
-            for (const item of current) {
-              if (findAndRemove(item)) return true;
-            }
-          } else {
-            for (const key in current.data) {
-              const property = current.data[key as keyof typeof current.data];
-              if (property && property["id"] === id) {
-                delete current.data[key as keyof typeof current.data];
-                return true;
-              }
-              if (findAndRemove(property)) return true;
-            }
+            return true; // Stop searching
           }
-          return false;
-        };
-
-        findAndRemove(state.blocks);
+        });
       }),
 
     addBlock: (block, parentId, propertyName = "children") =>
@@ -107,35 +121,20 @@ export const useCMSStore = create<CMSStore>()(
           return;
         }
 
-        const findAndAdd = (node: Draft<Block> | Draft<Block>[]): boolean => {
-          if (!node || typeof node !== "object") return false;
-
-          if (!Array.isArray(node) && node.id === parentId) {
-            const key = propertyName as keyof typeof node.data;
-            if (Array.isArray(node.data[key])) {
-              // @ts-expect-error We can't be sure of the type here
-              node.data[key].push(block);
+        let added = false;
+        added = visitBlocks(state.blocks, (node) => {
+          if (node.id === parentId) {
+            const dataObj = node.data as Record<string, unknown>;
+            if (Array.isArray(dataObj[propertyName])) {
+              (dataObj[propertyName] as unknown[]).push(block);
             } else {
-              // @ts-expect-error We can't be sure of the type here
-              node.data[key] = block;
+              dataObj[propertyName] = block;
             }
             return true;
           }
+        });
 
-          if (Array.isArray(node)) {
-            for (const item of node) {
-              if (findAndAdd(item)) return true;
-            }
-          } else {
-            for (const key in node.data) {
-              const property = node.data[key as keyof typeof node.data];
-              if (findAndAdd(property)) return true;
-            }
-          }
-          return false;
-        };
-
-        if (!findAndAdd(state.blocks)) {
+        if (!added) {
           console.warn("Failed to add block:", block);
         }
       }),
@@ -147,142 +146,70 @@ export const useCMSStore = create<CMSStore>()(
           return;
         }
 
-        const findAndInsert = (
-          node: Draft<Block> | Draft<Block>[],
-        ): boolean => {
-          if (!node || typeof node !== "object") return false;
-
-          if (!Array.isArray(node) && node.id === parentId) {
-            const key = propertyName as keyof typeof node.data;
-            if (Array.isArray(node.data[key])) {
-              // @ts-expect-error We can't be sure of the type here
-              node.data[key].splice(index, 0, block);
+        let inserted = false;
+        inserted = visitBlocks(state.blocks, (node) => {
+          if (node.id === parentId) {
+            const dataObj = node.data as Record<string, unknown>;
+            if (Array.isArray(dataObj[propertyName])) {
+              (dataObj[propertyName] as unknown[]).splice(index, 0, block);
+            } else {
+              dataObj[propertyName] = block;
             }
             return true;
           }
+        });
 
-          if (Array.isArray(node)) {
-            for (const item of node) {
-              if (findAndInsert(item)) return true;
-            }
-          } else {
-            for (const key in node.data) {
-              const property = node.data[key as keyof typeof node.data];
-              if (findAndInsert(property)) return true;
-            }
-          }
-          return false;
-        };
-
-        if (!findAndInsert(state.blocks)) {
+        if (!inserted) {
           console.warn("Failed to insert block:", block);
         }
       }),
 
     moveBlock: (parentId, fromKey, toKey, itemId, overId) =>
       set((state) => {
-        const findBlock = (
-          node: Draft<Block> | Draft<Block>[],
-          targetId: string,
-        ): Draft<Block> | null => {
-          if (!node || typeof node !== "object") return null;
-
-          if (Array.isArray(node)) {
-            for (const item of node) {
-              const result = findBlock(item, targetId);
-              if (result) return result;
-            }
-          } else {
-            if (node.id === targetId) {
-              return node;
-            }
-
-            for (const key in node.data) {
-              const property = node.data[key as keyof typeof node.data];
-              if (typeof property === "object") {
-                const result = findBlock(property, targetId);
-                if (result) return result;
-              }
-            }
+        let parentBlock: Block | null = null;
+        visitBlocks(state.blocks, (node) => {
+          if (node.id === parentId) {
+            parentBlock = node;
+            return true;
           }
+        });
 
-          return null;
-        };
-
-        const parentBlock = findBlock(state.blocks, parentId);
         if (!parentBlock) return;
 
-        const sourceList = parentBlock.data[
-          fromKey as keyof typeof parentBlock.data
-        ] as Draft<Block>[];
-        const destList = parentBlock.data[
-          toKey as keyof typeof parentBlock.data
-        ] as Draft<Block>[];
+        const pBlock = parentBlock as unknown as Record<string, unknown>;
+        const dataObj = pBlock.data as Record<string, unknown>;
+        const sourceList = dataObj[fromKey];
+        const destList = dataObj[toKey];
 
         if (!Array.isArray(sourceList) || !Array.isArray(destList)) return;
 
-        const oldIndex = sourceList.findIndex((item) => item.id === itemId);
+        const oldIndex = sourceList.findIndex((item: Block) => item?.id === itemId);
         if (oldIndex === -1) return;
 
-        // Moving within the same list
-        if (fromKey === toKey) {
-          const newIndex = overId
-            ? destList.findIndex((item) => item.id === overId)
-            : destList.length;
+        // Extract the item
+        const [extractedItem] = sourceList.splice(oldIndex, 1);
 
-          if (newIndex !== -1) {
-            const [item] = sourceList.splice(oldIndex, 1);
-            sourceList.splice(newIndex, 0, item);
-          }
-        }
-        // Moving to a different list
-        else {
-          const [item] = sourceList.splice(oldIndex, 1);
+        // Find the insertion point in the destination list
+        const newIndex = overId
+          ? destList.findIndex((item: Block) => item?.id === overId)
+          : destList.length;
 
-          const newIndex = overId
-            ? destList.findIndex((item) => item.id === overId)
-            : destList.length;
-
-          if (newIndex !== -1) {
-            destList.splice(newIndex, 0, item);
-          } else {
-            destList.push(item);
-          }
+        if (newIndex !== -1) {
+          destList.splice(newIndex, 0, extractedItem);
+        } else {
+          destList.push(extractedItem);
         }
       }),
 
     getBlock: (id) => {
-      const state = get();
-
-      const findBlock = (
-        node: Block | Block[],
-        targetId: string,
-      ): Block | null => {
-        if (!node || typeof node !== "object") return null;
-
-        if (Array.isArray(node)) {
-          for (const item of node) {
-            const result = findBlock(item, targetId);
-            if (result) return result;
-          }
-        } else {
-          if (node.id === targetId) {
-            return node;
-          }
-
-          for (const key in node.data) {
-            const property = node.data[key as keyof typeof node.data];
-            if (typeof property === "object") {
-              const result = findBlock(property, targetId);
-              if (result) return result;
-            }
-          }
+      let found: Block | null = null;
+      visitBlocks(get().blocks, (node) => {
+        if (node.id === id) {
+          found = node;
+          return true; // Stop searching
         }
-
-        return null;
-      };
-
-      return findBlock(state.blocks, id);
+      });
+      return found;
     },
-  })),
+  }))
 );

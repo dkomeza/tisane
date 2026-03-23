@@ -36,7 +36,7 @@ import {
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { PlusCircle } from "lucide-react";
+import { ExternalLinkIcon, PlusCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Popover,
@@ -48,6 +48,7 @@ import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 import { ContentPreview } from "./ContentPreview";
 import { useCMSStore } from "@/components/registry/CMSStore";
 import { InsertionLine } from "@/components/registry/InsertionLine";
+import { useRouter } from "next/navigation";
 
 const slugify = (text: string) =>
   text
@@ -188,7 +189,7 @@ function ContentForm() {
 
   return (
     <div className="flex-1 flex p-6">
-      <div className="flex-1 flex flex-col gap-4 overflow-scroll">
+      <div className="flex-1 flex flex-col overflow-scroll">
         {blocks.map((block, index) => {
           const component = COMPONENT_REGISTRY[block.type];
           if (!component) return null;
@@ -203,13 +204,11 @@ function ContentForm() {
                 rootOnly
                 onInsert={(newBlock) => insertBlock(newBlock, index)}
               />
-              <div className="bg-secondary/20 rounded-md p-4 flex justify-center-safe">
-                <AdminComponent
-                  id={block.id}
-                  data={block.data}
-                  useStore={useCMSStore}
-                />
-              </div>
+              <AdminComponent
+                id={block.id}
+                data={block.data}
+                useStore={useCMSStore}
+              />
             </div>
           );
         })}
@@ -226,7 +225,7 @@ function ContentForm() {
           </PopoverTrigger>
           <PopoverContent asChild>
             <Card className="w-md">
-              <ScrollArea className="max-h-96">
+              <ScrollArea className="h-96">
                 {Object.values(REGISTRY_CATEGORIES)
                   .filter((category) => category.isRootLevel)
                   .map((category) => (
@@ -310,19 +309,17 @@ export function PageForm({
     broadcast(form.getValues("content") || []);
   }, [blocks, form, broadcast]);
 
-  const TABS = ["metadata", "content", "preview"] as const;
+  const TABS = ["metadata", "content"] as const;
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("metadata");
 
   return (
     <Tabs
       value={activeTab}
-      onValueChange={(val) => {
-        setActiveTab(val as (typeof TABS)[number]);
-
-        if (val === "preview") {
-          setTimeout(() => {
-            broadcast(form.getValues("content") || []);
-          }, 100);
+      onValueChange={(value) => {
+        if (value === "preview") {
+          window.open(`/preview/${defaultValues?.slug}`, "_blank");
+        } else {
+          setActiveTab(value as (typeof TABS)[number]);
         }
       }}
       className="w-full flex-1 overflow-hidden"
@@ -348,6 +345,17 @@ export function PageForm({
                     {tab}
                   </TabsTrigger>
                 ))}
+                <TabsTrigger
+                  value="preview"
+                  className={cn(
+                    "flex items-center gap-1 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 capitalize",
+                    "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
+                    "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!",
+                  )}
+                >
+                  <ExternalLinkIcon className="h-2 w-2" />
+                  Preview
+                </TabsTrigger>
               </TabsList>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Saving..." : "Save Page"}
@@ -359,9 +367,6 @@ export function PageForm({
               </TabsContent>
               <TabsContent value="content" className="flex overflow-scroll">
                 <ContentForm />
-              </TabsContent>
-              <TabsContent value="preview" className="p-6 outline-none">
-                <ContentPreview slug={defaultValues?.slug} />
               </TabsContent>
             </div>
           </form>
