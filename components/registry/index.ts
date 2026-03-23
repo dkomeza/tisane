@@ -10,6 +10,9 @@ import { UnderlinedCard } from "@/components/registry/elements/underlined-card";
 import { Heading } from "@/components/registry/typography/heading";
 import { Paragraph } from "@/components/registry/typography/paragraph";
 import { Span } from "@/components/registry/typography/span";
+import { BulletList } from "@/components/registry/typography/bullet-list";
+import { OrderedList } from "@/components/registry/typography/ordered-list";
+import { ListItem } from "@/components/registry/typography/list-item";
 import { Icon } from "@/components/registry/items/icon";
 import { Agenda } from "@/components/registry/sections/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
@@ -62,6 +65,9 @@ export const COMPONENT_REGISTRY = {
   [Heading.id]: Heading,
   [Paragraph.id]: Paragraph,
   [Span.id]: Span,
+  [BulletList.id]: BulletList,
+  [OrderedList.id]: OrderedList,
+  [ListItem.id]: ListItem,
   [Icon.id]: Icon,
   [Agenda.id]: Agenda,
   [BorderedContainer.id]: BorderedContainer,
@@ -133,6 +139,9 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Heading.id,
       Paragraph.id,
       Span.id,
+      BulletList.id,
+      OrderedList.id,
+      ListItem.id,
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },

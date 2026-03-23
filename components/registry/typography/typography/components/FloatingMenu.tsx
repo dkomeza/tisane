@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Editor, useEditorState } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
+import { ColorPickerPopover } from "./ColorPickerPopover";
 
 function TextStyleButtons({ editor }: { editor: Editor }) {
   const { isBold, isItalic, isUnderline } = useEditorState({
@@ -20,6 +21,7 @@ function TextStyleButtons({ editor }: { editor: Editor }) {
         type="button"
         variant={isBold ? "default" : "outline"}
         onClick={() => editor.chain().focus().toggleBold().run()}
+        className="w-8 h-8 p-0 text-md font-serif"
       >
         <strong>B</strong>
         <span className="sr-only">Bold</span>
@@ -29,6 +31,7 @@ function TextStyleButtons({ editor }: { editor: Editor }) {
         type="button"
         variant={isItalic ? "default" : "outline"}
         onClick={() => editor.chain().focus().toggleItalic().run()}
+        className="w-8 h-8 p-0 text-md font-serif"
       >
         <em>I</em>
         <span className="sr-only">Italic</span>
@@ -38,6 +41,7 @@ function TextStyleButtons({ editor }: { editor: Editor }) {
         type="button"
         variant={isUnderline ? "default" : "outline"}
         onClick={() => editor.chain().focus().toggleUnderline().run()}
+        className="w-8 h-8 p-0 text-md font-serif"
       >
         <u>U</u>
         <span className="sr-only">Underline</span>
@@ -51,8 +55,10 @@ function FloatingMenu({ editor }: { editor: Editor }) {
     <BubbleMenu
       editor={editor}
       options={{ offset: 8, placement: "bottom", flip: true }}
+      className="flex items-center gap-1.5 p-1 bg-background/50 border border-border shadow-md backdrop-blur-md rounded-md"
     >
       <TextStyleButtons editor={editor} />
+      <ColorPickerPopover editor={editor} />
     </BubbleMenu>
   );
 }

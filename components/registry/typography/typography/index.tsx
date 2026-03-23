@@ -9,6 +9,9 @@ import { useMemo } from "react";
 import { Heading } from "../heading";
 import { Span } from "../span";
 import { Paragraph } from "../paragraph";
+import { BulletList } from "../bullet-list";
+import { OrderedList } from "../ordered-list";
+import { ListItem } from "../list-item";
 
 export type TypographyProps = {
   content: string;
@@ -47,7 +50,7 @@ function RenderSpan(props: { block: unknown }) {
   const block = props.block as {
     type: string;
     text?: string;
-    marks?: { type: string }[];
+    marks?: { type: string; attrs?: Record<string, string> }[];
   };
 
   const data = {
@@ -61,7 +64,16 @@ function RenderSpan(props: { block: unknown }) {
     return null;
   }
 
-  return <Span.ClientComponent id="span" data={parse.data} />;
+  const textStyleMark = block.marks?.find((m) => m.type === "textStyle");
+  const color = textStyleMark?.attrs?.color;
+
+  const spanContent = <Span.ClientComponent id="span" data={parse.data} />;
+
+  if (color) {
+    return <span style={{ color }}>{spanContent}</span>;
+  }
+
+  return spanContent;
 }
 
 function RenderHeading(props: { block: unknown }) {
@@ -146,6 +158,78 @@ function RenderParagraph(props: { block: unknown }) {
   );
 }
 
+function RenderListItem(props: { block: unknown }) {
+  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if ((props.block as { type: string }).type !== "listItem") return null;
+
+  const block = props.block as {
+    type: string;
+    attrs?: { markerColor?: string };
+    content?: { type: string; text?: string }[];
+  };
+
+  const markerColor = block.attrs?.markerColor || null;
+  const parse = ListItem.Schema.safeParse({ markerColor });
+
+  if (!parse.success) return null;
+
+  return (
+    <ListItem.ClientComponent id="list-item" data={parse.data}>
+      {Array.isArray(block.content)
+        ? block.content.map((child, index: number) => (
+            <RenderBlock key={index} block={child} />
+          ))
+        : null}
+    </ListItem.ClientComponent>
+  );
+}
+
+function RenderBulletList(props: { block: unknown }) {
+  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if ((props.block as { type: string }).type !== "bulletList") return null;
+
+  const block = props.block as {
+    type: string;
+    content?: { type: string; text?: string }[];
+  };
+
+  const parse = BulletList.Schema.safeParse({});
+  if (!parse.success) return null;
+
+  return (
+    <BulletList.ClientComponent id="bullet-list" data={parse.data}>
+      {Array.isArray(block.content)
+        ? block.content.map((child, index: number) => (
+            <RenderListItem key={index} block={child} />
+          ))
+        : null}
+    </BulletList.ClientComponent>
+  );
+}
+
+function RenderOrderedList(props: { block: unknown }) {
+  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if ((props.block as { type: string }).type !== "orderedList") return null;
+
+  const block = props.block as {
+    type: string;
+    content?: { type: string; text?: string }[];
+  };
+
+  const parse = OrderedList.Schema.safeParse({});
+  if (!parse.success) return null;
+
+  return (
+    <OrderedList.ClientComponent id="ordered-list" data={parse.data}>
+      {Array.isArray(block.content)
+        ? block.content.map((child, index: number) => (
+            <RenderListItem key={index} block={child} />
+          ))
+        : null}
+    </OrderedList.ClientComponent>
+  );
+}
+
 function RenderBlock(props: { block: unknown }) {
   const block = props.block as { type: string; content?: unknown };
 
@@ -170,6 +254,12 @@ function RenderBlock(props: { block: unknown }) {
       return <RenderParagraph block={block} />;
     case "heading":
       return <RenderHeading block={block} />;
+    case "bulletList":
+      return <RenderBulletList block={block} />;
+    case "orderedList":
+      return <RenderOrderedList block={block} />;
+    case "listItem":
+      return <RenderListItem block={block} />;
     default:
       return <div>Unknown block type: {block.type}</div>;
   }

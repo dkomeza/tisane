@@ -15,15 +15,25 @@ import StarterKit from "@tiptap/starter-kit";
 import Heading from "@tiptap/extension-heading";
 import Paragraph from "@tiptap/extension-paragraph";
 import TextAlign from "@tiptap/extension-text-align";
+import Color from "@tiptap/extension-color";
+import { TextStyle } from "@tiptap/extension-text-style";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import TipTapListItem from "@tiptap/extension-list-item";
 
 import { Separator } from "@/components/ui/separator";
 
 import { Heading as CMSHeading } from "../heading";
-import { Paragraph as CMSParagraph, ParagraphClient } from "../paragraph";
+import { ParagraphClient } from "../paragraph";
+import { ListItemClient } from "../list-item";
+import { BulletListClient } from "../bullet-list";
+import { OrderedListClient } from "../ordered-list";
 import { nanoid } from "nanoid";
 import TextTypeSelector from "./components/TextTypeSelector";
 import HistoryButtons from "./components/HistoryButtons";
 import AlignmentSelector from "./components/AlignmentSelector";
+import ListSelector from "./components/ListSelector";
+import MarkerColorSelector from "./components/MarkerColorSelector";
 import FloatingMenu from "./components/FloatingMenu";
 
 import { useEffect, useRef, useState } from "react";
@@ -54,6 +64,62 @@ const ParagraphNodeView = (props: NodeViewProps) => {
   );
 };
 
+const BulletListNodeView = () => {
+  return (
+    <BulletListClient
+      id={nanoid(8)}
+      data={{}}
+      as={NodeViewWrapper}
+      tagProps={{ as: "ul", className: "bullet-list-node-view" }}
+    >
+      <NodeViewContent />
+    </BulletListClient>
+  );
+};
+
+const OrderedListNodeView = () => (
+  <OrderedListClient
+    id={nanoid(8)}
+    data={{}}
+    as={NodeViewWrapper}
+    tagProps={{ as: "ol", className: "ordered-list-node-view" }}
+  >
+    <NodeViewContent />
+  </OrderedListClient>
+);
+
+const ListItemNodeView = (props: NodeViewProps) => {
+  console.log("dupsko");
+  const markerColor = props.node.attrs.markerColor as string | null;
+
+  return (
+    <ListItemClient
+      id={nanoid(8)}
+      data={{ markerColor }}
+      as={NodeViewWrapper}
+      tagProps={{ as: "li", className: "list-item-node-view" }}
+    >
+      <NodeViewContent />
+    </ListItemClient>
+  );
+};
+
+const ListItem = TipTapListItem.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      markerColor: {
+        default: null,
+        parseHTML: (element) =>
+          element.style.getPropertyValue("--marker-color"),
+      },
+    };
+  },
+  addNodeView() {
+    return ReactNodeViewRenderer(ListItemNodeView);
+  },
+});
+
 /**
  * This is the admin component used to edit the component's data in the CMS.
  * It renders the client typography by default, and swaps to a TipTap editor on click.
@@ -77,7 +143,23 @@ export function TypographyAdmin({
         paragraph: false,
         heading: false,
         link: false,
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
       }),
+      BulletList.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(BulletListNodeView);
+        },
+      }),
+      OrderedList.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(OrderedListNodeView);
+        },
+      }),
+      ListItem,
+      Color,
+      TextStyle,
       Heading.extend({
         addNodeView() {
           return ReactNodeViewRenderer(EditableHeading);
@@ -111,7 +193,8 @@ export function TypographyAdmin({
     },
     editorProps: {
       attributes: {
-        class: "min-h-[50px] h-full outline-none prose max-w-none prose",
+        class:
+          "min-h-[50px] h-full outline-none prose max-w-none prose marker:text-(--marker-color)",
       },
     },
   });
@@ -182,6 +265,8 @@ export function TypographyAdmin({
               <TextTypeSelector editor={editor} />
               <Separator orientation="vertical" className="h-7!" />
               <AlignmentSelector editor={editor} />
+              <Separator orientation="vertical" className="h-7!" />
+              <ListSelector editor={editor} />
             </div>
 
             <FloatingMenu editor={editor} />

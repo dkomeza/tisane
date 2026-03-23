@@ -33,7 +33,6 @@ export function UnderlinedTableColumnAdmin({
   if (!block) return null;
 
   const data = block.data;
-  console.log(data);
 
   return (
     <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm mb-4 relative group">

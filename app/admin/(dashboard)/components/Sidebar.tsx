@@ -17,19 +17,17 @@ import Link from "next/link";
 
 import {
   Activity,
-  Blocks,
   FileText,
   Image,
   LayoutDashboard,
   Menu,
-  Palette,
-  Rss,
   Settings2,
   UserCircle2,
   Box,
   type LucideIcon,
   ChevronsUpDown,
   LogOut,
+  Bug,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -47,7 +45,7 @@ import { useRouter } from "next/navigation";
 
 type Group = {
   label: string;
-  items: { label: string; href: string; icon: LucideIcon }[];
+  items: { label: string; href: string; icon: LucideIcon; roles?: string[] }[];
 };
 
 const groups: Group[] = [
@@ -56,7 +54,7 @@ const groups: Group[] = [
     items: [
       { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
       { label: "Pages", href: "/admin/pages", icon: FileText },
-      { label: "Posts", href: "/admin/posts", icon: Rss },
+      // { label: "Posts", href: "/admin/posts", icon: Rss },
       { label: "Media", href: "/admin/media", icon: Image },
     ],
   },
@@ -64,20 +62,20 @@ const groups: Group[] = [
     label: "Design",
     items: [
       { label: "Menus", href: "/admin/menus", icon: Menu },
-      { label: "Appearance", href: "/admin/appearance", icon: Palette },
+      // { label: "Appearance", href: "/admin/appearance", icon: Palette },
       { label: "Components", href: "/admin/components", icon: Box },
     ],
   },
   {
     label: "Settings",
     items: [
-      { label: "General", href: "/admin/settings", icon: Settings2 },
-      { label: "Users", href: "/admin/users", icon: UserCircle2 },
-      {
-        label: "Integrations",
-        href: "/admin/integrations",
-        icon: Blocks,
-      },
+      { label: "General", href: "/admin/settings", icon: Settings2, roles: ["admin"] },
+      { label: "Users", href: "/admin/users", icon: UserCircle2, roles: ["admin"] },
+      // {
+      //   label: "Integrations",
+      //   href: "/admin/integrations",
+      //   icon: Blocks,
+      // },
       {
         label: "Healthcheck",
         href: "/admin/healthcheck",
@@ -85,9 +83,15 @@ const groups: Group[] = [
       },
     ],
   },
+  {
+    label: "Support",
+    items: [
+      { label: "Feedback & Bugs", href: "/admin/feedback", icon: Bug },
+    ],
+  },
 ];
 
-function Sidebar({ user }: { user: User }) {
+function Sidebar({ user }: { user: User & { role: string } }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
 
@@ -103,7 +107,9 @@ function Sidebar({ user }: { user: User }) {
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
+                {group.items
+                  .filter((item) => !item.roles || item.roles.includes(user.role))
+                  .map((item) => (
                   <SidebarMenuButton key={item.href} asChild>
                     <Link href={item.href}>
                       <item.icon />
