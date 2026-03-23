@@ -33,6 +33,7 @@ export function UnderlinedTableColumnAdmin({
   if (!block) return null;
 
   const data = block.data;
+  console.log(data);
 
   return (
     <div className="w-full border border-border rounded-lg bg-card text-card-foreground shadow-sm mb-4 relative group">
@@ -82,7 +83,7 @@ export function UnderlinedTableColumnAdmin({
               />
               <button
                 type="button"
-                onClick={() => updateBlock(id, { header: undefined })}
+                onClick={() => removeBlock((data.header as Block).id)}
                 className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 opacity-0 group-hover/header:opacity-100 transition-opacity z-10"
               >
                 <Trash2 className="w-3 h-3" />

@@ -31,10 +31,6 @@ export const UnderlinedTableColumn: CMSComponent<
       .refine((data) => data.type === "heading", {
         message: "Content must be 'heading'",
       })
-      .default({
-        type: "heading",
-        data: Heading.Schema.parse({ text: "Column Heading" }),
-      })
       .optional() as z.ZodType<DBComponent<"heading"> | undefined>,
     content: z.lazy(() => DBComponentSchema).optional(),
   }),
