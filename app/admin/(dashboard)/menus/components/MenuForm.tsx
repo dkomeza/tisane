@@ -6,7 +6,6 @@ import {
   CreateMenuSchema,
   CreateMenuRequest,
   UpdateMenuRequest,
-  UpdateMenuSchema,
 } from "@/lib/schemas/MenusSchema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -60,8 +59,8 @@ export function MenuForm({
 }) {
   const { blocks, build } = useCMSStore();
 
-  const form = useForm<UpdateMenuRequest>({
-    resolver: zodResolver(UpdateMenuSchema) as Resolver<UpdateMenuRequest>,
+  const form = useForm<CreateMenuRequest>({
+    resolver: zodResolver(CreateMenuSchema) as Resolver<CreateMenuRequest>,
     defaultValues: {
       title: "",
       slug: "",
