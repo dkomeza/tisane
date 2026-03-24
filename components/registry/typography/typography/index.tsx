@@ -35,6 +35,8 @@ export const Typography = {
 } as CMSComponent<"typography", TypographyProps>;
 
 function RenderSpan(props: { block: unknown }) {
+  console.log(props.block);
+
   if (
     !props.block ||
     typeof props.block !== "object" ||
@@ -64,16 +66,7 @@ function RenderSpan(props: { block: unknown }) {
     return null;
   }
 
-  const textStyleMark = block.marks?.find((m) => m.type === "textStyle");
-  const color = textStyleMark?.attrs?.color;
-
-  const spanContent = <Span.ClientComponent id="span" data={parse.data} />;
-
-  if (color) {
-    return <span style={{ color }}>{spanContent}</span>;
-  }
-
-  return spanContent;
+  return <Span.ClientComponent id="span" data={parse.data} />;
 }
 
 function RenderHeading(props: { block: unknown }) {
@@ -159,7 +152,12 @@ function RenderParagraph(props: { block: unknown }) {
 }
 
 function RenderListItem(props: { block: unknown }) {
-  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if (
+    !props.block ||
+    typeof props.block !== "object" ||
+    !("type" in props.block)
+  )
+    return null;
   if ((props.block as { type: string }).type !== "listItem") return null;
 
   const block = props.block as {
@@ -185,7 +183,12 @@ function RenderListItem(props: { block: unknown }) {
 }
 
 function RenderBulletList(props: { block: unknown }) {
-  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if (
+    !props.block ||
+    typeof props.block !== "object" ||
+    !("type" in props.block)
+  )
+    return null;
   if ((props.block as { type: string }).type !== "bulletList") return null;
 
   const block = props.block as {
@@ -208,7 +211,12 @@ function RenderBulletList(props: { block: unknown }) {
 }
 
 function RenderOrderedList(props: { block: unknown }) {
-  if (!props.block || typeof props.block !== "object" || !("type" in props.block)) return null;
+  if (
+    !props.block ||
+    typeof props.block !== "object" ||
+    !("type" in props.block)
+  )
+    return null;
   if ((props.block as { type: string }).type !== "orderedList") return null;
 
   const block = props.block as {
