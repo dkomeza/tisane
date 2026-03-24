@@ -2,6 +2,7 @@ import {
   AdminBlockProps,
   Block,
   COMPONENT_REGISTRY,
+  createBlock,
   DBComponent,
 } from "@/components/registry";
 import { UnderlinedTableColumnProps } from "./column";
@@ -26,7 +27,7 @@ export function UnderlinedTableColumnAdmin({
   id,
   useStore,
 }: AdminBlockProps<UnderlinedTableColumnProps>) {
-  const { getBlock, updateBlock, removeBlock } = useStore();
+  const { getBlock, updateBlock, removeBlock, addBlock } = useStore();
   const block = getBlock(id) as Block<"underlined-table-column">;
 
   if (!block) return null;
@@ -75,14 +76,13 @@ export function UnderlinedTableColumnAdmin({
           {data.header ? (
             <div className="relative group/header border border-border/40 rounded-lg bg-background p-2">
               <Heading.AdminComponent
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                id={(data.header as any).id}
+                id={(data.header as Block).id}
                 data={data.header.data}
                 useStore={useStore}
               />
               <button
                 type="button"
-                onClick={() => updateBlock(id, { header: undefined })}
+                onClick={() => removeBlock((data.header as Block).id)}
                 className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 opacity-0 group-hover/header:opacity-100 transition-opacity z-10"
               >
                 <Trash2 className="w-3 h-3" />
@@ -93,15 +93,10 @@ export function UnderlinedTableColumnAdmin({
               variant="outline"
               size="sm"
               className="w-full border-dashed"
-              onClick={() =>
-                updateBlock(id, {
-                  header: {
-                    id: nanoid(),
-                    type: "heading",
-                    data: Heading.Schema.parse({ text: "Column Header" }),
-                  } as unknown as DBComponent<"heading">,
-                })
-              }
+              onClick={() => {
+                const block = createBlock("heading");
+                addBlock(block, id, "header");
+              }}
             >
               <Plus className="w-4 h-4 mr-2" /> Add Header
             </Button>
@@ -130,7 +125,7 @@ export function UnderlinedTableColumnAdmin({
                 const AdminComp = Component.AdminComponent as any;
                 return (
                   <AdminComp
-                    id={(data.content as any).id}
+                    id={(data.content as Block).id}
                     data={data.content.data}
                     useStore={useStore}
                   />

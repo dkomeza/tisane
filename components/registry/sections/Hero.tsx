@@ -121,8 +121,6 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
     ? CTARegistryComponent.AdminComponent
     : null;
 
-  console.log("CTA Registry Component:", CTARegistryComponent);
-
   const imageData = block.data.backgroundImage?.data;
 
   return (

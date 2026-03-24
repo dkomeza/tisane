@@ -20,8 +20,8 @@ export function UnderlinedTableAdmin({
     <div className="w-full flex flex-col gap-4">
       <div className="flex flex-col gap-4">
         {columns.map((col) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const AdminComp = UnderlinedTableColumn.AdminComponent as React.FC<
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             AdminBlockProps<any>
           >;
           return (
