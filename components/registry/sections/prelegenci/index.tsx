@@ -16,6 +16,7 @@ import { Users } from "lucide-react";
 import { ImageClient } from "@/components/registry/items/image/ImageClient";
 import { Typography } from "@/components/registry/typography/typography";
 import { Container } from "@/components/registry/layout/container";
+import { nanoid } from "nanoid";
 
 export type PrelegenciProps = {
   header?: DBComponent<"typography">;
@@ -52,7 +53,16 @@ function PrelegenciClient({ data }: BlockProps<PrelegenciProps>) {
   const headerData = data.header?.data;
 
   return (
-    <Container.ClientComponent>
+    <Container.ClientComponent
+      id={nanoid()}
+      data={{
+        background: null,
+        content: null,
+        paddingBottom: "minimal",
+        paddingTop: "minimal",
+        variant: "root",
+      }}
+    >
       {headerData && (
         <div className="mb-8">
           <Typography.ClientComponent

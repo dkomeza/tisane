@@ -69,8 +69,18 @@ const groups: Group[] = [
   {
     label: "Settings",
     items: [
-      { label: "General", href: "/admin/settings", icon: Settings2, roles: ["admin"] },
-      { label: "Users", href: "/admin/users", icon: UserCircle2, roles: ["admin"] },
+      {
+        label: "General",
+        href: "/admin/settings",
+        icon: Settings2,
+        roles: ["admin"],
+      },
+      {
+        label: "Users",
+        href: "/admin/users",
+        icon: UserCircle2,
+        roles: ["admin"],
+      },
       // {
       //   label: "Integrations",
       //   href: "/admin/integrations",
@@ -85,13 +95,11 @@ const groups: Group[] = [
   },
   {
     label: "Support",
-    items: [
-      { label: "Feedback & Bugs", href: "/admin/feedback", icon: Bug },
-    ],
+    items: [{ label: "Feedback & Bugs", href: "/admin/feedback", icon: Bug }],
   },
 ];
 
-function Sidebar({ user }: { user: User & { role: string } }) {
+function Sidebar({ user }: { user: User & { role?: string | null } }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
 
@@ -108,15 +116,18 @@ function Sidebar({ user }: { user: User & { role: string } }) {
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items
-                  .filter((item) => !item.roles || item.roles.includes(user.role))
+                  .filter(
+                    (item) =>
+                      !item.roles || item.roles.includes(user.role || ""),
+                  )
                   .map((item) => (
-                  <SidebarMenuButton key={item.href} asChild>
-                    <Link href={item.href}>
-                      <item.icon />
-                      {item.label}
-                    </Link>
-                  </SidebarMenuButton>
-                ))}
+                    <SidebarMenuButton key={item.href} asChild>
+                      <Link href={item.href}>
+                        <item.icon />
+                        {item.label}
+                      </Link>
+                    </SidebarMenuButton>
+                  ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
