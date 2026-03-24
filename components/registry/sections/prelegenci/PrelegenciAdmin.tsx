@@ -46,6 +46,7 @@ export function PrelegenciAdmin({
             variant="outline"
             size="sm"
             className="w-full border-dashed"
+            type="button"
             onClick={() => {
               const newBlock = createBlock("typography");
               addBlock(newBlock, id, "header");
@@ -77,6 +78,7 @@ export function PrelegenciAdmin({
       <Button
         variant="outline"
         className="w-full border-dashed"
+        type="button"
         onClick={() => {
           addBlock(
             {
