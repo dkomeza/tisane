@@ -11,10 +11,18 @@ import {
 import z from "zod";
 
 type MarkType = "bold" | "italic" | "underline";
+type TextStyleMark =
+  | {
+      type: "textStyle";
+      attrs: {
+        color: string;
+      };
+    }
+  | { type: MarkType };
 
 export type SpanProps = {
   text: string;
-  marks?: { type: MarkType }[];
+  marks?: TextStyleMark[];
 };
 
 export const Span: CMSComponent<"span", SpanProps> = {
@@ -29,9 +37,23 @@ export const Span: CMSComponent<"span", SpanProps> = {
     text: z.string().min(1).max(2000).default("Example span text"),
     marks: z
       .array(
-        z.object({
-          type: z.enum(["bold", "italic", "underline"]),
-        })
+        z.discriminatedUnion("type", [
+          z.object({
+            type: z.literal("bold"),
+          }),
+          z.object({
+            type: z.literal("italic"),
+          }),
+          z.object({
+            type: z.literal("underline"),
+          }),
+          z.object({
+            type: z.literal("textStyle"),
+            attrs: z.object({
+              color: z.string(),
+            }),
+          }),
+        ]),
       )
       .optional(),
   }),
@@ -50,6 +72,8 @@ function SpanClient({ data }: BlockProps<SpanProps>) {
         content = <em>{content}</em>;
       } else if (mark.type === "underline") {
         content = <u>{content}</u>;
+      } else if (mark.type === "textStyle") {
+        content = <span style={{ color: mark.attrs?.color }}>{content}</span>;
       }
     });
     return <>{content}</>;

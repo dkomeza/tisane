@@ -89,7 +89,6 @@ const OrderedListNodeView = () => (
 );
 
 const ListItemNodeView = (props: NodeViewProps) => {
-  console.log("dupsko");
   const markerColor = props.node.attrs.markerColor as string | null;
 
   return (
@@ -113,10 +112,10 @@ const ListItem = TipTapListItem.extend({
         parseHTML: (element) =>
           element.style.getPropertyValue("--marker-color"),
       },
+      addNodeView() {
+        return ReactNodeViewRenderer(ListItemNodeView);
+      },
     };
-  },
-  addNodeView() {
-    return ReactNodeViewRenderer(ListItemNodeView);
   },
 });
 
