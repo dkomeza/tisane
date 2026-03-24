@@ -4,7 +4,7 @@ import { useTransition, useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { MenuForm } from "../../components/MenuForm";
-import { UpdateMenuRequest } from "@/lib/schemas/MenusSchema";
+import { CreateMenuRequest } from "@/lib/schemas/MenusSchema";
 import { updateMenu } from "@/app/actions/menus/update-menu";
 import { getMenu } from "@/app/actions/menus/get-menu";
 import { Menu } from "@/lib/schemas/MenusSchema";
@@ -33,13 +33,11 @@ export default function EditMenuPage({
     });
   }, [id, router]);
 
-  function onSubmit(data: UpdateMenuRequest) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { menuId, ...rest } = data;
+  function onSubmit(data: CreateMenuRequest) {
     startTransition(async () => {
       const res = await updateMenu({
         menuId: id,
-        ...rest,
+        ...data,
       });
 
       if (res.success) {

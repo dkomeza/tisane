@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreateMenuSchema,
   CreateMenuRequest,
-  UpdateMenuRequest,
 } from "@/lib/schemas/MenusSchema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,7 +53,7 @@ export function MenuForm({
   isSubmitting,
 }: {
   defaultValues?: Partial<CreateMenuRequest>;
-  onSubmit: (data: UpdateMenuRequest) => void;
+  onSubmit: (data: CreateMenuRequest) => void;
   isSubmitting?: boolean;
 }) {
   const { blocks, build } = useCMSStore();
