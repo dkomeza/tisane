@@ -1,6 +1,6 @@
 "use client";
 
-import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
+import { COMPONENT_REGISTRY, PLUGIN_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import { Block } from "@/components/registry/types";
 import { Plus } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -71,7 +71,10 @@ export function InsertionLine({
                     <h3 className="mb-2">{category.label}</h3>
                     <div className="grid grid-cols-3 gap-2">
                       {category.componentIds.map((componentId) => {
-                        const comp = COMPONENT_REGISTRY[componentId];
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const all: Record<string, any> = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY };
+                        const comp = all[componentId];
+                        if (!comp) return null;
                         const Preview = comp.PreviewComponent;
                         return (
                           <button
@@ -80,7 +83,7 @@ export function InsertionLine({
                             onClick={() => {
                               onInsert({
                                 id: nanoid(8),
-                                type: componentId,
+                                type: componentId as Block["type"],
                                 data: comp.Schema.parse({}),
                               });
                             }}

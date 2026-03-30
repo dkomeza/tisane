@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
+import { COMPONENT_REGISTRY, PLUGIN_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import {
   Card,
   CardContent,
@@ -24,8 +24,10 @@ export default function ComponentsAdminPage() {
 
       <div className="flex flex-col gap-8">
         {REGISTRY_CATEGORIES.map((category) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const all: Record<string, any> = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY };
           const components = category.componentIds.map(
-            (id) => COMPONENT_REGISTRY[id],
+            (id) => all[id],
           );
 
           return (

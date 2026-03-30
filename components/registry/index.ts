@@ -28,16 +28,19 @@ import { Prelegenci } from "@/components/registry/sections/prelegenci";
 import { PrelegenciSpeakerComponent } from "@/components/registry/sections/prelegenci/speaker";
 // -- PLOP IMPORTS HERE --
 
-import { Block, DBComponent, RegistryCategory } from "./types";
+import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
 import { nanoid } from "nanoid";
 export * from "./types";
+
+import { pluginComponents, pluginCategories } from "@/plugins/index"
 
 /**
  * The DBComponentSchema is a recursive Zod schema that validates
  * DBComponent structures, including nested children.
  */
 export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
-  const options = Object.entries(COMPONENT_REGISTRY).map(([key, value]) => {
+  const all = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY }
+  const options = Object.entries(all).map(([key, value]) => {
     return z.object({
       type: z.literal(key),
       data: value.Schema,
@@ -83,6 +86,14 @@ export const COMPONENT_REGISTRY = {
   [PrelegenciSpeakerComponent.id]: PrelegenciSpeakerComponent,
   // -- PLOP REGISTRY HERE --
 } as const;
+
+// Plugin registry — populated at module init from generated plugins/index.ts
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const PLUGIN_REGISTRY: Record<string, CMSComponent<string, any>> = {}
+for (const comp of pluginComponents) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  PLUGIN_REGISTRY[comp.id] = comp as any
+}
 
 export const REGISTRY_CATEGORIES: RegistryCategory[] = [
   {
@@ -145,6 +156,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },
+  ...pluginCategories,
 ];
 
 export type ComponentRegistry = typeof COMPONENT_REGISTRY;
@@ -161,11 +173,13 @@ export function createBlock<T extends ComponentType>(type: T): Block<T> {
 export function getComponentByType<T extends ComponentType>(
   type: T,
 ): ComponentRegistry[T] {
-  const component = COMPONENT_REGISTRY[type];
+  const component =
+    (COMPONENT_REGISTRY as Record<string, CMSComponent<string, unknown>>)[type] ??
+    PLUGIN_REGISTRY[type]
   if (!component) {
     throw new Error(`Component with type "${type}" not found in registry.`);
   }
-  return component;
+  return component as ComponentRegistry[T];
 }
 
 export function preprocess(data: unknown): DBComponent[] {
