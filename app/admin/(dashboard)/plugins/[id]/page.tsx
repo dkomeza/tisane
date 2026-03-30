@@ -6,10 +6,11 @@ import { PluginStatusBadge } from "../components/PluginStatusBadge";
 import { PluginSettingsRenderer } from "../components/PluginSettingsRenderer";
 import { PluginToggle } from "../components/PluginToggle";
 import { pluginMap } from "@/plugins/index";
+import { PluginStatus } from "@/lib/schemas/PluginsSchema";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import fs from "fs";
+import { readFile } from "fs/promises";
 import path from "path";
 
 type Props = { params: Promise<{ id: string }> };
@@ -31,20 +32,21 @@ async function PluginDetailPage({ params }: Props) {
   const plugin = result.data.plugin;
   const activePlugin = pluginMap[plugin.slug] ?? null;
 
-  // Read README if it exists
-  const readmePath = path.join(
-    process.cwd(),
-    "plugins",
-    plugin.slug,
-    "README.md",
-  );
-  const readme = fs.existsSync(readmePath)
-    ? fs.readFileSync(readmePath, "utf-8")
-    : null;
+  // Read README if it exists (guard against path traversal)
+  const pluginsRoot = path.resolve(process.cwd(), "plugins");
+  const readmePath = path.resolve(pluginsRoot, plugin.slug, "README.md");
+  let readme: string | null = null;
+  if (readmePath.startsWith(pluginsRoot + path.sep)) {
+    readme = await readFile(readmePath, "utf-8").catch(() => null);
+  }
 
   async function deleteAction() {
     "use server";
-    await deletePlugin(plugin.id);
+    const result = await deletePlugin(plugin.id);
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+    redirect("/admin/plugins");
   }
 
   return (
@@ -61,7 +63,7 @@ async function PluginDetailPage({ params }: Props) {
       </div>
 
       {/* Error card */}
-      {plugin.status === "broken" && (
+      {plugin.status === PluginStatus.broken && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/20">
           <div className="flex items-center gap-2 mb-2 text-red-800 dark:text-red-400">
             <AlertTriangle className="h-4 w-4" />
@@ -81,7 +83,7 @@ async function PluginDetailPage({ params }: Props) {
           <span className="text-sm font-medium">Enabled</span>
           <PluginToggle pluginId={plugin.id} enabled={plugin.enabled} />
         </div>
-        {plugin.enabled !== (plugin.status === "installed") && (
+        {plugin.enabled !== (plugin.status === PluginStatus.installed) && (
           <p className="text-xs text-yellow-600 dark:text-yellow-400">
             A rebuild is required to apply this change.
           </p>
@@ -128,7 +130,7 @@ async function PluginDetailPage({ params }: Props) {
       )}
 
       {/* Plugin settings */}
-      {activePlugin && plugin.status === "installed" && (
+      {activePlugin && plugin.status === PluginStatus.installed && (
         <div className="rounded-lg border bg-card p-4">
           <h2 className="font-medium mb-3">Plugin Settings</h2>
           <PluginSettingsRenderer plugin={plugin} activePlugin={activePlugin} />
