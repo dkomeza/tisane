@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": ["packages/*"],
   "scripts": {
     "dev": "next dev",
     "dev:pre": "docker compose -f docker-compose.dev.yml --env-file .env.development up -d && next dev -p 3001",
