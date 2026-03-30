@@ -1,40 +1,40 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { installPlugin } from "@/app/actions/plugins/install-plugin"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "sonner"
-import { Plus } from "lucide-react"
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { installPlugin } from "@/app/actions/plugins/install-plugin";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Loader2, Plus } from "lucide-react";
 
 export function InstallPluginForm() {
-  const router = useRouter()
-  const [repoUrl, setRepoUrl] = useState("")
-  const [branch, setBranch] = useState("")
-  const [displayName, setDisplayName] = useState("")
-  const [isPending, setIsPending] = useState(false)
+  const router = useRouter();
+  const [repoUrl, setRepoUrl] = useState("");
+  const [branch, setBranch] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [isPending, startTransition] = useTransition();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!repoUrl.trim()) return
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!repoUrl.trim()) return;
 
-    setIsPending(true)
-    const result = await installPlugin({
-      repoUrl: repoUrl.trim(),
-      branch: branch.trim() || "main",
-      displayName: displayName.trim() || undefined,
-    })
-    setIsPending(false)
+    startTransition(async () => {
+      const result = await installPlugin({
+        repoUrl: repoUrl.trim(),
+        branch: branch.trim() || "main",
+        displayName: displayName.trim() || undefined,
+      });
 
-    if (!result.success) {
-      toast.error(result.error)
-      return
-    }
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
 
-    toast.success("Plugin queued. Run a build to activate it.")
-    router.push(`/admin/plugins/${result.data.plugin.id}`)
+      toast.success("Plugin queued. Run a build to activate it.");
+      router.push(`/admin/plugins/${result.data.plugin.id}`);
+    });
   }
 
   return (
@@ -79,7 +79,11 @@ export function InstallPluginForm() {
       </div>
       <div className="flex justify-end">
         <Button type="submit" disabled={isPending || !repoUrl.trim()}>
-          <Plus className="mr-2 h-4 w-4" />
+          {isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="mr-2 h-4 w-4" />
+          )}
           {isPending ? "Adding..." : "Add Plugin"}
         </Button>
       </div>
