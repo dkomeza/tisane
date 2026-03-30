@@ -2,14 +2,23 @@ import type { FC, ReactNode } from "react"
 import type z from "zod"
 
 /**
- * Minimal Zustand store interface for plugin AdminComponents.
- * The real CMS store satisfies this structurally.
+ * Minimal store state interface for plugin AdminComponents.
+ * The real CMS Zustand store satisfies this structurally.
  */
-export interface CMSStoreShim {
+export interface CMSStoreState {
   getBlock: (id: string) => unknown
   updateBlock: (id: string, data: Record<string, unknown>) => void
   addBlock: (block: unknown, parentId?: string, prop?: string) => void
   removeBlock: (id: string) => void
+}
+
+/**
+ * Hook type matching Zustand's UseBoundStore pattern.
+ * Plugins call useStore() to get state, or useStore(selector) for derived values.
+ */
+export type CMSStoreHook = {
+  (): CMSStoreState
+  <T>(selector: (state: CMSStoreState) => T): T
 }
 
 export type BlockProps<P> = {
@@ -19,7 +28,7 @@ export type BlockProps<P> = {
 }
 
 export type AdminBlockProps<P> = BlockProps<P> & {
-  useStore: CMSStoreShim
+  useStore: CMSStoreHook
 }
 
 /**

@@ -16,7 +16,7 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "zod": ">=3"
+    "zod": ">=4"
   },
   "devDependencies": {
     "@types/react": "^19",
