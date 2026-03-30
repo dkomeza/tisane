@@ -1,0 +1,33 @@
+enum PluginStatus {
+  pending
+  installed
+  broken
+  disabled
+
+  @@map("plugin_status")
+}
+
+model Plugin {
+  id               String       @id @default(cuid())
+  slug             String       @unique
+  displayName      String
+  repoUrl          String?      @unique
+  branch           String       @default("main")
+
+  status           PluginStatus @default(pending)
+  enabled          Boolean      @default(false)
+
+  installedCommit  String?
+  lastSyncAt       DateTime?
+
+  errorStage       String?
+  errorMessage     String?
+
+  config           Json?
+
+  installedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@map("plugins")
+}
