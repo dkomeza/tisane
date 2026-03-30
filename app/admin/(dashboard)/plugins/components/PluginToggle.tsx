@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { enablePlugin } from "@/app/actions/plugins/enable-plugin";
 import { disablePlugin } from "@/app/actions/plugins/disable-plugin";
 import { useTransition } from "react";
+import { toast } from "sonner";
 
 export function PluginToggle({
   pluginId,
@@ -14,12 +15,13 @@ export function PluginToggle({
 }) {
   const [isPending, startTransition] = useTransition();
 
-  function handleToggle() {
+  function handleToggle(newChecked: boolean) {
     startTransition(async () => {
-      if (enabled) {
-        await disablePlugin(pluginId);
-      } else {
-        await enablePlugin(pluginId);
+      const result = newChecked
+        ? await enablePlugin(pluginId)
+        : await disablePlugin(pluginId);
+      if (!result.success) {
+        toast.error(result.error);
       }
     });
   }
