@@ -17,6 +17,7 @@ import Link from "next/link";
 
 import {
   Activity,
+  Blocks,
   FileText,
   Image,
   LayoutDashboard,
@@ -62,6 +63,7 @@ const groups: Group[] = [
     label: "Design",
     items: [
       { label: "Menus", href: "/admin/menus", icon: Menu },
+      { label: "Plugins", href: "/admin/plugins", icon: Blocks, roles: ["admin"] },
       // { label: "Appearance", href: "/admin/appearance", icon: Palette },
       { label: "Components", href: "/admin/components", icon: Box },
     ],
