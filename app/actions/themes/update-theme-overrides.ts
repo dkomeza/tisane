@@ -2,7 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import prisma, { Prisma } from "@/lib/prisma";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function updateThemeOverrides(
   pluginId: string,
@@ -28,7 +28,7 @@ export async function updateThemeOverrides(
       data: { themeOverrides: overrides as Prisma.InputJsonValue },
     });
 
-    revalidateTag("active-theme");
+    updateTag("active-theme");
 
     return { success: true as const };
   } catch (error) {

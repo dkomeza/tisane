@@ -2,7 +2,7 @@
 
 import { authorize } from "@/lib/auth/authorize";
 import prisma from "@/lib/prisma";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export async function activateTheme(slug: string) {
   const { session } = await authorize();
@@ -30,7 +30,7 @@ export async function activateTheme(slug: string) {
       create: { key: "active_theme", value: slug },
     });
 
-    revalidateTag("active-theme");
+    updateTag("active-theme");
 
     return { success: true as const };
   } catch (error) {
