@@ -61,8 +61,29 @@ export type TisanePlugin<TConfig = unknown> = {
   id: string
   displayName: string
   version: string
+  type?: "component"
   components: CMSComponent<string, unknown>[]
   categories?: PluginCategory[]
   configSchema?: z.ZodType<TConfig>
   SettingsComponent?: FC<PluginSettingsProps<TConfig>>
+}
+
+// ── Theme types ─────────────────────────────────────────────────────────────
+
+export type ThemeTokens = {
+  light?: Record<string, string>
+  dark?: Record<string, string>
+  radius?: string
+  typography?: Record<string, string>
+  containers?: Record<string, string>
+}
+
+export type TisaneTheme = {
+  id: string
+  displayName: string
+  version: string
+  type: "theme"
+  tokens: ThemeTokens
+  configSchema?: z.ZodType
+  SettingsComponent?: FC<PluginSettingsProps<unknown>>
 }
