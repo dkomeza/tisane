@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/app/components/ThemeProvider";
+import { getActiveThemeCSS } from "@/lib/themes/get-active-theme";
 
 import "@/styles/globals.css";
 import { Suspense } from "react";
@@ -58,13 +59,23 @@ const geistMono = Geist_Mono({
 //   },
 // };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const themeCSS = await getActiveThemeCSS();
+
   return (
     <html lang="pl" suppressHydrationWarning>
+      <head>
+        {themeCSS && (
+          <style
+            id="tisane-theme"
+            dangerouslySetInnerHTML={{ __html: themeCSS }}
+          />
+        )}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased relative bg-brand-grey-600 @container`}
       >

@@ -23,7 +23,10 @@ model Plugin {
   errorStage       String?
   errorMessage     String?
 
+  type             String       @default("component") // "component" | "theme"
+
   config           Json?
+  themeOverrides   Json?
 
   installedAt      DateTime?
   createdAt        DateTime     @default(now())
