@@ -22,6 +22,7 @@ import {
   Image,
   LayoutDashboard,
   Menu,
+  Palette,
   Settings2,
   UserCircle2,
   Box,
@@ -64,7 +65,7 @@ const groups: Group[] = [
     items: [
       { label: "Menus", href: "/admin/menus", icon: Menu },
       { label: "Plugins", href: "/admin/plugins", icon: Blocks, roles: ["admin"] },
-      // { label: "Appearance", href: "/admin/appearance", icon: Palette },
+      { label: "Themes", href: "/admin/themes", icon: Palette, roles: ["admin"] },
       { label: "Components", href: "/admin/components", icon: Box },
     ],
   },
