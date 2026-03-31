@@ -1,11 +1,30 @@
 import type { ThemeTokens } from "tisane";
 
+// Only allow safe characters in CSS custom property names and values.
+// Keys: alphanumeric, hyphens, underscores
+// Values: reject anything that could break out of a CSS declaration
+const SAFE_KEY = /^[a-zA-Z0-9_-]+$/;
+const UNSAFE_VALUE = /[{}<>]|<\/style/i;
+
+function sanitizeTokens(
+  tokens: Record<string, string>
+): Record<string, string> {
+  const safe: Record<string, string> = {};
+  for (const [key, value] of Object.entries(tokens)) {
+    if (typeof value !== "string") continue;
+    if (!SAFE_KEY.test(key)) continue;
+    if (UNSAFE_VALUE.test(value)) continue;
+    safe[key] = value;
+  }
+  return safe;
+}
+
 /**
  * Converts a flat token map (e.g. { "primary": "oklch(...)" }) into CSS declarations.
  * Keys are prefixed with `--` to form valid CSS custom property names.
  */
 function tokensToCSSDeclarations(tokens: Record<string, string>): string {
-  return Object.entries(tokens)
+  return Object.entries(sanitizeTokens(tokens))
     .map(([key, value]) => `  --${key}: ${value};`)
     .join("\n");
 }

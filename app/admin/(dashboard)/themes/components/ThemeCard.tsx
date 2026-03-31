@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Plugin } from "@/lib/schemas/PluginsSchema";
 import { PluginStatusBadge } from "../../plugins/components/PluginStatusBadge";
@@ -26,6 +27,7 @@ type Props = {
 
 export function ThemeCard({ theme, isActive }: Props) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const tokens = (theme.config ?? {}) as ThemeTokens;
   const darkTokens = tokens.dark ?? {};
   const lightTokens = tokens.light ?? {};
@@ -48,6 +50,7 @@ export function ThemeCard({ theme, isActive }: Props) {
         toast.error(result.error);
       } else {
         toast.success(isActive ? "Theme deactivated" : "Theme activated");
+        router.refresh();
       }
     });
   }

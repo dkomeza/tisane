@@ -52,11 +52,11 @@ html {
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --container-sm: var(--container-sm);
-  --container-md: var(--container-md);
-  --container-lg: var(--container-lg);
-  --container-xl: var(--container-xl);
-  --container-2xl: var(--container-2xl);
+  --container-sm: var(--ctr-sm);
+  --container-md: var(--ctr-md);
+  --container-lg: var(--ctr-lg);
+  --container-xl: var(--ctr-xl);
+  --container-2xl: var(--ctr-2xl);
 
   --text-heading-1: var(--heading-1);
   --text-heading-2: var(--heading-2);
@@ -97,11 +97,11 @@ html {
 }
 
 :root {
-  --container-sm: 40rem;
-  --container-md: 48rem;
-  --container-lg: 64rem;
-  --container-xl: 80rem;
-  --container-2xl: 96rem;
+  --ctr-sm: 40rem;
+  --ctr-md: 48rem;
+  --ctr-lg: 64rem;
+  --ctr-xl: 80rem;
+  --ctr-2xl: 96rem;
 
   --heading-1: 3.5rem;
   --heading-2: 2.625rem;

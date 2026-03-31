@@ -3,6 +3,7 @@
 import { authorize } from "@/lib/auth/authorize";
 import prisma, { Prisma } from "@/lib/prisma";
 import { updateTag } from "next/cache";
+import { validateThemeTokens } from "@/lib/themes/validate-tokens";
 
 export async function updateThemeOverrides(
   pluginId: string,
@@ -15,6 +16,9 @@ export async function updateThemeOverrides(
   }
 
   try {
+    // Validate override structure before persisting
+    validateThemeTokens(overrides);
+
     const plugin = await prisma.plugin.findUnique({
       where: { id: pluginId },
     });
