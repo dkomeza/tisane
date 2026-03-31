@@ -50,6 +50,20 @@ services:
       - tisane_net
     restart: unless-stopped
 
+  supervisor:
+    container_name: prod_tisane_supervisor
+    build:
+      context: ./supervisor
+      dockerfile: Dockerfile
+    environment:
+      - SUPERVISOR_TOKEN=${SUPERVISOR_TOKEN}
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - tisane_net
+    restart: unless-stopped
+
   db:
     container_name: prod_tisane_postgres
     image: postgres:16

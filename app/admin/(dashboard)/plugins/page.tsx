@@ -4,6 +4,7 @@ import { getPlugins } from "@/app/actions/plugins/get-plugins";
 import { PluginCard } from "./components/PluginCard";
 import { InstallPluginForm } from "./components/InstallPluginForm";
 import { PluginStatus } from "@/lib/schemas/PluginsSchema";
+import { RebuildButton } from "./components/RebuildButton";
 
 async function PluginsPage() {
   const { session } = await authorize();
@@ -29,8 +30,11 @@ async function PluginsPage() {
       </div>
 
       {hasPendingChanges && (
-        <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-900 dark:bg-yellow-900/20 dark:text-yellow-400">
-          A rebuild is required to apply pending plugin changes.
+        <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 dark:border-yellow-900 dark:bg-yellow-900/20">
+          <p className="text-sm text-yellow-800 dark:text-yellow-400 mb-2">
+            A rebuild is required to apply pending plugin changes.
+          </p>
+          <RebuildButton />
         </div>
       )}
 
