@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
+import { COMPONENT_REGISTRY, PLUGIN_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import {
   DBComponent,
   AdminBlockProps,
@@ -233,8 +233,11 @@ function ContentForm() {
                       <h3 className="mb-2">{category.label}</h3>
                       <div className="grid grid-cols-3 gap-2">
                         {category.componentIds.map((componentId) => {
-                          const Preview =
-                            COMPONENT_REGISTRY[componentId].PreviewComponent;
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          const all: Record<string, any> = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY };
+                          const comp = all[componentId];
+                          if (!comp) return null;
+                          const Preview = comp.PreviewComponent;
                           return (
                             <button
                               key={componentId}
@@ -242,11 +245,9 @@ function ContentForm() {
                               onClick={() => {
                                 const newBlock: Block = {
                                   id: nanoid(8),
-                                  type: componentId,
+                                  type: componentId as Block["type"],
                                   data: {
-                                    ...COMPONENT_REGISTRY[
-                                      componentId
-                                    ].Schema.parse({}),
+                                    ...comp.Schema.parse({}),
                                   },
                                 };
 

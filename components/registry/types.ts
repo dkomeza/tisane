@@ -87,7 +87,7 @@ export interface Block<
 export type RegistryCategory = {
   id: string;
   label: string;
-  componentIds: ComponentType[];
+  componentIds: string[];
   isRootLevel?: boolean;
 };
 
