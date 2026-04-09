@@ -6,6 +6,7 @@ import { getActiveThemeCSS } from "@/lib/themes/get-active-theme";
 
 import "@/styles/globals.css";
 import { Suspense } from "react";
+import { cookies } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  cookies();
   const themeCSS = await getActiveThemeCSS();
 
   return (
