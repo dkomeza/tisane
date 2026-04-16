@@ -1,11 +1,8 @@
-import {
-  CMSComponent,
-  Block,
-  BlockSchema,
-  createBlock,
-} from "@/components/registry";
+import { CMSComponent, Block, BlockSchema } from "@/components/registry";
 import z from "zod";
 import { SpeakerAdmin } from "./speaker-admin";
+import { nanoid } from "nanoid";
+import { CmsLink } from "@/components/registry/elements/cms-link";
 
 export type PrelegenciSpeakerProps = {
   mediaId: string;
@@ -34,7 +31,11 @@ export const PrelegenciSpeakerComponent: CMSComponent<
       .refine((data) => data.type === "cms-link", {
         message: "Link must be of type 'cms-link'",
       })
-      .default(createBlock("cms-link"))
+      .default({
+        id: nanoid(),
+        type: "cms-link",
+        data: CmsLink.Schema.parse({}),
+      })
       .optional() as z.ZodType<Block<"cms-link"> | undefined>,
   }),
 };

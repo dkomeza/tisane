@@ -7,13 +7,13 @@ import {
   CMSComponent,
   Block,
   BlockSchema,
-  createBlock,
 } from "@/components/registry";
 import z from "zod";
 import { BorderedContainerAdmin } from "./BorderedContainerAdmin";
 import { Heading } from "@/components/registry/typography/heading";
 import { Typography } from "@/components/registry/typography/typography";
 import { ButtonComponent } from "@/components/registry/elements/button";
+import { nanoid } from "nanoid";
 
 export type BorderedContainerProps = {
   heading: Block<"heading">;
@@ -38,19 +38,31 @@ export const BorderedContainer: CMSComponent<
       .refine((data) => data.type === "heading", {
         message: "Content must be of type 'heading'",
       })
-      .default(createBlock("heading")) as z.ZodType<Block<"heading">>,
+      .default({
+        id: nanoid(),
+        type: "heading",
+        data: Heading.Schema.parse({}),
+      }) as z.ZodType<Block<"heading">>,
     typography: z
       .lazy(() => BlockSchema)
       .refine((data) => data.type === "typography", {
         message: "Content must be of type 'typography'",
       })
-      .default(createBlock("typography")) as z.ZodType<Block<"typography">>,
+      .default({
+        id: nanoid(),
+        type: "typography",
+        data: Typography.Schema.parse({}),
+      }) as z.ZodType<Block<"typography">>,
     button: z
       .lazy(() => BlockSchema)
       .refine((data) => data.type === "button", {
         message: "Content must be of type 'button'",
       })
-      .default(createBlock("button")) as z.ZodType<Block<"button">>,
+      .default({
+        id: nanoid(),
+        type: "button",
+        data: ButtonComponent.Schema.parse({}),
+      }) as z.ZodType<Block<"button">>,
   }),
 };
 
