@@ -26,10 +26,10 @@ export const passwordRules: PasswordRequirement[] = [
 
 export const PasswordSchema = passwordRules.reduce(
   (schema, rule) => rule.function(schema),
-  z.string()
+  z.string(),
 );
 
-export const SignupSchema = z
+export const BaseSignupSchema = z
   .object({
     name: z
       .string()
@@ -41,12 +41,15 @@ export const SignupSchema = z
       .max(30, "Surname must be at most 30 characters"),
     password: PasswordSchema,
     passwordConfirm: z.string().min(1, "Please confirm your password"),
-    token: z.string("Token is required"),
   })
   .refine((val) => val.password === val.passwordConfirm, {
     error: "Passwords do not match",
     path: ["passwordConfirm"],
   });
+
+export const SignupSchema = BaseSignupSchema.extend({
+  token: z.string("Token is required"),
+});
 
 export const ResetPasswordSchema = z
   .object({
