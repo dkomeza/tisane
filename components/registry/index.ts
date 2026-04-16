@@ -14,7 +14,6 @@ import { BulletList } from "@/components/registry/typography/bullet-list";
 import { OrderedList } from "@/components/registry/typography/ordered-list";
 import { ListItem } from "@/components/registry/typography/list-item";
 import { Icon } from "@/components/registry/items/icon";
-import { Agenda } from "@/plugins/itday/components/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
@@ -24,22 +23,20 @@ import { Grid } from "@/components/registry/layout/grid";
 import { GridItem } from "@/components/registry/layout/grid-item";
 import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
 import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
-import { Prelegenci } from "@/plugins/itday/components/prelegenci";
-import { PrelegenciSpeakerComponent } from "@/plugins/itday/components/prelegenci/speaker";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
 import { nanoid } from "nanoid";
 export * from "./types";
 
-import { pluginComponents, pluginCategories } from "@/plugins/index"
+import { pluginComponents, pluginCategories } from "@/plugins/index";
 
 /**
  * The DBComponentSchema is a recursive Zod schema that validates
  * DBComponent structures, including nested children.
  */
 export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
-  const all = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY }
+  const all = { ...COMPONENT_REGISTRY, ...PLUGIN_REGISTRY };
   const options = Object.entries(all).map(([key, value]) => {
     return z.object({
       type: z.literal(key),
@@ -72,7 +69,6 @@ export const COMPONENT_REGISTRY = {
   [OrderedList.id]: OrderedList,
   [ListItem.id]: ListItem,
   [Icon.id]: Icon,
-  [Agenda.id]: Agenda,
   [BorderedContainer.id]: BorderedContainer,
   [CmsLink.id]: CmsLink,
   [Menu.id]: Menu,
@@ -82,17 +78,15 @@ export const COMPONENT_REGISTRY = {
   [GridItem.id]: GridItem,
   [UnderlinedTable.id]: UnderlinedTable,
   [UnderlinedTableColumn.id]: UnderlinedTableColumn,
-  [Prelegenci.id]: Prelegenci,
-  [PrelegenciSpeakerComponent.id]: PrelegenciSpeakerComponent,
   // -- PLOP REGISTRY HERE --
 } as const;
 
 // Plugin registry — populated at module init from generated plugins/index.ts
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const PLUGIN_REGISTRY: Record<string, CMSComponent<string, any>> = {}
+export const PLUGIN_REGISTRY: Record<string, CMSComponent<string, any>> = {};
 for (const comp of pluginComponents) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  PLUGIN_REGISTRY[comp.id] = comp as any
+  PLUGIN_REGISTRY[comp.id] = comp as any;
 }
 
 export const REGISTRY_CATEGORIES: RegistryCategory[] = [
@@ -134,10 +128,8 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
     label: "Sections",
     componentIds: [
       Hero.id,
-      Agenda.id,
       BorderedContainer.id,
       UnderlinedTable.id,
-      Prelegenci.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
@@ -174,8 +166,9 @@ export function getComponentByType<T extends ComponentType>(
   type: T,
 ): ComponentRegistry[T] {
   const component =
-    (COMPONENT_REGISTRY as Record<string, CMSComponent<string, unknown>>)[type] ??
-    PLUGIN_REGISTRY[type]
+    (COMPONENT_REGISTRY as Record<string, CMSComponent<string, unknown>>)[
+      type
+    ] ?? PLUGIN_REGISTRY[type];
   if (!component) {
     throw new Error(`Component with type "${type}" not found in registry.`);
   }
