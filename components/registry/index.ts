@@ -14,7 +14,7 @@ import { BulletList } from "@/components/registry/typography/bullet-list";
 import { OrderedList } from "@/components/registry/typography/ordered-list";
 import { ListItem } from "@/components/registry/typography/list-item";
 import { Icon } from "@/components/registry/items/icon";
-import { Agenda } from "@/components/registry/sections/agenda";
+import { Agenda } from "@/plugins/itday/components/agenda";
 import { BorderedContainer } from "@/components/registry/sections/bordered-container";
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
@@ -24,8 +24,8 @@ import { Grid } from "@/components/registry/layout/grid";
 import { GridItem } from "@/components/registry/layout/grid-item";
 import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
 import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
-import { Prelegenci } from "@/components/registry/sections/prelegenci";
-import { PrelegenciSpeakerComponent } from "@/components/registry/sections/prelegenci/speaker";
+import { Prelegenci } from "@/plugins/itday/components/prelegenci";
+import { PrelegenciSpeakerComponent } from "@/plugins/itday/components/prelegenci/speaker";
 // -- PLOP IMPORTS HERE --
 
 import { Block, CMSComponent, DBComponent, RegistryCategory } from "./types";
