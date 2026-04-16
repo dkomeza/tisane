@@ -1,8 +1,8 @@
 import { COMPONENT_REGISTRY } from "@/components/registry";
-import { DBComponent, ReactClientComponent } from "@/components/registry/types";
+import { Block, ReactClientComponent } from "@/components/registry/types";
 import { nanoid } from "nanoid";
 
-export function PageContentRenderer({ blocks }: { blocks?: DBComponent[] }) {
+export function PageContentRenderer({ blocks }: { blocks?: Block[] }) {
   if (!blocks || blocks.length === 0) {
     return null;
   }

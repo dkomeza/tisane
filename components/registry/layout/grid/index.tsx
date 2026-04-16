@@ -6,8 +6,7 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
+  BlockSchema,
   COMPONENT_REGISTRY,
 } from "@/components/registry";
 import { cn } from "@/lib/utils";
@@ -18,7 +17,7 @@ export type GridProps = {
   columns: number;
   gap: number;
   rowAspectRatio: "auto" | "square" | "video" | "4/3" | "3/4";
-  children?: DBComponent<"grid-item">[];
+  children?: Block<"grid-item">[];
 };
 
 export const Grid: CMSComponent<"grid", GridProps> = {
@@ -35,8 +34,8 @@ export const Grid: CMSComponent<"grid", GridProps> = {
     rowAspectRatio: z
       .enum(["auto", "square", "video", "4/3", "3/4"])
       .default("auto"),
-    children: z.array(z.lazy(() => DBComponentSchema)).optional() as z.ZodType<
-      DBComponent<"grid-item">[] | undefined
+    children: z.array(z.lazy(() => BlockSchema)).optional() as z.ZodType<
+      Block<"grid-item">[] | undefined
     >,
   }),
 };

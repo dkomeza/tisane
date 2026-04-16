@@ -26,17 +26,18 @@ import { UnderlinedTable } from "@/components/registry/sections/underlined-table
 import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
 import { Prelegenci } from "@/components/registry/sections/prelegenci";
 import { PrelegenciSpeakerComponent } from "@/components/registry/sections/prelegenci/speaker";
+import { Partnerzy } from "@/components/registry/sections/partnerzy";
 // -- PLOP IMPORTS HERE --
 
-import { Block, DBComponent, RegistryCategory } from "./types";
+import { Block, RegistryCategory } from "./types";
 import { nanoid } from "nanoid";
 export * from "./types";
 
 /**
- * The DBComponentSchema is a recursive Zod schema that validates
- * DBComponent structures, including nested children.
+ * The BlockSchema is a recursive Zod schema that validates
+ * Block structures, including nested children.
  */
-export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
+export const BlockSchema: z.ZodType<Block> = z.lazy(() => {
   const options = Object.entries(COMPONENT_REGISTRY).map(([key, value]) => {
     return z.object({
       type: z.literal(key),
@@ -48,7 +49,7 @@ export const DBComponentSchema: z.ZodType<DBComponent> = z.lazy(() => {
   return z.discriminatedUnion("type", options as any);
 });
 
-export const DBComponentsArraySchema = z.array(DBComponentSchema);
+export const BlocksArraySchema = z.array(BlockSchema);
 
 /**
  * The COMPONENT_REGISTRY is a centralized registry of all available CMS components.
@@ -81,6 +82,7 @@ export const COMPONENT_REGISTRY = {
   [UnderlinedTableColumn.id]: UnderlinedTableColumn,
   [Prelegenci.id]: Prelegenci,
   [PrelegenciSpeakerComponent.id]: PrelegenciSpeakerComponent,
+  [Partnerzy.id]: Partnerzy,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -127,6 +129,7 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       BorderedContainer.id,
       UnderlinedTable.id,
       Prelegenci.id,
+      Partnerzy.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
@@ -168,7 +171,7 @@ export function getComponentByType<T extends ComponentType>(
   return component;
 }
 
-export function preprocess(data: unknown): DBComponent[] {
+export function preprocess(data: unknown): Block[] {
   if (data == null) {
     return [];
   }
@@ -176,7 +179,7 @@ export function preprocess(data: unknown): DBComponent[] {
   if (typeof data === "string") {
     try {
       const parsed = JSON.parse(data);
-      return DBComponentsArraySchema.parse(parsed);
+      return BlocksArraySchema.parse(parsed);
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -188,9 +191,9 @@ export function preprocess(data: unknown): DBComponent[] {
 
   if (typeof data === "object") {
     if (Array.isArray(data)) {
-      return DBComponentsArraySchema.parse(data);
+      return BlocksArraySchema.parse(data);
     } else {
-      return DBComponentsArraySchema.parse([data]);
+      return BlocksArraySchema.parse([data]);
     }
   }
 

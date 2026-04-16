@@ -1,17 +1,17 @@
 import {
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
+  Block,
+  BlockSchema,
+  createBlock,
 } from "@/components/registry";
 import z from "zod";
-import { CmsLink } from "@/components/registry/elements/cms-link";
 import { SpeakerAdmin } from "./speaker-admin";
 
 export type PrelegenciSpeakerProps = {
   mediaId: string;
   name: string;
   description: string;
-  link?: DBComponent<"cms-link">;
+  link?: Block<"cms-link">;
 };
 
 export const PrelegenciSpeakerComponent: CMSComponent<
@@ -30,14 +30,11 @@ export const PrelegenciSpeakerComponent: CMSComponent<
     name: z.string().default("Jan Kowalski"),
     description: z.string().default("Specjalista ds. AI"),
     link: z
-      .lazy(() => DBComponentSchema)
+      .lazy(() => BlockSchema)
       .refine((data) => data.type === "cms-link", {
         message: "Link must be of type 'cms-link'",
       })
-      .default({
-        type: "cms-link",
-        data: CmsLink.Schema.parse({ text: "Więcej" }),
-      })
-      .optional() as z.ZodType<DBComponent<"cms-link"> | undefined>,
+      .default(createBlock("cms-link"))
+      .optional() as z.ZodType<Block<"cms-link"> | undefined>,
   }),
 };

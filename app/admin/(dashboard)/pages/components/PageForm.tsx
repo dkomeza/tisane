@@ -28,11 +28,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
-import {
-  DBComponent,
-  AdminBlockProps,
-  Block,
-} from "@/components/registry/types";
+import { Block, AdminBlockProps } from "@/components/registry/types";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -45,10 +41,8 @@ import {
 } from "@/components/ui/popover";
 import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
-import { ContentPreview } from "./ContentPreview";
 import { useCMSStore } from "@/components/registry/CMSStore";
 import { InsertionLine } from "@/components/registry/InsertionLine";
-import { useRouter } from "next/navigation";
 
 const slugify = (text: string) =>
   text
@@ -289,7 +283,7 @@ export function PageForm({
       status: "draft",
       seo_title: "",
       seo_description: "",
-      content: [] as DBComponent[],
+      content: [] as Block[],
       ...defaultValues,
     },
   });
@@ -301,11 +295,7 @@ export function PageForm({
   }, [defaultValues, build]);
 
   useEffect(() => {
-    form.setValue(
-      "content",
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      blocks.map(({ id, ...rest }) => rest),
-    );
+    form.setValue("content", blocks);
     broadcast(form.getValues("content") || []);
   }, [blocks, form, broadcast]);
 

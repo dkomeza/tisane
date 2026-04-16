@@ -3,7 +3,7 @@ import {
   Block,
   COMPONENT_REGISTRY,
   createBlock,
-  DBComponent,
+  ReactAdminComponent,
 } from "@/components/registry";
 import { UnderlinedTableColumnProps } from "./column";
 import { Heading } from "@/components/registry/typography/heading";
@@ -122,10 +122,13 @@ export function UnderlinedTableColumnAdmin({
                     </div>
                   );
 
-                const AdminComp = Component.AdminComponent as any;
+                const AdminComp =
+                  Component.AdminComponent as ReactAdminComponent<
+                    typeof data.content.data
+                  >;
                 return (
                   <AdminComp
-                    id={(data.content as Block).id}
+                    id={data.content.id}
                     data={data.content.data}
                     useStore={useStore}
                   />
@@ -176,7 +179,7 @@ export function UnderlinedTableColumnAdmin({
                                   id: nanoid(),
                                   type: comp.id,
                                   data: comp.Schema.parse({}),
-                                } as unknown as DBComponent,
+                                } as unknown as Block,
                               })
                             }
                             className="text-xs flex flex-col items-center gap-2 p-3 rounded-md hover:bg-accent border border-border/40 hover:border-primary/30 transition-all bg-card/50 shadow-sm"

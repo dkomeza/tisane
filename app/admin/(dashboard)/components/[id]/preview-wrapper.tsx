@@ -10,7 +10,6 @@ import {
   Block,
   BlockProps,
   AdminBlockProps,
-  DBComponent,
 } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -27,6 +26,7 @@ import { Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent, TabsList } from "@radix-ui/react-tabs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCMSStore } from "@/components/registry/CMSStore";
+import { nanoid } from "nanoid";
 
 interface Props<T extends ComponentType> {
   componentType: T;
@@ -52,9 +52,10 @@ export function ComponentPreviewWrapper<T extends ComponentType>({
   useEffect(() => {
     if (!isStale) return;
 
-    const initialBlock: DBComponent<T> = {
+    const initialBlock: Block<T> = {
       type: componentType,
       data: { ...component.Schema.parse({}) } as Block<T>["data"],
+      id: nanoid(),
     };
     build([initialBlock]);
   }, [componentType, build, isStale]);

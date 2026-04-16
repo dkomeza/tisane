@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { GetMenuResponse } from "@/lib/schemas/MenusSchema";
-import { DBComponent, preprocess } from "@/components/registry";
+import { Block, preprocess } from "@/components/registry";
 
 export async function getMenuBySlug(slug: string): Promise<GetMenuResponse> {
   try {
@@ -16,7 +16,7 @@ export async function getMenuBySlug(slug: string): Promise<GetMenuResponse> {
 
     const res = {
       ...menu,
-      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+      content: preprocess(menu.content)[0] as Block<"menu">,
     };
 
     return { success: true, data: { menu: res } };

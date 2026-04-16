@@ -2,8 +2,7 @@ import {
   Block,
   BlockProps,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
+  BlockSchema,
   COMPONENT_REGISTRY,
 } from "@/components/registry";
 import z from "zod";
@@ -14,7 +13,7 @@ export type GridItemProps = {
   colSpan: number;
   rowSpan: number;
   aspectRatio: "auto" | "square" | "video" | "4/3" | "3/4";
-  content?: DBComponent;
+  content?: Block;
 };
 
 export const GridItem: CMSComponent<"grid-item", GridItemProps> = {
@@ -31,7 +30,7 @@ export const GridItem: CMSComponent<"grid-item", GridItemProps> = {
     aspectRatio: z
       .enum(["auto", "square", "video", "4/3", "3/4"])
       .default("auto"),
-    content: z.lazy(() => DBComponentSchema).optional(),
+    content: z.lazy(() => BlockSchema).optional(),
   }),
 };
 

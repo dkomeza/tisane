@@ -9,7 +9,7 @@ import { ComponentRegistry, ComponentType } from ".";
 export type CMSStore = {
   blocks: Block[];
   setBlocks: (blocks: Block[]) => void;
-  build: (dbBlocks: DBComponent[]) => void;
+  build: (dbBlocks: Block[]) => void;
   updateBlock: <T extends ComponentType>(
     id: string,
     data: Partial<z.infer<ComponentRegistry[T]["Schema"]>>,
@@ -61,24 +61,14 @@ export type CMSComponent<Id extends string, Props> = {
 };
 
 /**
- * A DBComponent represents an instance of a component stored in the database.
- * It includes the component's type (ID), data adhering to the component's schema,
- * and optionally an array of child components for nested structures.
- */
-export interface DBComponent<T extends ComponentType = ComponentType> {
-  type: T;
-  data: z.infer<ComponentRegistry[T]["Schema"]>;
-}
-
-/**
  * A Block represents an instance of a component in the Zustand store.
  * Each block has a unique ID, a type corresponding to a component in the registry,
  * and data that adheres to the schema defined by that component.
  */
-export interface Block<
-  T extends ComponentType = ComponentType,
-> extends DBComponent<T> {
+export interface Block<T extends ComponentType = ComponentType> {
   id: string;
+  type: T;
+  data: z.infer<ComponentRegistry[T]["Schema"]>;
 }
 
 /**

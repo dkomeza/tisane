@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { DBComponent } from "@/components/registry/types";
+import { Block } from "@/components/registry/types";
 
 export const PREVIEW_CHANNEL_NAME = "page-form-preview";
 
 export type PreviewMessage = {
   type: "UPDATE_CONTENT";
-  blocks: DBComponent[];
+  blocks: Block[];
 };
 
 export function usePreviewBroadcaster(
-  channelName: string = PREVIEW_CHANNEL_NAME
+  channelName: string = PREVIEW_CHANNEL_NAME,
 ) {
   const [channel, setChannel] = useState<BroadcastChannel | null>(null);
 
@@ -20,7 +20,7 @@ export function usePreviewBroadcaster(
     return () => bc.close();
   }, [channelName]);
 
-  const broadcast = (blocks: DBComponent[], attempts = 0) => {
+  const broadcast = (blocks: Block[], attempts = 0) => {
     if (attempts > 5) return;
 
     if (channel) {
@@ -41,7 +41,7 @@ export function usePreviewBroadcaster(
 }
 
 export function usePreviewReceiver(channelName: string = PREVIEW_CHANNEL_NAME) {
-  const [blocks, setBlocks] = useState<DBComponent[] | null>(null);
+  const [blocks, setBlocks] = useState<Block[] | null>(null);
 
   useEffect(() => {
     const bc = new BroadcastChannel(channelName);

@@ -5,8 +5,7 @@ import {
   CMSComponent,
   COMPONENT_REGISTRY,
   createBlock,
-  DBComponent,
-  DBComponentSchema,
+  BlockSchema,
   getComponentByType,
   ReactAdminComponent,
 } from "@/components/registry";
@@ -47,8 +46,8 @@ function getPaddingClass(size: string, side: "t" | "b"): string {
 }
 
 export type ContainerProps = {
-  background: Color | DBComponent<"imageComponent"> | null;
-  content: DBComponent | null;
+  background: Color | Block<"imageComponent"> | null;
+  content: Block | null;
   paddingTop: PaddingSize;
   paddingBottom: PaddingSize;
   variant: "root" | "nested";
@@ -67,15 +66,15 @@ export const Container: CMSComponent<"container", ContainerProps> = {
       .union([
         z.string().nullable(), // For color values
         z
-          .lazy(() => DBComponentSchema)
+          .lazy(() => BlockSchema)
           .refine((data) => data.type === "imageComponent", {
             message: "Background must be of type 'imageComponent'",
           })
-          .nullable() as z.ZodType<DBComponent<"imageComponent">>,
+          .nullable() as z.ZodType<Block<"imageComponent">>,
       ])
       .default(null),
     content: z
-      .lazy(() => DBComponentSchema)
+      .lazy(() => BlockSchema)
       .nullable()
       .default(null),
     paddingTop: z.enum(["minimal", "medium", "large"]).default("large"),
@@ -87,7 +86,9 @@ export const Container: CMSComponent<"container", ContainerProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function ContainerClient({ data }: BlockProps<ContainerProps> & { children?: React.ReactNode }) {
+function ContainerClient({
+  data,
+}: BlockProps<ContainerProps> & { children?: React.ReactNode }) {
   const ContentComponent = data.content
     ? (getComponentByType(data.content.type).ClientComponent as React.FC<
         BlockProps<typeof data.content.data>
@@ -175,8 +176,7 @@ function ContainerAdmin({ id, useStore }: AdminBlockProps<ContainerProps>) {
                 if (val === "none") {
                   if (
                     block.data.background &&
-                    (block.data.background as DBComponent).type ===
-                      "imageComponent"
+                    (block.data.background as Block).type === "imageComponent"
                   ) {
                     const backgroundId = (block.data.background as Block).id;
                     removeBlock(backgroundId);
@@ -186,8 +186,7 @@ function ContainerAdmin({ id, useStore }: AdminBlockProps<ContainerProps>) {
                 } else if (val === "color") {
                   if (
                     block.data.background &&
-                    (block.data.background as DBComponent).type ===
-                      "imageComponent"
+                    (block.data.background as Block).type === "imageComponent"
                   ) {
                     const backgroundId = (block.data.background as Block).id;
                     removeBlock(backgroundId);

@@ -2,24 +2,20 @@
  * Component: Menu
  */
 
-import {
-  CMSComponent,
-  DBComponent,
-  DBComponentSchema,
-} from "@/components/registry";
+import { CMSComponent, Block, BlockSchema } from "@/components/registry";
 import z from "zod";
 import { MenuAdmin } from "./AdminComponent";
 
 import { MenuClient } from "./ClientComponent";
 
 export type MenuProps = {
-  left: DBComponent[];
-  center: DBComponent[];
-  right: DBComponent[];
+  left: Block[];
+  center: Block[];
+  right: Block[];
 
-  m_top: DBComponent[];
-  m_center: DBComponent[];
-  m_bottom: DBComponent[];
+  m_top: Block[];
+  m_center: Block[];
+  m_bottom: Block[];
 };
 
 export const Menu: CMSComponent<"menu", MenuProps> = {
@@ -31,13 +27,13 @@ export const Menu: CMSComponent<"menu", MenuProps> = {
   PreviewComponent: MenuPreview,
 
   Schema: z.object({
-    left: z.lazy(() => z.array(DBComponentSchema)).default([]),
-    center: z.lazy(() => z.array(DBComponentSchema)).default([]),
-    right: z.lazy(() => z.array(DBComponentSchema)).default([]),
+    left: z.lazy(() => z.array(BlockSchema)).default([]),
+    center: z.lazy(() => z.array(BlockSchema)).default([]),
+    right: z.lazy(() => z.array(BlockSchema)).default([]),
 
-    m_top: z.lazy(() => z.array(DBComponentSchema)).default([]),
-    m_center: z.lazy(() => z.array(DBComponentSchema)).default([]),
-    m_bottom: z.lazy(() => z.array(DBComponentSchema)).default([]),
+    m_top: z.lazy(() => z.array(BlockSchema)).default([]),
+    m_center: z.lazy(() => z.array(BlockSchema)).default([]),
+    m_bottom: z.lazy(() => z.array(BlockSchema)).default([]),
   }),
 };
 

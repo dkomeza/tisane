@@ -5,10 +5,9 @@
 import {
   BlockProps,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
-  COMPONENT_REGISTRY,
   Block,
+  BlockSchema,
+  COMPONENT_REGISTRY,
 } from "@/components/registry";
 import z from "zod";
 import { UnderlinedTableAdmin } from "./UnderlinedTableAdmin";
@@ -17,7 +16,7 @@ import { Heading } from "@/components/registry/typography/heading";
 import { LayoutTemplate } from "lucide-react";
 
 export type UnderlinedTableProps = {
-  columns?: DBComponent<"underlined-table-column">[];
+  columns?: Block<"underlined-table-column">[];
 };
 
 export const UnderlinedTable: CMSComponent<
@@ -33,11 +32,9 @@ export const UnderlinedTable: CMSComponent<
 
   Schema: z.object({
     columns: z
-      .array(z.lazy(() => DBComponentSchema))
+      .array(z.lazy(() => BlockSchema))
       .max(3)
-      .default([]) as z.ZodType<
-      DBComponent<"underlined-table-column">[] | undefined
-    >,
+      .default([]) as z.ZodType<Block<"underlined-table-column">[] | undefined>,
   }),
 };
 

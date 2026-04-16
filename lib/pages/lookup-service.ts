@@ -2,7 +2,7 @@
 
 import { cacheTag } from "next/cache";
 import prisma, { Page } from "@/lib/prisma";
-import { DBComponent, DBComponentsArraySchema } from "@/components/registry";
+import { Block, BlocksArraySchema } from "@/components/registry";
 
 export type CachedPage = Pick<
   Page,
@@ -22,7 +22,7 @@ export type CachedPage = Pick<
     name: string;
   }[];
 } & {
-  content: DBComponent[];
+  content: Block[];
 };
 
 async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
@@ -62,7 +62,7 @@ async function fetchPageBySlug(slug: string): Promise<CachedPage | null> {
     return null;
   }
 
-  const { success, data } = DBComponentsArraySchema.safeParse(page.content);
+  const { success, data } = BlocksArraySchema.safeParse(page.content);
   if (!success) {
     console.error("Failed to parse page components:", data);
     return null;
@@ -90,7 +90,7 @@ function normalizeSlug(slug: string[]): string {
  * @returns A promise that resolves to the matching cached page, or `null` if no page exists.
  */
 export async function getPageBySlug(
-  slug: string[]
+  slug: string[],
 ): Promise<CachedPage | null> {
   const realSlug = normalizeSlug(slug);
   return fetchPageBySlug(realSlug);
@@ -106,7 +106,7 @@ export async function getPageBySlug(
  * @returns A promise that resolves to the cached page data, or `null` if not found.
  */
 export async function getCachedPageBySlug(
-  slug: string[]
+  slug: string[],
 ): Promise<CachedPage | null> {
   "use cache";
   const realSlug = normalizeSlug(slug);

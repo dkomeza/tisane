@@ -5,10 +5,9 @@
 import {
   BlockProps,
   CMSComponent,
-  DBComponent,
-  DBComponentSchema,
-  COMPONENT_REGISTRY,
   Block,
+  BlockSchema,
+  COMPONENT_REGISTRY,
 } from "@/components/registry";
 import z from "zod";
 import { PrelegenciAdmin } from "./PrelegenciAdmin";
@@ -19,8 +18,8 @@ import { Container } from "@/components/registry/layout/container";
 import { nanoid } from "nanoid";
 
 export type PrelegenciProps = {
-  header?: DBComponent<"typography">;
-  speakers?: DBComponent<"prelegenci-speaker">[];
+  header?: Block<"typography">;
+  speakers?: Block<"prelegenci-speaker">[];
 };
 
 export const Prelegenci: CMSComponent<"prelegenci", PrelegenciProps> = {
@@ -33,13 +32,13 @@ export const Prelegenci: CMSComponent<"prelegenci", PrelegenciProps> = {
 
   Schema: z.object({
     header: z
-      .lazy(() => DBComponentSchema)
+      .lazy(() => BlockSchema)
       .refine((data) => data.type === "typography", {
         message: "Header must be of type 'typography'",
       })
-      .optional() as z.ZodType<DBComponent<"typography"> | undefined>,
-    speakers: z.array(z.lazy(() => DBComponentSchema)).default([]) as z.ZodType<
-      DBComponent<"prelegenci-speaker">[] | undefined
+      .optional() as z.ZodType<Block<"typography"> | undefined>,
+    speakers: z.array(z.lazy(() => BlockSchema)).default([]) as z.ZodType<
+      Block<"prelegenci-speaker">[] | undefined
     >,
   }),
 };

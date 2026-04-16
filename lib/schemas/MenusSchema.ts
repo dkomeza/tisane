@@ -1,10 +1,6 @@
 import z from "zod";
 import { Result } from "../types/Result";
-import {
-  DBComponent,
-  DBComponentsArraySchema,
-  DBComponentSchema,
-} from "@/components/registry";
+import { Block, BlockSchema } from "@/components/registry";
 import { Menu as RawMenu } from "../prisma";
 
 export const GetMenusSchema = z.object({
@@ -20,7 +16,7 @@ export const GetMenusSchema = z.object({
 export const CreateMenuSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
-  content: DBComponentSchema.refine((data) => data.type === "menu", {
+  content: BlockSchema.refine((data) => data.type === "menu", {
     message: "Content must be of type 'menu'",
   }),
 });
@@ -29,7 +25,7 @@ export const UpdateMenuSchema = z.object({
   menuId: z.string().min(1),
   title: z.string().min(1).optional(),
   slug: z.string().min(1).optional(),
-  content: DBComponentSchema.refine((data) => data.type === "menu", {
+  content: BlockSchema.refine((data) => data.type === "menu", {
     message: "Content must be of type 'menu'",
   }).optional(),
 });
@@ -38,7 +34,7 @@ export const GetMenuSchema = z.object({
   menuId: z.string().min(1),
 });
 
-export type Menu = Omit<RawMenu, "content"> & { content: DBComponent<"menu"> };
+export type Menu = Omit<RawMenu, "content"> & { content: Block<"menu"> };
 
 export type CreateMenuRequest = z.infer<typeof CreateMenuSchema>;
 export type CreateMenuResponse = Result<{ menu: Menu }, string>;

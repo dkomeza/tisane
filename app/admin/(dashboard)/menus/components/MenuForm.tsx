@@ -2,10 +2,7 @@
 
 import { useForm, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  CreateMenuSchema,
-  CreateMenuRequest,
-} from "@/lib/schemas/MenusSchema";
+import { CreateMenuSchema, CreateMenuRequest } from "@/lib/schemas/MenusSchema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +19,7 @@ import { COMPONENT_REGISTRY } from "@/components/registry";
 import { ReactAdminComponent } from "@/components/registry/types";
 import { Card } from "@/components/ui/card";
 import { useCMSStore } from "@/components/registry/CMSStore";
+import { nanoid } from "nanoid";
 
 const slugify = (text: string) =>
   text
@@ -79,6 +77,7 @@ export function MenuForm({
         {
           type: "menu",
           data: COMPONENT_REGISTRY["menu"].Schema.parse({}),
+          id: nanoid(),
         },
       ]);
     }

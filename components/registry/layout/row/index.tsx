@@ -4,9 +4,9 @@
 
 import {
   BlockProps,
-  DBComponentSchema,
+  BlockSchema,
   COMPONENT_REGISTRY,
-  DBComponent,
+  Block,
   CMSComponent,
 } from "@/components/registry";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ export type RowProps = {
   align: "start" | "end" | "center" | "baseline" | "stretch";
   wrap: "nowrap" | "wrap" | "wrap-reverse";
   gap: number;
-  children?: DBComponent[];
+  children?: Block[];
 };
 
 export const Row: CMSComponent<"row", RowProps> = {
@@ -39,7 +39,7 @@ export const Row: CMSComponent<"row", RowProps> = {
       .default("stretch"),
     wrap: z.enum(["nowrap", "wrap", "wrap-reverse"]).default("nowrap"),
     gap: z.number().min(0).max(12).default(4),
-    children: z.array(z.lazy(() => DBComponentSchema)).optional(),
+    children: z.array(z.lazy(() => BlockSchema)).optional(),
   }),
 };
 
@@ -52,7 +52,7 @@ function RowClient({ data }: BlockProps<RowProps>) {
       className={cn(
         "flex flex-row w-full h-full",
         `flex-${data.wrap} gap-${data.gap}`,
-        `justify-${data.justify} items-${data.align}`
+        `justify-${data.justify} items-${data.align}`,
       )}
     >
       {data.children?.map((child, index) => {

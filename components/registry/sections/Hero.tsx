@@ -1,33 +1,28 @@
 import {
   COMPONENT_REGISTRY,
   createBlock,
-  DBComponentSchema,
+  BlockSchema,
 } from "@/components/registry";
 import {
   AdminBlockProps,
   Block,
   BlockProps,
   CMSComponent,
-  DBComponent,
   ReactClientComponent,
-  ReactAdminComponent,
 } from "@/components/registry/types";
 import z from "zod";
-import { Typography } from "../typography/typography";
-import { nanoid } from "nanoid";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
 
 type HeroProps = {
-  content?: DBComponent<"typography">;
-  cta?: DBComponent;
-  backgroundImage?: DBComponent<"imageComponent">;
+  content?: Block<"typography">;
+  cta?: Block;
+  backgroundImage?: Block<"imageComponent">;
 };
 
 export const Hero: CMSComponent<"hero", HeroProps> = {
@@ -40,18 +35,18 @@ export const Hero: CMSComponent<"hero", HeroProps> = {
 
   Schema: z.object({
     content: z
-      .lazy(() => DBComponentSchema)
+      .lazy(() => BlockSchema)
       .refine((data) => data.type === "typography", {
         message: "Content must be of type 'typography'",
       })
-      .optional() as z.ZodType<DBComponent<"typography">>,
-    cta: z.lazy(() => DBComponentSchema).optional(),
+      .optional() as z.ZodType<Block<"typography">>,
+    cta: z.lazy(() => BlockSchema).optional(),
     backgroundImage: z
-      .lazy(() => DBComponentSchema)
+      .lazy(() => BlockSchema)
       .refine((data) => data.type === "imageComponent", {
         message: "Background Image must be of type 'imageComponent'",
       })
-      .optional() as z.ZodType<DBComponent<"imageComponent">>,
+      .optional() as z.ZodType<Block<"imageComponent">>,
   }),
 };
 
@@ -113,9 +108,6 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
   const ctaData = block.data.cta?.data;
   const CTARegistryComponent = block.data.cta?.type
     ? COMPONENT_REGISTRY[block.data.cta.type]
-    : null;
-  const CTAComponent = CTARegistryComponent
-    ? CTARegistryComponent.ClientComponent
     : null;
   const CTAAdminComponent = CTARegistryComponent
     ? CTARegistryComponent.AdminComponent

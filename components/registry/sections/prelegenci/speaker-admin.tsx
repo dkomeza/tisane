@@ -6,7 +6,6 @@ import {
   Block,
   COMPONENT_REGISTRY,
 } from "@/components/registry";
-import { DBComponent } from "@/components/registry/types";
 import { PrelegenciSpeakerProps } from "./speaker";
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { MediaSelector } from "@/components/registry/items/image/MediaSelector";
@@ -29,7 +28,6 @@ export function SpeakerAdmin({
 
   useEffect(() => {
     if (!block?.data.mediaId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedMedia(null);
       return;
     }
@@ -209,7 +207,7 @@ export function SpeakerAdmin({
                     id: nanoid(),
                     type: "cms-link",
                     data: CmsLink.Schema.parse({ text: "Więcej" }),
-                  } as unknown as DBComponent<"cms-link">,
+                  } as unknown as Block<"cms-link">,
                 })
               }
             >

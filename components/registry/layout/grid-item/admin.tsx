@@ -2,7 +2,6 @@ import {
   AdminBlockProps,
   Block,
   COMPONENT_REGISTRY,
-  DBComponent,
 } from "@/components/registry";
 import { GridItemProps } from ".";
 import { Trash2, Plus, GripHorizontal, Settings2 } from "lucide-react";
@@ -212,7 +211,7 @@ export function GridItemAdmin({
                                 id: nanoid(),
                                 type: comp.id,
                                 data: comp.Schema.parse({}),
-                              } as unknown as DBComponent,
+                              } as unknown as Block,
                             });
                           }}
                           className="text-xs flex flex-col items-center gap-2 p-3 rounded-md hover:bg-accent border border-border/40 hover:border-primary/30 transition-all bg-card/50 shadow-sm"

@@ -1,10 +1,9 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Block, CMSStore } from "./types";
-import { nanoid } from "nanoid";
 
 /**
- * Type guard to safely identify a component node (DBComponent or Block).
+ * Type guard to safely identify a component node (Block or Block).
  * A valid component node must have a `type` string and a `data` object.
  * This prevents treating generic configurations or styles as components.
  */
@@ -28,9 +27,13 @@ export const isValidComponentNode = (node: unknown): node is Block => {
  */
 const visitBlocks = (
   node: unknown,
-  callback: (block: Block, parent: unknown, keyInParent: string | number | null) => boolean | void,
+  callback: (
+    block: Block,
+    parent: unknown,
+    keyInParent: string | number | null,
+  ) => boolean | void,
   parent: unknown = null,
-  keyInParent: string | number | null = null
+  keyInParent: string | number | null = null,
 ): boolean => {
   if (!node || typeof node !== "object") return false;
 
@@ -80,12 +83,6 @@ export const useCMSStore = create<CMSStore>()(
       set((state) => {
         const writableBlocks = structuredClone(dbBlocks) as Block[];
 
-        visitBlocks(writableBlocks, (node) => {
-          if (!node.id) {
-            node.id = nanoid(12);
-          }
-        });
-
         state.blocks = writableBlocks;
       }),
 
@@ -93,7 +90,8 @@ export const useCMSStore = create<CMSStore>()(
       set((state) => {
         visitBlocks(state.blocks, (node) => {
           if (node.id === id) {
-            if (!node.data) (node as unknown as Record<string, unknown>).data = {};
+            if (!node.data)
+              (node as unknown as Record<string, unknown>).data = {};
             Object.assign(node.data, data);
             return true; // Stop searching
           }
@@ -106,7 +104,11 @@ export const useCMSStore = create<CMSStore>()(
           if (node.id === id) {
             if (Array.isArray(parent) && typeof keyInParent === "number") {
               parent.splice(keyInParent, 1);
-            } else if (parent && keyInParent !== null && typeof keyInParent === "string") {
+            } else if (
+              parent &&
+              keyInParent !== null &&
+              typeof keyInParent === "string"
+            ) {
               delete (parent as Record<string, unknown>)[keyInParent];
             }
             return true; // Stop searching
@@ -183,7 +185,9 @@ export const useCMSStore = create<CMSStore>()(
 
         if (!Array.isArray(sourceList) || !Array.isArray(destList)) return;
 
-        const oldIndex = sourceList.findIndex((item: Block) => item?.id === itemId);
+        const oldIndex = sourceList.findIndex(
+          (item: Block) => item?.id === itemId,
+        );
         if (oldIndex === -1) return;
 
         // Extract the item
@@ -211,5 +215,5 @@ export const useCMSStore = create<CMSStore>()(
       });
       return found;
     },
-  }))
+  })),
 );

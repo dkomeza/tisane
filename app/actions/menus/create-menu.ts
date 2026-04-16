@@ -10,7 +10,7 @@ import {
   CreateMenuResponse,
 } from "@/lib/schemas/MenusSchema";
 import prisma from "@/lib/prisma";
-import { DBComponent, preprocess } from "@/components/registry";
+import { Block, preprocess } from "@/components/registry";
 
 export async function createMenu(
   request: CreateMenuRequest,
@@ -40,7 +40,7 @@ export async function createMenu(
 
     const res = {
       ...menu,
-      content: preprocess(menu.content)[0] as DBComponent<"menu">,
+      content: preprocess(menu.content)[0] as Block<"menu">,
     };
 
     revalidatePath("/admin/menus");
