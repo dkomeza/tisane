@@ -40,6 +40,7 @@ export * from "./types";
 export const BlockSchema: z.ZodType<Block> = z.lazy(() => {
   const options = Object.entries(COMPONENT_REGISTRY).map(([key, value]) => {
     return z.object({
+      id: z.string(),
       type: z.literal(key),
       data: value.Schema,
     });

@@ -13,7 +13,7 @@ import { ImageClient } from "@/components/registry/items/image/ImageClient";
  */
 export function AgendaClient({ data }: BlockProps<AgendaProps>) {
   const [layout, setLayout] = useState<"standard" | "list">(
-    data.layout || "standard"
+    data.layout || "standard",
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerPage = 3;
@@ -29,8 +29,8 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
   };
 
   return (
-    <section className="w-full py-10 px-4 md:px-8 overflow-hidden">
-      <div className="max-w-7xl mx-auto text-brand-purple-300">
+    <section className="w-full py-10 overflow-hidden">
+      <div className="mx-auto text-brand-purple-300">
         <div className="border-b border-brand-purple-300 mb-6 text-right text-2xl">
           Agenda
         </div>
@@ -45,7 +45,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                 "flex items-center gap-2 px-4 py-2 rounded-sm transition-all text-sm font-semibold uppercase tracking-wider",
                 layout === "standard"
                   ? "bg-brand-purple-400 text-brand-grey-100 shadow-sm"
-                  : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100"
+                  : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100",
               )}
             >
               <IconComponent name="cards" size={16} />
@@ -58,7 +58,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                 "flex items-center gap-2 px-4 py-2 rounded-sm transition-all text-sm font-semibold uppercase tracking-wider",
                 layout === "list"
                   ? "bg-brand-purple-400 text-brand-grey-100 shadow-sm"
-                  : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100"
+                  : "bg-transparent text-brand-purple-400 hover:bg-brand-purple-100",
               )}
             >
               <IconComponent name="listAlt" size={16} />
@@ -171,7 +171,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                   "p-4 transition-colors",
                   currentIndex === 0
                     ? "bg-brand-grey-200 text-brand-grey-300"
-                    : "bg-brand-grey-200 text-brand-grey-400 hover:bg-brand-grey-300"
+                    : "bg-brand-grey-200 text-brand-grey-400 hover:bg-brand-grey-300",
                 )}
               >
                 <IconComponent name="chevronLeft" size={24} />
@@ -184,7 +184,7 @@ export function AgendaClient({ data }: BlockProps<AgendaProps>) {
                   "p-4 transition-colors",
                   currentIndex >= maxIndex
                     ? "bg-brand-purple-100 text-brand-purple-200"
-                    : "bg-brand-purple-300 text-white hover:bg-brand-purple-400"
+                    : "bg-brand-purple-300 text-white hover:bg-brand-purple-400",
                 )}
               >
                 <IconComponent name="chevronRight" size={24} />

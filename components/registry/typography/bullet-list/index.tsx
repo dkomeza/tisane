@@ -37,8 +37,8 @@ export function BulletListClient({
   tagProps?: Record<string, unknown>;
 }) {
   return (
-    <Tag 
-      className={`pl-6 space-y-1 my-4 ${className || ""}`.trim()} 
+    <Tag
+      className={`pl-6 space-y-1 ${className || ""}`.trim()}
       style={{ listStyleType: '"✓ "' }}
       {...tagProps}
     >

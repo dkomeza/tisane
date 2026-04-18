@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
 import { Block, AdminBlockProps } from "@/components/registry/types";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
@@ -300,17 +300,22 @@ export function PageForm({
   }, [blocks, form, broadcast]);
 
   const TABS = ["metadata", "content"] as const;
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("metadata");
+  const [activeTab, setActiveTab] = useState<(typeof TABS)[number] | "preview">(
+    "metadata",
+  );
+
+  const openPreview = useCallback(() => {
+    window.open(`/preview/${defaultValues?.slug}`, "_blank");
+  }, [defaultValues?.slug]);
 
   return (
     <Tabs
       value={activeTab}
       onValueChange={(value) => {
         if (value === "preview") {
-          window.open(`/preview/${defaultValues?.slug}`, "_blank");
-        } else {
-          setActiveTab(value as (typeof TABS)[number]);
+          return;
         }
+        setActiveTab(value as (typeof TABS)[number]);
       }}
       className="w-full flex-1 overflow-hidden"
     >
@@ -342,6 +347,7 @@ export function PageForm({
                     "data-[state=active]:bg-background! [data-state=active]:shadow-sm! data-[state=active]:text-primary!",
                     "data-[state=inactive]:text-muted-foreground! data-[state=inactive]:hover:text-foreground!",
                   )}
+                  onClick={openPreview}
                 >
                   <ExternalLinkIcon className="h-2 w-2" />
                   Preview

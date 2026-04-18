@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
+import { TypewriterEffect } from "./hero/TypeWriter";
 
 type HeroProps = {
   content?: Block<"typography">;
@@ -78,6 +79,22 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
         {typographyData && (
           <div className="max-w-4xl mx-6 sm:mx-12 md:mr-0 md:ml-16 lg:ml-20 xl:ml-24 2xl:ml-32">
             <TypographyComponent id="hero-content" data={typographyData} />
+
+            <h3 className="flex flex-row items-center gap-2 mt-8 font-semibold">
+              <span className="text-4xl">IT is</span>
+              <span className="text-5xl text-brand-pink-400">
+                <TypewriterEffect
+                  phrases={[
+                    "Future",
+                    "Technology",
+                    "You",
+                    "Us",
+                    "Knowledge",
+                    "Now",
+                  ]}
+                />
+              </span>
+            </h3>
           </div>
         )}
         {CTAComponent && ctaData && (

@@ -9,6 +9,7 @@ import {
   CMSComponent,
 } from "@/components/registry";
 import z from "zod";
+import { Container, SectionContainerProps } from "../../layout/container";
 
 export type PartnerzyProps = {
   example: string;
@@ -31,16 +32,20 @@ export const Partnerzy: CMSComponent<"partnerzy", PartnerzyProps> = {
  * This is the client-side component that will be rendered in the application.
  */
 function PartnerzyClient({ data }: BlockProps<PartnerzyProps>) {
-  return <div>{data.example}</div>;
+  return (
+    <Container.ClientComponent
+      data={SectionContainerProps}
+      id=""
+    >
+      
+    </Container.ClientComponent>
+  );
 }
 
 /**
  * This is the admin component used to edit the component's data in the CMS.
  */
-function PartnerzyAdmin({
-  id,
-  useStore,
-}: AdminBlockProps<PartnerzyProps>) {
+function PartnerzyAdmin({ id, useStore }: AdminBlockProps<PartnerzyProps>) {
   const { getBlock, updateBlock } = useStore();
   const block = getBlock(id) as Block<"partnerzy">;
 

@@ -62,6 +62,10 @@ function PrelegenciClient({ data }: BlockProps<PrelegenciProps>) {
         variant: "root",
       }}
     >
+      <div className="flex w-full border-b-2 border-brand-purple-300 pb-1 justify-end mb-4">
+        <h3 className="text-brand-purple-300 text-2xl">Prelegenci</h3>
+      </div>
+
       {headerData && (
         <div className="mb-8">
           <Typography.ClientComponent
@@ -82,12 +86,9 @@ function PrelegenciClient({ data }: BlockProps<PrelegenciProps>) {
             const linkData = speakerData.link?.data;
 
             return (
-              <div
-                key={(speaker as Block).id || idx}
-                className="flex flex-col flex-1 min-w-0"
-              >
+              <div key={idx} className="flex flex-col min-w-0 w-64">
                 {/* Full-width image */}
-                <div className="w-full overflow-hidden mb-4">
+                <div className="w-full overflow-hidden mb-4 aspect-3/4 [&>img]:object-cover">
                   {speakerData.mediaId ? (
                     <ImageClient
                       id={`speaker-img-${idx}`}
@@ -99,7 +100,6 @@ function PrelegenciClient({ data }: BlockProps<PrelegenciProps>) {
                     </div>
                   )}
                 </div>
-
                 {/* Right-aligned content */}
                 <div className="flex flex-col items-end text-right">
                   <h3 className="text-lg font-bold text-brand-grey-100 mb-1">

@@ -53,6 +53,14 @@ export type ContainerProps = {
   variant: "root" | "nested";
 };
 
+export const SectionContainerProps: ContainerProps = {
+  background: null,
+  content: null,
+  paddingBottom: "minimal",
+  paddingTop: "minimal",
+  variant: "root",
+};
+
 export const Container: CMSComponent<"container", ContainerProps> = {
   id: "container" as const,
   label: "Container",
@@ -77,7 +85,7 @@ export const Container: CMSComponent<"container", ContainerProps> = {
       .lazy(() => BlockSchema)
       .nullable()
       .default(null),
-    paddingTop: z.enum(["minimal", "medium", "large"]).default("large"),
+    paddingTop: z.enum(["minimal", "medium", "large"]).default("medium"),
     paddingBottom: z.enum(["minimal", "medium", "large"]).default("medium"),
     variant: z.enum(["root", "nested"]).default("root"),
   }),
@@ -88,6 +96,7 @@ export const Container: CMSComponent<"container", ContainerProps> = {
  */
 function ContainerClient({
   data,
+  children,
 }: BlockProps<ContainerProps> & { children?: React.ReactNode }) {
   const ContentComponent = data.content
     ? (getComponentByType(data.content.type).ClientComponent as React.FC<
@@ -100,7 +109,7 @@ function ContainerClient({
   return (
     <section
       className={cn(
-        "block @container/block w-full relative isolate",
+        "w-full relative isolate",
         getPaddingClass(data.paddingTop, "t"),
         getPaddingClass(data.paddingBottom, "b"),
       )}
@@ -119,15 +128,11 @@ function ContainerClient({
           />
         </div>
       )}
-      <div
-        className={cn(
-          data.variant === "root" &&
-            "px-8 @md/block:px-12 @lg/block:px-20 @xl/block:px-28 @2xl/block:px-32",
-        )}
-      >
+      <div className="container mx-auto @container/block">
         {content && ContentComponent && (
           <ContentComponent id={content.id} data={content.data} />
         )}
+        {children}
       </div>
     </section>
   );
