@@ -31,7 +31,7 @@ import { ButtonClient } from "./ButtonClient";
 import { useEffect, useState } from "react";
 import { getPages } from "@/app/actions/pages/get-pages";
 import { PageWithoutContent } from "@/lib/schemas/PagesSchema";
-import { DocumentAdminItem } from "../documents-button/DocumentAdminItem";
+import { DocumentAdminItem } from "./DocumentAdminItem";
 
 interface ButtonAdminProps {
   id: string;

@@ -19,14 +19,12 @@ import { BorderedContainer } from "@/components/registry/sections/bordered-conta
 import { CmsLink } from "@/components/registry/elements/cms-link";
 import { Menu } from "@/components/registry/layout/menu";
 import { Container } from "@/components/registry/layout/container";
-import { DocumentsButton } from "@/components/registry/elements/documents-button";
 import { Grid } from "@/components/registry/layout/grid";
 import { GridItem } from "@/components/registry/layout/grid-item";
 import { UnderlinedTable } from "@/components/registry/sections/underlined-table";
 import { UnderlinedTableColumn } from "@/components/registry/sections/underlined-table/column";
 import { Prelegenci } from "@/components/registry/sections/prelegenci";
 import { PrelegenciSpeakerComponent } from "@/components/registry/sections/prelegenci/speaker";
-import { Partnerzy } from "@/components/registry/sections/partnerzy";
 // -- PLOP IMPORTS HERE --
 
 import { Block, RegistryCategory } from "./types";
@@ -76,14 +74,12 @@ export const COMPONENT_REGISTRY = {
   [CmsLink.id]: CmsLink,
   [Menu.id]: Menu,
   [Container.id]: Container,
-  [DocumentsButton.id]: DocumentsButton,
   [Grid.id]: Grid,
   [GridItem.id]: GridItem,
   [UnderlinedTable.id]: UnderlinedTable,
   [UnderlinedTableColumn.id]: UnderlinedTableColumn,
   [Prelegenci.id]: Prelegenci,
   [PrelegenciSpeakerComponent.id]: PrelegenciSpeakerComponent,
-  [Partnerzy.id]: Partnerzy,
   // -- PLOP REGISTRY HERE --
 } as const;
 
@@ -95,7 +91,6 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       ButtonComponent.id,
       UnderlinedCard.id,
       CmsLink.id,
-      DocumentsButton.id,
       // -- PLOP ELEMENTS HERE --
     ],
   },
@@ -130,7 +125,6 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       BorderedContainer.id,
       UnderlinedTable.id,
       Prelegenci.id,
-      Partnerzy.id,
       // -- PLOP SECTIONS HERE --
     ],
     isRootLevel: true,
@@ -142,10 +136,6 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Typography.id,
       Heading.id,
       Paragraph.id,
-      Span.id,
-      BulletList.id,
-      OrderedList.id,
-      ListItem.id,
       // -- PLOP TYPOGRAPHY HERE --
     ],
   },
