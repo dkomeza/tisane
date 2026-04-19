@@ -83,53 +83,10 @@ export default function Competition() {
             </p>
 
             {/* MOTIVATION: Clean text */}
-            <p className="text-foreground/90 font-light -mt-2">
-              Niezależnie od tego, czy Wasz projekt jest na etapie badań i
-              testów, czy też ma już za sobą pierwsze wdrożenie – weźcie udział
-              w konkursie!
-            </p>
-            <div className="flex flex-col gap-4 pt-4">
-              <a
-                href="https://forms.office.com/e/nbZ7xL0EAm"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full"
-              >
-                <Button
-                  size="lg"
-                  className="bg-brand-violet hover:bg-brand-purple text-white shadow-lg shadow-brand-violet/20 cursor-pointer w-full"
-                >
-                  Zgłoś projekt <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </a>
-              <div className="flex flex-wrap gap-4">
-                <a
-                  href="/Regulamin_ITisME_ogolnopolski.docx"
-                  className="flex-1"
-                  download
-                >
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-brand-violet text-brand-violet hover:bg-brand-violet/10 cursor-pointer w-full"
-                  >
-                    Regulamin konkursu
-                  </Button>
-                </a>
-                <a
-                  href="/Oswiadczenie-opiekuna_naukowego.docx"
-                  className="flex-1"
-                  download
-                >
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-brand-pink text-brand-pink hover:bg-brand-pink/10 cursor-pointer w-full"
-                  >
-                    Oświadczenie opiekuna
-                  </Button>
-                </a>
-              </div>
+            <div className="bg-brand-violet/10 border border-brand-violet/30 p-6 rounded-xl mt-6">
+              <p className="text-xl font-bold text-center">
+                <span className="text-brand-violet">Zgłoszenia zakończone</span> – zapraszamy na finał 12 maja na Wydziale Informatyki AGH!
+              </p>
             </div>
           </div>
 
@@ -164,117 +121,16 @@ export default function Competition() {
               </div>
             </div>
 
-            {/* 2. Step by Step Guide Card */}
-            <div className="bg-white dark:bg-black/20 p-8 rounded-2xl border border-brand-violet/60 shadow-lg">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                Jak wziąć udział?
+            <div className="bg-white dark:bg-black/20 p-8 rounded-2xl border border-brand-violet/60 shadow-lg text-center flex flex-col items-center justify-center space-y-6">
+              <div className="w-16 h-16 bg-brand-violet/20 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-brand-violet" />
+              </div>
+              <h3 className="text-2xl font-bold">
+                Zgłoszenia zakończone!
               </h3>
-
-              <div className="space-y-6 relative">
-                {/* Connecting line for the timeline effect */}
-                {/* <div className="absolute left-[19px] top-2 bottom-4 w-0.5 bg-brand-violet/10 -z-10" /> */}
-
-                {/* Step 1 */}
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-violet/20 flex items-center justify-center text-brand-violet font-bold">
-                    1
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm flex items-center gap-2">
-                      <ClipboardList className="w-4 h-4 text-brand-violet" />{" "}
-                      Zgłoś zespół
-                    </h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-snug">
-                      Wypełnij formularz. Pamiętaj – zgłasza tylko{" "}
-                      <strong>jeden przedstawiciel</strong>.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-violet/20 flex items-center justify-center text-brand-violet font-bold">
-                    2
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm flex items-center gap-2">
-                      <FileImage className="w-4 h-4 text-brand-violet" />{" "}
-                      Przygotuj wizualizacje
-                    </h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-snug">
-                      PDF zawierający wyłącznie zrzuty ekranu / grafiki + krótki
-                      komentarz.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 3 */}
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-violet/20 flex items-center justify-center text-brand-violet font-bold">
-                    3
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-brand-violet" /> Zgoda
-                      opiekuna
-                    </h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-snug">
-                      Pobierz i poproś Opiekuna Naukowego o podpis.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 4 */}
-                <div className="flex gap-4 items-start">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-brand-violet/20 flex items-center justify-center text-brand-violet font-bold">
-                    4
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm flex items-center gap-2">
-                      <Send className="w-4 h-4 text-brand-violet" /> Wyślij
-                      zgłoszenie
-                    </h4>
-                    <p className="text-sm text-muted-foreground mt-1 leading-snug">
-                      PDF i skan zgody na{" "}
-                      <a
-                        href="mailto:itisme@agh.edu.pl"
-                        className="text-brand-violet hover:underline"
-                      >
-                        itisme@agh.edu.pl
-                      </a>{" "}
-                      (w tytule nazwa projektu).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Timeline Section */}
-              <div className="mt-8 pt-6 border-t border-dashed border-gray-200 dark:border-gray-700">
-                <div className="flex gap-4 items-start">
-                  <div className="p-2 bg-brand-pink/10 rounded-lg text-brand-pink">
-                    <CalendarClock className="w-5 h-5" />
-                  </div>
-                  <div className="space-y-1 text-sm">
-                    <p className="font-bold text-foreground">
-                      Gotowe! A teraz:
-                    </p>
-                    <div className="grid grid-cols-1 gap-1 text-muted-foreground">
-                      <span>
-                        Preselekcja:{" "}
-                        <span className="font-mono text-brand-violet font-bold">
-                          28.04.2026
-                        </span>
-                      </span>
-                      <span>
-                        Finał:{" "}
-                        <span className="font-mono text-brand-violet font-bold">
-                          12.05.2026
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p className="text-lg text-muted-foreground">
+                Dziękujemy za wszystkie przesłane projekty. Do zobaczenia na finale!
+              </p>
             </div>
           </div>
         </div>

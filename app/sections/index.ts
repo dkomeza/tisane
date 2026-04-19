@@ -6,6 +6,8 @@ import Competition from "./Competition";
 import WhyParticipate from "./WhyParticipate";
 import Organizers from "./Organizers";
 import Contact from "./Contact";
+import Agenda from "./Agenda";
+import Partners from "./Partners";
 
 export {
   Highlights,
@@ -16,4 +18,6 @@ export {
   WhyParticipate,
   Organizers,
   Contact,
+  Agenda,
+  Partners,
 };

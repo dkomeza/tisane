@@ -135,7 +135,7 @@ const HeroSection = () => {
               Konkurs IT is ME
             </Button>
             <a
-              href="https://forms.office.com/e/nbZ7xL0EAm"
+              href="https://indico.informatyka.agh.edu.pl/event/2/registrations/6/"
               target="_blank"
               rel="noopener noreferrer"
             >

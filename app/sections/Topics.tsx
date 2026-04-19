@@ -14,21 +14,30 @@ export default function Topics() {
     {
       title: "AI & Data",
       icon: <Cpu className="w-6 h-6 text-brand-red" />,
-      items: ["AI/ML", "Data Science & Big Data", "Automatyzacja"],
+      items: [
+        "AI w praktyce (od modelu do produktu)",
+        "LLM i projekty open source (np. Bielik.AI)",
+        "Data Science & Big Data",
+      ],
     },
     {
       title: "Infrastruktura i systemy",
       icon: <Server className="w-6 h-6 text-brand-violet" />,
       items: [
+        "Architektura systemów działających na dużą skalę",
         "Cloud & Edge",
-        "IoT i systemy rozproszone",
-        "Cyberbezpieczeństwo",
+        "IoT i systemy czasu rzeczywistego",
+        "Bezpieczeństwo i odpowiedzialność za dane",
       ],
     },
     {
       title: "Innowacje przyszłości",
       icon: <Lightbulb className="w-6 h-6 text-brand-pink" />,
-      items: ["Quantum Computing", "Digital Health", "Green/Responsible IT"],
+      items: [
+        "Robotyka i AI w fizycznym świecie (roboty humanoidalne)",
+        "Quantum Computing",
+        "Digital Health",
+      ],
     },
   ];
 

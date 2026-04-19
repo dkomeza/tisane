@@ -28,31 +28,23 @@ export default function About() {
         </Badge>
 
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-          Gdzie pomysły nabierają mocy, <br />
+          Wiedza. <br />
           <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-brand-pink">
-            a kariery kierunku
+            Technologie. Relacje.
           </span>
         </h2>
 
         <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-          Sektor IT zmienia się szybciej niż kiedykolwiek wcześniej - napędzany
-          przez sztuczną inteligencję, analizę danych i nowe technologie, które
-          redefiniują sposób, w jaki pracujemy, uczymy się i tworzymy innowacje.
+          Sektor IT zmienia się szybciej niż kiedykolwiek wcześniej – napędzany
+          przez sztuczną inteligencję, dane i nowe technologie. Ale dziś to nie tylko kwestia tego, co działa. Coraz częściej kluczowe jest to, czy rozwiązanie ma sens, skaluje się i odpowiada na realne potrzeby.
         </p>
 
         <div className="text-left bg-secondary/30 p-8 rounded-2xl border border-border/50 backdrop-blur-sm">
+          <p className="text-lg leading-relaxed mb-4">
+            <strong className="text-foreground">AGH IT Future Day</strong> to wydarzenie, które pokazuje praktyczną stronę IT: moment, w którym projekt przestaje być koncepcją, a zaczyna działać w praktyce.
+          </p>
           <p className="text-lg leading-relaxed">
-            <strong className="text-foreground">AGH IT Future Day</strong> to
-            nowe wydarzenie organizowane przez{" "}
-            <span className="font-semibold">Wydział Informatyki AGH</span>,{" "}
-            <span className="font-semibold">Fundację Try IT</span>,{" "}
-            <span className="font-semibold">Centrum Spraw Studenckich AGH</span>{" "}
-            i{" "}
-            <span className="font-semibold">
-              Wydziałową Radę Samorządu Studentów WI AGH
-            </span>
-            . Łączymy perspektywy studentów, naukowców i biznesu, tworząc
-            program odpowiadający na realne potrzeby rynku.
+            Łączymy studentów, naukowców i praktyków biznesu, żeby wspólnie rozmawiać o tym, jak naprawdę wygląda współczesna branża IT. Tego nie nauczysz się na wykładach!
           </p>
         </div>
       </div>

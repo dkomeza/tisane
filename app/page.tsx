@@ -7,6 +7,8 @@ import {
   WhyParticipate,
   Organizers,
   Contact,
+  Agenda,
+  Partners,
 } from "./sections";
 import Hero from "./sections/Hero";
 
@@ -19,12 +21,14 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
-      <Competition />
-      <Highlights />
       <About />
+      <Competition />
+      <Agenda />
+      <Highlights />
       <TargetAudience />
       <Topics />
       {/* <WhyParticipate /> */}
+      <Partners />
       <Organizers />
       <Contact />
     </main>

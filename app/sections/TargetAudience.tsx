@@ -16,17 +16,17 @@ export default function TargetAudience() {
     {
       icon: <GraduationCap className="w-10 h-10 text-brand-red" />,
       title: "Studentów",
-      desc: "Zdobądź wiedzę, poznaj ekspertów, zaprezentuj swój potencjał.",
+      desc: "Zobacz, jak wygląda IT poza uczelnią. Poznaj ludzi, technologie i kierunki, które realnie kształtują branżę.",
     },
     {
       icon: <Building2 className="w-10 h-10 text-brand-violet" />,
       title: "Firmy",
-      desc: "Spotkaj talenty, zaprezentuj technologie, znajdź inspiracje.",
+      desc: "Spotkaj ambitnych studentów, pokaż swoje rozwiązania i bądź częścią środowiska, które tworzy przyszłość technologii.",
     },
     {
       icon: <Microscope className="w-10 h-10 text-brand-pink" />,
-      title: "Naukowców",
-      desc: "Podziel się wiedzą i nawiąż współpracę z biznesem.",
+      title: "Absolwentów i pasjonatów IT",
+      desc: "Bądź na bieżąco z tym, jak zmienia się rynek. Poznaj nowe kierunki rozwoju, inspirujące projekty i ludzi, z którymi warto działać.",
     },
   ];
 
