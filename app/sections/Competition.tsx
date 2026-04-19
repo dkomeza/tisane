@@ -10,6 +10,7 @@ import {
   Send,
   CalendarClock,
   CheckCircle2,
+  Download,
 } from "lucide-react";
 
 export default function Competition() {
@@ -84,9 +85,21 @@ export default function Competition() {
 
             {/* MOTIVATION: Clean text */}
             <div className="bg-brand-violet/10 border border-brand-violet/30 p-6 rounded-xl mt-6">
-              <p className="text-xl font-bold text-center">
-                <span className="text-brand-violet">Zgłoszenia zakończone</span> – zapraszamy na finał 12 maja na Wydziale Informatyki AGH!
+              <p className="text-xl font-bold text-center mb-4">
+                <span className="text-brand-violet">Zgłoszenia zakończone</span>{" "}
+                – zapraszamy na finał 12 maja na Wydziale Informatyki AGH!
               </p>
+              <div className="flex justify-center">
+                <a href="/Regulamin wydarzenia_AGH IT Future Day.docx" download>
+                  <Button
+                    variant="outline"
+                    className="border-brand-violet text-brand-violet hover:bg-brand-violet/10 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Pobierz regulamin konkursu
+                  </Button>
+                </a>
+              </div>
             </div>
           </div>
 
@@ -125,11 +138,10 @@ export default function Competition() {
               <div className="w-16 h-16 bg-brand-violet/20 rounded-full flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-brand-violet" />
               </div>
-              <h3 className="text-2xl font-bold">
-                Zgłoszenia zakończone!
-              </h3>
+              <h3 className="text-2xl font-bold">Zgłoszenia zakończone!</h3>
               <p className="text-lg text-muted-foreground">
-                Dziękujemy za wszystkie przesłane projekty. Do zobaczenia na finale!
+                Dziękujemy za wszystkie przesłane projekty. Do zobaczenia na
+                finale!
               </p>
             </div>
           </div>

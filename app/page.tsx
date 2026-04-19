@@ -4,7 +4,6 @@ import {
   TargetAudience,
   Topics,
   Competition,
-  WhyParticipate,
   Organizers,
   Contact,
   Agenda,
@@ -27,7 +26,6 @@ export default function Home() {
       <Highlights />
       <TargetAudience />
       <Topics />
-      {/* <WhyParticipate /> */}
       <Partners />
       <Organizers />
       <Contact />
