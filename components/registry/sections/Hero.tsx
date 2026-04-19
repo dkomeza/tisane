@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { TypewriterEffect } from "./hero/TypeWriter";
+import { CopyIdButton } from "../ui/CopyIdButton";
 
 type HeroProps = {
   content?: Block<"typography">;
@@ -54,7 +55,7 @@ export const Hero: CMSComponent<"hero", HeroProps> = {
 /**
  * This is the client-side component that will be rendered in the application.
  */
-function HeroClientComponent({ data }: BlockProps<HeroProps>) {
+function HeroClientComponent({ id, data }: BlockProps<HeroProps>) {
   const ImageComponent = COMPONENT_REGISTRY["imageComponent"].ClientComponent;
   const imageData = data.backgroundImage?.data;
 
@@ -69,7 +70,7 @@ function HeroClientComponent({ data }: BlockProps<HeroProps>) {
       : null;
 
   return (
-    <main className="relative h-screen isolate">
+    <main className="relative h-screen isolate" data-tisane-id={id}>
       {imageData && (
         <div className="absolute inset-0 -z-10 overflow-hidden [&>img]:object-cover [&>img]:object-top">
           <ImageComponent id="hero-background" data={imageData} />
@@ -135,6 +136,7 @@ function HeroAdminComponent({ id, useStore }: AdminBlockProps<HeroProps>) {
   return (
     <main className="w-full relative aspect-video isolate group border border-dashed border-transparent hover:border-primary/30 rounded-sm overflow-hidden">
       <div className="absolute opacity-0 group-hover:opacity-100 transition-opacity top-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <CopyIdButton id={id} />
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm">

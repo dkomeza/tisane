@@ -1,6 +1,5 @@
 import { COMPONENT_REGISTRY } from "@/components/registry";
 import { Block, ReactClientComponent } from "@/components/registry/types";
-import { nanoid } from "nanoid";
 
 export function PageContentRenderer({ blocks }: { blocks?: Block[] }) {
   if (!blocks || blocks.length === 0) {
@@ -23,7 +22,7 @@ export function PageContentRenderer({ blocks }: { blocks?: Block[] }) {
           >;
 
         return (
-          <ClientComponent key={index} data={content.data} id={nanoid()} />
+          <ClientComponent key={index} data={content.data} id={content.id} />
         );
       })}
     </>

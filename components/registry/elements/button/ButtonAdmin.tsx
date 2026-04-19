@@ -1,7 +1,17 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Type, Palette, BoxSelect, Trash2, Smile, Pencil } from "lucide-react";
+import {
+  Type,
+  Palette,
+  BoxSelect,
+  Trash2,
+  Smile,
+  MousePointer2,
+  ExternalLink,
+  FileText,
+  ScanSearch,
+} from "lucide-react";
 import { iconMap, IconName } from "@/components/registry/items/icon";
 import {
   Select,
@@ -15,8 +25,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ButtonProps } from "./index";
+import { Input } from "@/components/ui/input";
+import { ButtonAction, ButtonProps } from "./index";
 import { ButtonClient } from "./ButtonClient";
+import { useEffect, useState } from "react";
+import { getPages } from "@/app/actions/pages/get-pages";
+import { PageWithoutContent } from "@/lib/schemas/PagesSchema";
+import { DocumentAdminItem } from "../documents-button/DocumentAdminItem";
 
 interface ButtonAdminProps {
   id: string;
@@ -25,12 +40,29 @@ interface ButtonAdminProps {
   removeBlock?: (id: string) => void;
 }
 
+const ACTION_TYPES = [
+  { value: "none", label: "None" },
+  { value: "link", label: "Link" },
+  { value: "download", label: "Download" },
+  { value: "scroll", label: "Scroll" },
+] as const;
+
 export function ButtonAdmin({
   id,
   data,
   updateBlock,
   removeBlock,
 }: ButtonAdminProps) {
+  const [pages, setPages] = useState<PageWithoutContent[]>([]);
+
+  const action = data.action ?? { type: "none" };
+
+  useEffect(() => {
+    getPages({ returnAll: true }).then((res) => {
+      if (res.success) setPages(res.data.pages);
+    });
+  }, []);
+
   const colorOptions: {
     value: ButtonProps["color"];
     bgClass: string;
@@ -54,6 +86,33 @@ export function ButtonAdmin({
       label: "Pink",
     },
   ];
+
+  const setActionType = (type: ButtonAction["type"]) => {
+    const defaults: Record<string, ButtonAction> = {
+      none: { type: "none" },
+      link: {
+        type: "link",
+        linkType: "external",
+        url: "",
+        pageId: undefined,
+        newTab: false,
+      },
+      download: { type: "download", mediaId: "" },
+      scroll: { type: "scroll", targetId: "" },
+    };
+    updateBlock(id, { action: defaults[type] });
+  };
+
+  const updateAction = (patch: Partial<ButtonAction>) => {
+    updateBlock(id, { action: { ...action, ...patch } as ButtonAction });
+  };
+
+  const handlePageChange = (pageId: string) => {
+    const page = pages.find((p) => p.id === pageId);
+    if (page) {
+      updateAction({ pageId: page.id, url: `/${page.slug}` });
+    }
+  };
 
   return (
     <Popover>
@@ -149,6 +208,139 @@ export function ButtonAdmin({
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        {/* ── Action ── */}
+        <div className="space-y-3">
+          <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <MousePointer2 className="size-3" />
+            Action
+          </label>
+
+          {/* Action type tabs */}
+          <div className="flex p-1 bg-muted rounded-lg">
+            {ACTION_TYPES.map(({ value, label }) => (
+              <button
+                type="button"
+                key={value}
+                onClick={() => setActionType(value)}
+                className={cn(
+                  "flex-1 py-1.5 text-xs font-medium rounded-md capitalize transition-all",
+                  action.type === value
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Link sub-fields */}
+          {action.type === "link" && (
+            <div className="space-y-3">
+              {/* internal / external toggle */}
+              <div className="flex p-1 bg-muted rounded-lg">
+                {(["external", "internal"] as const).map((lt) => (
+                  <button
+                    type="button"
+                    key={lt}
+                    onClick={() => updateAction({ linkType: lt })}
+                    className={cn(
+                      "flex-1 py-1.5 text-xs font-medium rounded-md capitalize transition-all",
+                      action.linkType === lt
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {lt}
+                  </button>
+                ))}
+              </div>
+
+              {action.linkType === "external" ? (
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <ExternalLink className="size-3" />
+                    URL
+                  </label>
+                  <Input
+                    value={action.url ?? ""}
+                    onChange={(e) => updateAction({ url: e.target.value })}
+                    placeholder="https://example.com"
+                    className="text-sm"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-1.5">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <FileText className="size-3" />
+                    Page
+                  </label>
+                  <Select
+                    value={action.pageId ?? ""}
+                    onValueChange={handlePageChange}
+                  >
+                    <SelectTrigger className="w-full text-sm">
+                      <SelectValue placeholder="Select a page" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {pages.map((page) => (
+                        <SelectItem key={page.id} value={page.id}>
+                          {page.title} (/{page.slug})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* New tab toggle */}
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={action.newTab ?? false}
+                    onChange={(e) => updateAction({ newTab: e.target.checked })}
+                  />
+                  <div className="w-9 h-5 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary" />
+                </div>
+                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                  Open in new tab
+                </span>
+              </label>
+            </div>
+          )}
+
+          {/* Download sub-fields */}
+          {action.type === "download" && (
+            <DocumentAdminItem
+              mediaId={action.mediaId}
+              onSelect={(media) => updateAction({ mediaId: media.id })}
+              onRemove={() => updateAction({ mediaId: "" })}
+            />
+          )}
+
+          {/* Scroll sub-fields */}
+          {action.type === "scroll" && (
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <ScanSearch className="size-3" />
+                Target block ID
+              </label>
+              <Input
+                value={action.targetId ?? ""}
+                onChange={(e) => updateAction({ targetId: e.target.value })}
+                placeholder="e.g. hero-section"
+                className="text-sm font-mono"
+              />
+              <p className="text-[11px] text-muted-foreground">
+                The block must have a matching{" "}
+                <code className="font-mono">data-tisane-id</code> attribute.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Color theme */}

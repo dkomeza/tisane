@@ -21,6 +21,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ImageComponent } from "../../items/image";
 import { nanoid } from "nanoid";
 import { cn } from "@/lib/utils";
+import { CopyIdButton } from "@/components/registry/ui/CopyIdButton";
+
 import {
   Select,
   SelectContent,
@@ -95,6 +97,7 @@ export const Container: CMSComponent<"container", ContainerProps> = {
  * This is the client-side component that will be rendered in the application.
  */
 function ContainerClient({
+  id,
   data,
   children,
 }: BlockProps<ContainerProps> & { children?: React.ReactNode }) {
@@ -108,6 +111,7 @@ function ContainerClient({
 
   return (
     <section
+      data-tisane-id={id}
       className={cn(
         "w-full relative isolate",
         getPaddingClass(data.paddingTop, "t"),
@@ -152,6 +156,8 @@ function ContainerAdmin({ id, useStore }: AdminBlockProps<ContainerProps>) {
     <div className="relative group/container w-full isolate">
       {/* Settings trigger */}
       <div className="absolute -top-3 right-1 z-10 flex items-center gap-1 opacity-0 group-hover/container:opacity-100 transition-opacity duration-200">
+        {/* Copy ID */}
+        <CopyIdButton id={id} />
         {/* Background settings */}
         <Popover>
           <PopoverTrigger asChild>
