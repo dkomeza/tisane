@@ -30,6 +30,7 @@ type HeroProps = {
 export const Hero: CMSComponent<"hero", HeroProps> = {
   id: "hero" as const,
   label: "Hero",
+  isRootLevel: true,
 
   ClientComponent: HeroClientComponent,
   AdminComponent: HeroAdminComponent,

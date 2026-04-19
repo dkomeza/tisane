@@ -114,7 +114,6 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Grid.id,
       // -- PLOP LAYOUT HERE --
     ],
-    isRootLevel: true,
   },
   {
     id: "sections",
@@ -127,7 +126,6 @@ export const REGISTRY_CATEGORIES: RegistryCategory[] = [
       Prelegenci.id,
       // -- PLOP SECTIONS HERE --
     ],
-    isRootLevel: true,
   },
   {
     id: "typography",

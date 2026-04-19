@@ -27,7 +27,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCallback, useEffect, useState } from "react";
-import { COMPONENT_REGISTRY, REGISTRY_CATEGORIES } from "@/components/registry";
+import {
+  COMPONENT_REGISTRY,
+  createBlock,
+  REGISTRY_CATEGORIES,
+} from "@/components/registry";
 import { Block, AdminBlockProps } from "@/components/registry/types";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -39,7 +43,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { nanoid } from "nanoid";
 import { usePreviewBroadcaster } from "@/hooks/use-preview-sync";
 import { useCMSStore } from "@/components/registry/CMSStore";
 import { InsertionLine } from "@/components/registry/InsertionLine";
@@ -221,12 +224,21 @@ function ContentForm() {
             <Card className="w-md">
               <ScrollArea className="h-96">
                 {Object.values(REGISTRY_CATEGORIES)
-                  .filter((category) => category.isRootLevel)
+                  .filter((category) => {
+                    const components = category.componentIds.map(
+                      (componentId) => COMPONENT_REGISTRY[componentId],
+                    );
+                    return components.some(
+                      (component) => component.isRootLevel,
+                    );
+                  })
                   .map((category) => (
                     <div key={category.id} className="mb-4">
                       <h3 className="mb-2">{category.label}</h3>
                       <div className="grid grid-cols-3 gap-2">
                         {category.componentIds.map((componentId) => {
+                          const component = COMPONENT_REGISTRY[componentId];
+                          if (!component.isRootLevel) return null;
                           const Preview =
                             COMPONENT_REGISTRY[componentId].PreviewComponent;
                           return (
@@ -234,15 +246,7 @@ function ContentForm() {
                               key={componentId}
                               className="border border-border/50 rounded-md p-2"
                               onClick={() => {
-                                const newBlock: Block = {
-                                  id: nanoid(8),
-                                  type: componentId,
-                                  data: {
-                                    ...COMPONENT_REGISTRY[
-                                      componentId
-                                    ].Schema.parse({}),
-                                  },
-                                };
+                                const newBlock = createBlock(componentId);
 
                                 if (!newBlock || !addBlock) return;
                                 addBlock(newBlock);

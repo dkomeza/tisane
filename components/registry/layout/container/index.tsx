@@ -66,6 +66,7 @@ export const SectionContainerProps: ContainerProps = {
 export const Container: CMSComponent<"container", ContainerProps> = {
   id: "container" as const,
   label: "Container",
+  isRootLevel: true,
 
   ClientComponent: ContainerClient,
   AdminComponent: ContainerAdmin,

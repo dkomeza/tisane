@@ -52,6 +52,7 @@ export type AdminBlockProps<P> = BlockProps<P> & {
 export type CMSComponent<Id extends string, Props> = {
   readonly id: Id;
   readonly label: string;
+  readonly isRootLevel?: boolean;
 
   ClientComponent: React.FC<BlockProps<Props>>;
   AdminComponent: React.FC<AdminBlockProps<Props>>;

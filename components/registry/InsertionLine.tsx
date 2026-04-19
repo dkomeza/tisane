@@ -32,7 +32,12 @@ export function InsertionLine({
   const isHorizontal = orientation === "horizontal";
 
   const categories = rootOnly
-    ? REGISTRY_CATEGORIES.filter((c) => c.isRootLevel)
+    ? REGISTRY_CATEGORIES.filter((c) => {
+        const components = c.componentIds.map(
+          (componentId) => COMPONENT_REGISTRY[componentId],
+        );
+        return components.some((component) => component.isRootLevel);
+      })
     : REGISTRY_CATEGORIES;
 
   return (
@@ -72,6 +77,7 @@ export function InsertionLine({
                     <div className="grid grid-cols-3 gap-2">
                       {category.componentIds.map((componentId) => {
                         const comp = COMPONENT_REGISTRY[componentId];
+                        if (!comp.isRootLevel) return null;
                         const Preview = comp.PreviewComponent;
                         return (
                           <button
