@@ -47,9 +47,9 @@ export default function Partners() {
           <h3 className="text-2xl font-bold text-center mb-8 text-foreground/80">
             Partnerzy Merytoryczni
           </h3>
-          <div className="flex flex-wrap justify-center gap-6 max-w-5xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {partnerzyMerytoryczni.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-violet/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
@@ -57,7 +57,7 @@ export default function Partners() {
                       alt={partner.alt}
                       fill
                       className="object-contain p-4 sm:p-6"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>
                 </Card>
@@ -71,17 +71,17 @@ export default function Partners() {
           <h3 className="text-2xl font-bold text-center mb-8 text-foreground/80">
             Partnerzy
           </h3>
-          <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {partnerzy.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-pink/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
                       src={partner.src}
                       alt={partner.alt}
                       fill
-                      className="object-contain p-6 sm:p-8"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-contain p-4 sm:p-6"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>
                 </Card>
@@ -95,9 +95,9 @@ export default function Partners() {
           <h3 className="text-2xl font-bold text-center mb-8 text-foreground/80">
             Patroni Medialni
           </h3>
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-4xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {patroniMedialni.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-[calc(50%-0.5rem)] sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-red/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
@@ -105,7 +105,7 @@ export default function Partners() {
                       alt={partner.alt}
                       fill
                       className="object-contain p-4 sm:p-6"
-                      sizes="(max-width: 640px) 50vw, 25vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>
                 </Card>

@@ -42,7 +42,6 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Konkurs IT is ME", href: "#contest" },
     { name: "O wydarzeniu", href: "#about" },
     { name: "Dla Kogo", href: "#target" },
     { name: "Tematyka", href: "#topics" },
@@ -97,7 +96,7 @@ export function Navbar() {
         <div className="flex items-center gap-4">
           <ModeToggle />
           <a
-            href="https://forms.office.com/e/nbZ7xL0EAm"
+            href="https://indico.informatyka.agh.edu.pl/event/2/registrations/6/"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden lg:block"
@@ -169,7 +168,7 @@ export function Navbar() {
 
                 <div className="mt-auto pt-8 space-y-12">
                   <a
-                    href="https://forms.office.com/e/nbZ7xL0EAm"
+                    href="https://indico.informatyka.agh.edu.pl/event/2/registrations/6/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"

@@ -21,12 +21,12 @@ export default function Home() {
     <main className="min-h-screen">
       <Hero />
       <About />
-      <Competition />
       <Agenda />
       <Highlights />
       <TargetAudience />
       <Topics />
       <Partners />
+      <Competition />
       <Organizers />
       <Contact />
     </main>

@@ -122,18 +122,6 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Button
-              size="lg"
-              variant="outline"
-              className="cursor-pointer border-brand-violet text-brand-violet hover:bg-brand-violet hover:text-white dark:border-brand-softPink dark:text-brand-softPink dark:hover:bg-brand-softPink dark:hover:text-brand-dark transition-all duration-300 group"
-              onClick={() => {
-                const el = document.getElementById("contest");
-                el?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            >
-              <Trophy className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-              Konkurs IT is ME
-            </Button>
             <a
               href="https://indico.informatyka.agh.edu.pl/event/2/registrations/6/"
               target="_blank"
