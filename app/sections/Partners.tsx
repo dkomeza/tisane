@@ -4,12 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 const partnerzyMerytoryczni = [
-  { id: "01", src: "/partnerzy_merytoryczni/logo_www-01.png", link: "https://www.bnpparibas.pl/", alt: "BNP Paribas" },
+  { id: "01", src: "/partnerzy_merytoryczni/logo_www-01.png", link: "https://www.visa.pl/", alt: "Visa" },
   { id: "02", src: "/partnerzy_merytoryczni/logo_www-02.png", link: "https://www.euroclear.com/en.html", alt: "Euroclear" },
-  { id: "03", src: "/partnerzy_merytoryczni/logo_www-03.png", link: "https://www.gehealthcare.pl/", alt: "GE HealthCare" },
-  { id: "04", src: "/partnerzy_merytoryczni/logo_www-04.png", link: "https://www.hsbc.pl/", alt: "HSBC" },
-  { id: "05", src: "/partnerzy_merytoryczni/logo_www-05.png", link: "https://www.motorolasolutions.com/pl_pl.html", alt: "Motorola Solutions" },
-  { id: "06", src: "/partnerzy_merytoryczni/logo_www-06.png", link: "https://www.visa.pl/", alt: "Visa" },
+  { id: "03", src: "/partnerzy_merytoryczni/logo_www-03.png", link: "https://www.hsbc.pl/", alt: "HSBC" },
+  { id: "04", src: "/partnerzy_merytoryczni/logo_www-04.png", link: "https://www.motorolasolutions.com/pl_pl.html", alt: "Motorola Solutions" },
+  { id: "05", src: "/partnerzy_merytoryczni/logo_www-05.png", link: "https://www.bnpparibas.pl/", alt: "BNP Paribas" },
+  { id: "06", src: "/partnerzy_merytoryczni/logo_www-06.png", link: "https://www.gehealthcare.pl/", alt: "GE HealthCare" },
   { id: "07", src: "/partnerzy_merytoryczni/logo_www-07.png", link: "https://www.innoagh.pl/", alt: "INNOAGH" },
 ];
 
@@ -49,14 +49,14 @@ export default function Partners() {
           </h3>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {partnerzyMerytoryczni.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-violet/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
                       src={partner.src}
                       alt={partner.alt}
                       fill
-                      className="object-contain p-4 sm:p-6"
+                      className="object-contain p-2 sm:p-3"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>
@@ -73,14 +73,14 @@ export default function Partners() {
           </h3>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {partnerzy.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-pink/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
                       src={partner.src}
                       alt={partner.alt}
                       fill
-                      className="object-contain p-4 sm:p-6"
+                      className="object-contain p-2 sm:p-3"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>
@@ -97,14 +97,14 @@ export default function Partners() {
           </h3>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
             {patroniMedialni.map((partner) => (
-              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(25%-1.125rem)]">
+              <a href={partner.link} target="_blank" rel="noopener noreferrer" key={partner.id} className="block group outline-none w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)]">
                 <Card className="bg-white/5 border-white/10 group-hover:border-brand-red/50 transition-colors flex items-center justify-center p-2 sm:p-3 aspect-video">
                   <CardContent className="relative p-0 flex flex-col items-center justify-center w-full h-full text-muted-foreground bg-white rounded-xl overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                     <Image
                       src={partner.src}
                       alt={partner.alt}
                       fill
-                      className="object-contain p-4 sm:p-6"
+                      className="object-contain p-2 sm:p-3"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 25vw"
                     />
                   </CardContent>

@@ -37,7 +37,7 @@ export default function Agenda() {
     },
     {
       time: "11:30 – 11:55",
-      speaker: "Krzysztof Wróbel, Bielik.AI",
+      speaker: "Aleksander Smywiński-Pohl, AGH",
       title: "Jestem Bielik. Urodziłem się tu obok.",
     },
     { time: "11:55 – 12:15", title: "PRZERWA KAWOWA (20 min)", isBreak: true },
@@ -64,7 +64,7 @@ export default function Agenda() {
     },
     {
       time: "13:55 – 14:20",
-      speaker: "Piotr Góralczyk",
+      speaker: "Piotr Golczyk",
       title:
         "Startup nie jest dla każdego. Jak rozpoznać, czy budujesz biznes, czy iluzję",
     },
